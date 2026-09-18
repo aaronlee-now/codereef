@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Go — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=go1" />
+  </head>
+  <body class="page page--web page--py page--go">
+    <header class="web-top">
+      <a class="web-back" href="explore.html">Back</a>
+      <h1 class="web-title">Go</h1>
+      <button class="web-btn web-btn--run" type="button" id="run-btn">Run</button>
+      <button class="web-btn" type="button" id="reset-btn">Reset</button>
+    </header>
+
+    <div class="task-bar" id="task-bar">
+      <p class="task-bar__goal" id="task-goal">Task 1</p>
+      <button class="task-bar__help" type="button" id="help-btn">Help</button>
+      <button class="task-bar__next" type="button" id="next-btn" hidden>Next task</button>
+      <p class="task-bar__hint" id="help-line">Do the task, then press Run.</p>
+    </div>
+
+    <main class="web-main">
+      <section class="web-editor-panel web-editor-panel--solo">
+        <label class="web-code-wrap is-active">
+          <span class="web-code-label">Your Go code</span>
+          <textarea id="go-code" class="web-code" spellcheck="false"></textarea>
+        </label>
+      </section>
+
+      <section class="web-preview-panel">
+        <p class="web-preview-label">Output (what Go prints)</p>
+        <pre id="go-output" class="py-output" aria-live="polite"></pre>
+      </section>
+    </main>
+
+    <script src="auth.js?v=go1"></script>
+    <script src="go.js?v=go1"></script>
+  </body>
+</html>

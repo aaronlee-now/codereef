@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Block Coding — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=task2" />
+    <script src="https://cdn.jsdelivr.net/npm/blockly@9.3.3/blockly.min.js"></script>
+  </head>
+  <body class="page page--blocks">
+    <header class="blk-top">
+      <a class="blk-back" href="explore.html">Back</a>
+      <h1 class="blk-title">Block Coding</h1>
+      <button class="blk-flag" type="button" id="run-btn" title="Go">
+        <span class="blk-flag__icon" aria-hidden="true"></span>
+        Go
+      </button>
+      <button class="blk-btn" type="button" id="stop-btn">Stop</button>
+      <button class="blk-btn" type="button" id="reset-btn">Reset</button>
+    </header>
+
+    <div class="task-bar" id="task-bar">
+      <p class="task-bar__goal" id="task-goal">Task 1</p>
+      <button class="task-bar__help" type="button" id="help-btn">Help</button>
+      <button class="task-bar__next" type="button" id="next-btn" hidden>Next task</button>
+      <p class="task-bar__hint" id="help-line">Try the task, then press Go.</p>
+    </div>
+
+    <p class="blk-tip" id="tip" hidden></p>
+
+    <div class="blk-main">
+      <section class="blk-stage-panel">
+        <div class="blk-stage" id="stage">
+          <canvas id="stage-canvas" width="640" height="360" aria-label="Stage"></canvas>
+          <p class="blk-bubble" id="speech" hidden></p>
+        </div>
+        <p class="blk-stage-note">Stage</p>
+      </section>
+
+      <section class="blk-workspace-panel">
+        <div id="blocklyDiv" class="blk-blockly"></div>
+      </section>
+    </div>
+
+    <xml id="toolbox" style="display: none">
+      <category name="Events" colour="45">
+        <block type="when_flag"></block>
+      </category>
+      <category name="Motion" colour="210">
+        <block type="move_right"><field name="STEPS">1</field></block>
+        <block type="move_left"><field name="STEPS">1</field></block>
+        <block type="move_up"><field name="STEPS">1</field></block>
+        <block type="move_down"><field name="STEPS">1</field></block>
+      </category>
+      <category name="Looks" colour="300">
+        <block type="say_hi"></block>
+      </category>
+      <category name="Control" colour="30">
+        <block type="wait_block"><field name="SECS">1</field></block>
+        <block type="repeat_block"><field name="TIMES">2</field></block>
+      </category>
+    </xml>
+
+    <script src="auth.js?v=task2"></script>
+    <script src="blocks.js?v=task2"></script>
+  </body>
+</html>

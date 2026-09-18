@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign up — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="index.html">← Back to cover</a>
+
+    <main class="auth">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title">Create your account</h1>
+        <p class="auth__hint">
+          A parent email helps keep young divers safe in the reef.
+        </p>
+      </header>
+
+      <form class="auth__form" action="#" method="post">
+        <p class="auth__message" hidden></p>
+
+        <label class="field">
+          <span class="field__label">Kid's first name</span>
+          <input
+            class="field__input"
+            type="text"
+            name="kid_name"
+            autocomplete="nickname"
+            required
+            placeholder="Sam"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Parent email</span>
+          <input
+            class="field__input"
+            type="email"
+            name="parent_email"
+            autocomplete="email"
+            required
+            placeholder="parent@email.com"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input
+            class="field__input"
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            required
+            minlength="6"
+            placeholder="At least 6 characters"
+          />
+        </label>
+
+        <button class="auth__submit" type="submit">Sign up</button>
+      </form>
+
+      <p class="auth__switch">
+        Already have an account?
+        <a href="login.html">Log in</a>
+      </p>
+    </main>
+    <script src="auth.js"></script>
+    <script src="signup.js"></script>
+  </body>
+</html>

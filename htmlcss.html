@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HTML / CSS — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=task3" />
+  </head>
+  <body class="page page--web">
+    <header class="web-top">
+      <a class="web-back" href="explore.html">Back</a>
+      <h1 class="web-title">HTML / CSS</h1>
+      <button class="web-btn web-btn--run" type="button" id="run-btn">Show</button>
+      <button class="web-btn" type="button" id="reset-btn">Reset</button>
+    </header>
+
+    <div class="task-bar" id="task-bar">
+      <p class="task-bar__goal" id="task-goal">Task 1</p>
+      <button class="task-bar__help" type="button" id="help-btn">Help</button>
+      <button class="task-bar__next" type="button" id="next-btn" hidden>Next task</button>
+      <p class="task-bar__hint" id="help-line">Do the task, then press Show.</p>
+    </div>
+
+    <p class="web-tip" id="tip" hidden></p>
+
+    <main class="web-main">
+      <section class="web-editor-panel">
+        <div class="web-tabs" role="tablist">
+          <button class="web-tab is-active" type="button" data-tab="html">HTML</button>
+          <button class="web-tab" type="button" data-tab="css">CSS</button>
+        </div>
+
+        <label class="web-code-wrap is-active" data-panel="html">
+          <span class="web-code-label">HTML builds the page</span>
+          <textarea id="html-code" class="web-code" spellcheck="false"></textarea>
+        </label>
+
+        <label class="web-code-wrap" data-panel="css" hidden>
+          <span class="web-code-label">CSS makes it look nice</span>
+          <textarea id="css-code" class="web-code" spellcheck="false"></textarea>
+        </label>
+      </section>
+
+      <section class="web-preview-panel">
+        <p class="web-preview-label">Preview</p>
+        <iframe
+          id="preview"
+          class="web-preview"
+          title="Live page preview"
+          sandbox="allow-same-origin"
+        ></iframe>
+      </section>
+    </main>
+
+    <script src="auth.js?v=task3"></script>
+    <script src="htmlcss.js?v=task3"></script>
+  </body>
+</html>
