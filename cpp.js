@@ -389,28 +389,22 @@ function collectBraceBody(lines, startIndex, firstLineRest) {
   const body = [];
   let i = startIndex;
   let depth = 1;
+  const rest = (firstLineRest || "").trim();
 
-  if (firstLineRest) {
-    const rest = firstLineRest.trim();
-    if (rest === "}") {
+  if (rest === "}") {
+    return { body: body, nextIndex: i };
+  }
+
+  if (rest) {
+    const closeIdx = rest.lastIndexOf("}");
+    if (closeIdx !== -1 && rest.slice(closeIdx).trim() === "}") {
+      const inner = rest.slice(0, closeIdx).trim();
+      if (inner) {
+        body.push(inner);
+      }
       return { body: body, nextIndex: i };
     }
-    if (rest) {
-      const closeIdx = rest.lastIndexOf("}");
-      if (closeIdx !== -1 && rest.slice(closeIdx).trim() === "}") {
-        const inner = rest.slice(0, closeIdx).trim();
-        if (inner) {
-          body.push(inner.replace(/;?\s*$/, "") + (inner.endsWith(";") ? "" : ""));
-          const cleaned = inner.replace(/;?\s*$/, "");
-          if (cleaned) {
-            body.length = 0;
-            body.push(cleaned.endsWith(";") ? cleaned : cleaned);
-          }
-        }
-        return { body: body.filter(Boolean), nextIndex: i };
-      }
-      body.push(rest);
-    }
+    body.push(rest);
   }
 
   while (i < lines.length && depth > 0) {
