@@ -161,6 +161,41 @@ const tasks = [
       );
     },
   },
+  {
+    goal: "Task 5: Make the big title green.",
+    help:
+      "Keep your old CSS. Tap the CSS tab. Find h1 { ... }. " +
+      "Change color: #0b7285; to color: green; (or color: #2f9e44;). Then press Show.",
+    check: function () {
+      const css = cssCode.value.toLowerCase();
+      return (
+        css.indexOf("h1") !== -1 &&
+        (css.indexOf("color: green") !== -1 ||
+          css.indexOf("color:green") !== -1 ||
+          css.indexOf("#2f9e44") !== -1 ||
+          css.indexOf("#40c057") !== -1)
+      );
+    },
+  },
+  {
+    goal: "Task 6: Make .fun text bigger (font-size: 28px).",
+    help:
+      "Keep your old CSS. Tap the CSS tab. Find .fun { ... }. " +
+      "Change font-size: 20px; to font-size: 28px; Then press Show.",
+    check: function () {
+      const css = cssCode.value.toLowerCase().replace(/\s+/g, "");
+      return css.indexOf(".fun") !== -1 && css.indexOf("font-size:28px") !== -1;
+    },
+  },
+  {
+    goal: "Task 7: Add a new heading that says Coral friends.",
+    help:
+      "Keep your old HTML. Tap the HTML tab. Under your other lines, add: " +
+      "<h2>Coral friends</h2> Then press Show.",
+    check: function () {
+      return /<h2>\s*Coral friends\s*<\/h2>/i.test(htmlCode.value);
+    },
+  },
 ];
 
 const finalIdeas = [

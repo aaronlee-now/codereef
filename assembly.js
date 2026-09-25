@@ -115,6 +115,44 @@ const tasks = [
       return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
     },
   },
+  {
+    goal: "Task 5: PRINT the number 5.",
+    help:
+      dialectTip +
+      "You can delete the old code and start fresh for this task. " +
+      "Type: MOV R1, 5 then PRINT R1 — or PRINT 5 if your Help shows that. " +
+      "Easiest: MOV R1, 5 then PRINT R1. Then press Run.",
+    check: function () {
+      return normalizeOut(lastOutput) === "5";
+    },
+  },
+  {
+    goal: 'Task 6: MOV coral to "reef", then PRINT it.',
+    help:
+      dialectTip +
+      "Keep your old code or start fresh — either is OK. " +
+      'Type MOV coral, "reef" then PRINT coral. Then press Run.',
+    check: function () {
+      const code = codeBox.value;
+      const hasMov = /MOV\s+coral\s*,\s*["']reef["']/i.test(code);
+      return hasMov && normalizeOut(lastOutput).split("\n").indexOf("reef") !== -1;
+    },
+  },
+  {
+    goal: "Task 7: REPEAT to PRINT splash three times.",
+    help:
+      dialectTip +
+      "You can delete the old code and start fresh for this task. Type:\n" +
+      "REPEAT 3\n" +
+      'PRINT "splash"\n' +
+      "END\n" +
+      "Then press Run.",
+    check: function () {
+      const code = codeBox.value.toUpperCase();
+      const usedLoop = /REPEAT\s+\d+/.test(code);
+      return usedLoop && normalizeOut(lastOutput) === "splash\nsplash\nsplash";
+    },
+  },
 ];
 
 const finalIdeas = [
@@ -656,7 +694,7 @@ outputBox.textContent = "Press Run to see output here.";
     typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
   if (saved) {
     taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
-    if (typeof saved.code === "string" && saved.code.length > 0) {
+    if (typeof saved.code === "string" && saved.code.trim().length > 0) {
       codeBox.value = saved.code;
     } else {
       codeBox.value = starterCode;

@@ -118,6 +118,41 @@ function buyFish(fishId) {
   return { ok: true, fish: fish };
 }
 
+// Free fish (trail rare prize) — does not spend coins. Shop still uses buyFish.
+function grantFish(fishId) {
+  var fish = findFish(fishId);
+  if (!fish) {
+    return { ok: false, reason: "missing" };
+  }
+  if (ownFish(fishId)) {
+    return { ok: false, reason: "owned" };
+  }
+  var wallet = getWallet();
+  wallet.fish.push(fishId);
+  saveWallet(wallet);
+  return { ok: true, fish: fish };
+}
+
+function listUnownedFish() {
+  var list = [];
+  var i;
+  for (i = 0; i < FISH_FOR_SALE.length; i += 1) {
+    if (!ownFish(FISH_FOR_SALE[i].id)) {
+      list.push(FISH_FOR_SALE[i]);
+    }
+  }
+  return list;
+}
+
+function pickRandomUnownedFish() {
+  var list = listUnownedFish();
+  if (list.length === 0) {
+    return null;
+  }
+  var index = Math.floor(Math.random() * list.length);
+  return list[index];
+}
+
 function ownDecor(decorId) {
   var wallet = getWallet();
   return wallet.decor.indexOf(decorId) !== -1;
@@ -178,4 +213,24 @@ function showCoinToast(amount) {
       toast.remove();
     }, 400);
   }, 2200);
+}
+
+// Big celebration when a rare trail fish is found.
+function showRareFishToast(fishName) {
+  var old = document.getElementById("coin-toast");
+  if (old) {
+    old.remove();
+  }
+  var toast = document.createElement("div");
+  toast.id = "coin-toast";
+  toast.className = "coin-toast coin-toast--rare";
+  toast.setAttribute("role", "status");
+  toast.textContent = "Rare! You found a " + fishName + "!";
+  document.body.appendChild(toast);
+  window.setTimeout(function () {
+    toast.classList.add("is-gone");
+    window.setTimeout(function () {
+      toast.remove();
+    }, 400);
+  }, 3200);
 }

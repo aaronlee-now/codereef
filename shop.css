@@ -281,13 +281,16 @@
   position: absolute;
   z-index: 1;
   pointer-events: none;
-  animation: aquarium-swim var(--swim-time, 12s) ease-in-out infinite alternate;
+  /* One continuous lap: swim right, flip, swim left, flip. Never alternate without a flip. */
+  animation: aquarium-swim var(--swim-time, 14s) infinite;
 }
 
 .aquarium-swimmer .reef-fish {
   width: 5.5rem;
   height: 3.1rem;
   transform: scale(var(--fish-scale, 1));
+  animation: fish-bob var(--bob-time, 2.8s) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
 }
 
 .aquarium-decor {
@@ -303,12 +306,41 @@
   transform-origin: bottom center;
 }
 
+/*
+  Fish art faces LEFT by default.
+  scaleX(-1) = face right while moving right.
+  scaleX(1)  = face left while moving left.
+  step-start on turn keyframes so flip is instant (no squash through scaleX(0)).
+*/
 @keyframes aquarium-swim {
-  from {
-    transform: translateX(0);
+  0% {
+    transform: translate(0, 0) scaleX(-1);
+    animation-timing-function: ease-in-out;
   }
-  to {
-    transform: translateX(var(--swim-x, 8rem));
+  49% {
+    transform: translate(var(--swim-x, 10rem), 0) scaleX(-1);
+    animation-timing-function: step-start;
+  }
+  50% {
+    transform: translate(var(--swim-x, 10rem), 0) scaleX(1);
+    animation-timing-function: ease-in-out;
+  }
+  99% {
+    transform: translate(0, 0) scaleX(1);
+    animation-timing-function: step-start;
+  }
+  100% {
+    transform: translate(0, 0) scaleX(-1);
+  }
+}
+
+@keyframes fish-bob {
+  0%,
+  100% {
+    transform: scale(var(--fish-scale, 1)) translateY(0);
+  }
+  50% {
+    transform: scale(var(--fish-scale, 1)) translateY(-0.35rem);
   }
 }
 
@@ -338,21 +370,38 @@ body > .menu-fish-layer {
 .menu-fish-layer .menu-fish {
   position: absolute;
   opacity: 0.72;
-  animation: menu-fish-drift var(--drift, 18s) linear infinite;
+  /* Default: swim right while facing right (art faces left, so flip). */
+  animation: menu-fish-right var(--drift, 18s) linear infinite;
+}
+
+.menu-fish-layer .menu-fish--leftward {
+  /* Odd fish swim left while facing left — no flip needed. */
+  animation-name: menu-fish-left;
 }
 
 .menu-fish-layer .menu-fish .reef-fish {
   width: 4.8rem;
   height: 2.7rem;
   transform: scale(var(--fish-scale, 0.9));
+  animation: fish-bob var(--bob-time, 3s) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
 }
 
-@keyframes menu-fish-drift {
+@keyframes menu-fish-right {
   from {
-    transform: translateX(-4rem);
+    transform: translateX(-5rem) scaleX(-1);
   }
   to {
-    transform: translateX(calc(100vw + 4rem));
+    transform: translateX(calc(100vw + 5rem)) scaleX(-1);
+  }
+}
+
+@keyframes menu-fish-left {
+  from {
+    transform: translateX(calc(100vw + 5rem)) scaleX(1);
+  }
+  to {
+    transform: translateX(-5rem) scaleX(1);
   }
 }
 

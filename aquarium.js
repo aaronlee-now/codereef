@@ -36,17 +36,20 @@ function placeFish(fish, index) {
 
   // Spread fish around so they don't stack.
   var topPct = 12 + (index % 4) * 16;
-  var leftPct = 8 + (index % 3) * 22;
-  var swimX = 4 + (index % 5) * 2.5;
-  var swimTime = 10 + (index % 4) * 3;
+  var leftPct = 6 + (index % 3) * 18;
+  var swimX = 8 + (index % 5) * 3.5;
+  var swimTime = 12 + (index % 4) * 4;
   var scale = 0.95 + (index % 3) * 0.12;
+  var bobTime = 2.4 + (index % 3) * 0.45;
 
   swimmer.style.top = topPct + "%";
   swimmer.style.left = leftPct + "%";
   swimmer.style.setProperty("--swim-x", swimX + "rem");
   swimmer.style.setProperty("--swim-time", swimTime + "s");
   swimmer.style.setProperty("--fish-scale", String(scale));
-  swimmer.style.animationDelay = index * 0.6 + "s";
+  swimmer.style.setProperty("--bob-time", bobTime + "s");
+  swimmer.style.setProperty("--bob-delay", index * 0.4 + "s");
+  swimmer.style.animationDelay = index * -1.8 + "s";
 
   tankEl.appendChild(swimmer);
 }
@@ -71,7 +74,7 @@ function renderAquarium() {
     var empty = document.createElement("p");
     empty.className = "aquarium-empty";
     empty.innerHTML =
-      'Earn coins on the trail and buy fish in the <a href="shop.html?v=shop3">shop</a>!';
+      'Earn coins on the trail and buy fish in the <a href="shop.html?v=swim1">shop</a>!';
     tankEl.appendChild(empty);
     return;
   }

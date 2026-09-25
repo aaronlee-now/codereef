@@ -109,6 +109,43 @@ const tasks = [
       return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
     },
   },
+  {
+    goal: "Task 5: Print the number 5 with cout.",
+    help:
+      "You can delete the old code and start fresh for this task. " +
+      "Type: cout << 5 << endl; " +
+      "That prints the number five (no quotes around 5). Then press Run.",
+    check: function () {
+      return normalizeOut(lastOutput) === "5";
+    },
+  },
+  {
+    goal: 'Task 6: Make string coral = "reef"; and print it.',
+    help:
+      "Keep your old code or start fresh — either is OK. " +
+      'Type string coral = "reef"; then cout << coral << endl; ' +
+      "No quotes around coral when you print it. Then press Run.",
+    check: function () {
+      const code = codeBox.value.toLowerCase();
+      const hasVar = /string\s+coral\s*=\s*["']reef["']/.test(code);
+      return hasVar && normalizeOut(lastOutput).split("\n").indexOf("reef") !== -1;
+    },
+  },
+  {
+    goal: "Task 7: Loop to print splash three times.",
+    help:
+      "You can delete the old code and start fresh for this task. " +
+      "Type:\n" +
+      "for (int i = 1; i <= 3; i++) {\n" +
+      '  cout << "splash" << endl;\n' +
+      "}\n" +
+      "Then press Run. You should see splash three times.",
+    check: function () {
+      const code = codeBox.value.toLowerCase();
+      const usedLoop = /for\s*\(\s*int\s+\w+/.test(code);
+      return usedLoop && normalizeOut(lastOutput) === "splash\nsplash\nsplash";
+    },
+  },
 ];
 
 const finalIdeas = [
@@ -340,13 +377,25 @@ function projectContext() {
   return { code: codeBox.value, output: lastOutput };
 }
 
+function ensureStarterCode() {
+  if (!String(codeBox.value || "").trim()) {
+    codeBox.value = starterCode;
+  }
+}
+
 function showTask() {
   taskDone = false;
   taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
   nextBtn.textContent = "Next task";
-  taskGoal.textContent = tasks[taskIndex].goal;
-  setTip("Do the task, then press Run. Tap Help if you get stuck.");
+  ensureStarterCode();
+  const task = tasks[taskIndex];
+  taskGoal.textContent = task && task.goal ? task.goal : "Task " + (taskIndex + 1);
+  setTip(
+    task && task.help
+      ? "Do the task, then press Run. Tap Help if you get stuck."
+      : "Do the task, then press Run."
+  );
 }
 
 function afterSkillsComplete() {
@@ -844,7 +893,7 @@ outputBox.textContent = "Press Run to see output here.";
     typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
   if (saved) {
     taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
-    if (typeof saved.code === "string" && saved.code.length > 0) {
+    if (typeof saved.code === "string" && saved.code.trim().length > 0) {
       codeBox.value = saved.code;
     } else {
       codeBox.value = starterCode;
@@ -852,8 +901,9 @@ outputBox.textContent = "Press Run to see output here.";
   } else {
     codeBox.value = starterCode;
   }
+  ensureStarterCode();
 
-  if (projectApi.resumeIfNeeded()) {
+  if (projectApi && typeof projectApi.resumeIfNeeded === "function" && projectApi.resumeIfNeeded()) {
     return;
   }
 

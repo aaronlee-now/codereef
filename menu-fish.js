@@ -19,11 +19,14 @@
   for (i = 0; i < fishList.length; i += 1) {
     var fish = fishList[i];
     var swimmer = document.createElement("div");
-    swimmer.className = "menu-fish";
-    swimmer.style.top = 18 + i * 14 + "%";
-    swimmer.style.setProperty("--drift", 16 + i * 4 + "s");
+    // Even fish swim right (flipped); odd fish swim left (natural art facing).
+    swimmer.className = i % 2 === 1 ? "menu-fish menu-fish--leftward" : "menu-fish";
+    swimmer.style.top = 16 + i * 15 + "%";
+    swimmer.style.setProperty("--drift", 14 + i * 5 + "s");
     swimmer.style.setProperty("--fish-scale", String(0.85 + (i % 3) * 0.1));
-    swimmer.style.animationDelay = i * -3 + "s";
+    swimmer.style.setProperty("--bob-time", 2.5 + (i % 3) * 0.5 + "s");
+    swimmer.style.setProperty("--bob-delay", i * 0.5 + "s");
+    swimmer.style.animationDelay = i * -4 + "s";
     swimmer.innerHTML =
       '<span class="reef-fish">' +
       '<img class="reef-fish__img" src="' +

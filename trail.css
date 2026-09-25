@@ -568,6 +568,22 @@
   transition: opacity 350ms ease;
 }
 
+.coin-toast--rare {
+  background: linear-gradient(135deg, #7fdbda, #ffd166);
+  font-size: 1.15rem;
+  animation: coin-toast-in 280ms ease-out both, trail-rare-pulse 900ms ease-in-out 2;
+}
+
+@keyframes trail-rare-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
 @keyframes coin-toast-in {
   from {
     opacity: 0;

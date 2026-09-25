@@ -136,6 +136,33 @@ const tasks = [
       return countSteps(actions, "move_right") >= 3 && usedRepeat();
     },
   },
+  {
+    goal: "Task 6: Make the fish swim down.",
+    help:
+      "Keep your old blocks. Add a new block under them. " +
+      "Add a blue “move down” block, then press Go.",
+    check: function (actions) {
+      return countSteps(actions, "move_down") >= 1;
+    },
+  },
+  {
+    goal: "Task 7: Swim right and say Hi! in the same run.",
+    help:
+      "Keep your start block. Make sure you have both a “move right” and a “say Hi!” " +
+      "somewhere under start, then press Go.",
+    check: function (actions) {
+      return countSteps(actions, "move_right") >= 1 && hasType(actions, "say_hi");
+    },
+  },
+  {
+    goal: "Task 8: Use Repeat to move left 2 times.",
+    help:
+      "You can rebuild if it helps. Open Control, drag “repeat”, put “move left” inside it, " +
+      "set times to 2, then press Go.",
+    check: function (actions) {
+      return countSteps(actions, "move_left") >= 2 && usedRepeat();
+    },
+  },
 ];
 
 const finalIdeas = [

@@ -113,6 +113,42 @@ const tasks = [
       return hasFn && normalizeOut(lastOutput) === "10";
     },
   },
+  {
+    goal: "Task 5: Log the number 5.",
+    help:
+      "You can delete the old code and start fresh for this task. " +
+      "Type: console.log(5); — no quotes around 5. Then press Run.",
+    check: function () {
+      return normalizeOut(lastOutput) === "5";
+    },
+  },
+  {
+    goal: 'Task 6: Make let coral = "reef"; and log it.',
+    help:
+      "Keep your old code or start fresh — either is OK. " +
+      'Type let coral = "reef"; then console.log(coral); ' +
+      "Then press Run.",
+    check: function () {
+      const code = codeBox.value.toLowerCase();
+      const hasVar = /let\s+coral\s*=\s*["']reef["']/.test(code);
+      return hasVar && normalizeOut(lastOutput).split("\n").indexOf("reef") !== -1;
+    },
+  },
+  {
+    goal: "Task 7: Use a for loop to log 1, then 2, then 3.",
+    help:
+      "You can delete the old code and start fresh for this task. " +
+      "Type:\n" +
+      "for (let i = 1; i <= 3; i++) {\n" +
+      "  console.log(i);\n" +
+      "}\n" +
+      "Then press Run.",
+    check: function () {
+      const code = codeBox.value.toLowerCase();
+      const usedLoop = /for\s*\(/.test(code);
+      return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
+    },
+  },
 ];
 
 const finalIdeas = [
@@ -544,7 +580,7 @@ outputBox.textContent = "Press Run to see output here.";
     typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
   if (saved) {
     taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
-    if (typeof saved.code === "string" && saved.code.length > 0) {
+    if (typeof saved.code === "string" && saved.code.trim().length > 0) {
       codeBox.value = saved.code;
     } else {
       codeBox.value = starterCode;

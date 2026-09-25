@@ -1,5 +1,9 @@
 // Coral trail — after every 3 tasks, swim up and earn coins.
 // Each coding path has its own reef colors; every stop gives coins.
+// Very rarely (~4%), a stop also unlocks a free shop fish you do not own yet.
+
+var TRAIL_RARE_FISH_CHANCE = 0.04;
+var TRAIL_RARE_BONUS_COINS = 5;
 
 var TRAIL_THEMES = {
   blocks: {
@@ -237,11 +241,34 @@ function openCoralTrail(trailId, options) {
     saveTrailProgress(trailId, progress);
   }
 
+  function tryRareFishBonus() {
+    // ~4% chance — very rare. Always rolls after coins are given.
+    if (Math.random() >= TRAIL_RARE_FISH_CHANCE) {
+      return null;
+    }
+    if (typeof pickRandomUnownedFish !== "function" || typeof grantFish !== "function") {
+      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+    }
+    var pick = pickRandomUnownedFish();
+    if (!pick) {
+      // Already own every shop fish — extra coins instead.
+      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+    }
+    var granted = grantFish(pick.id);
+    if (!granted || !granted.ok) {
+      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+    }
+    return { kind: "fish", fish: granted.fish };
+  }
+
   function earnPrizeAt(index) {
     var prize = theme.prizes[index];
     var already = progress.prizes.some(function (p) {
       return p.id === prize.id + "-b" + batchNumber;
     });
+    var rare = null;
+    var totalCoins = coinsEach;
+
     if (!already) {
       progress.prizes.push({
         id: prize.id + "-b" + batchNumber,
@@ -250,24 +277,56 @@ function openCoralTrail(trailId, options) {
       });
       saveTrailProgress(trailId, progress);
 
-      // Each stop adds coins for the Fish Shop.
+      // Every stop always gives coins for the Fish Shop.
       if (typeof addCoins === "function") {
         addCoins(coinsEach);
-        if (typeof showCoinToast === "function") {
+      }
+
+      rare = tryRareFishBonus();
+      if (rare && rare.kind === "bonus") {
+        totalCoins += rare.bonusCoins;
+        if (typeof addCoins === "function") {
+          addCoins(rare.bonusCoins);
+        }
+      }
+
+      if (rare && rare.kind === "fish") {
+        if (typeof showRareFishToast === "function") {
+          showRareFishToast(rare.fish.name);
+        } else if (typeof showCoinToast === "function") {
           showCoinToast(coinsEach);
         }
+      } else if (typeof showCoinToast === "function") {
+        showCoinToast(totalCoins);
       }
     }
     if (spotEls[index]) {
       spotEls[index].classList.add("is-earned");
     }
     renderBag();
-    msgEl.innerHTML =
-      "You earned <strong>+" +
-      coinsEach +
-      " coins</strong> (" +
-      prize.name +
-      ")! Keep swimming!";
+
+    if (rare && rare.kind === "fish") {
+      msgEl.innerHTML =
+        "You earned <strong>+" +
+        coinsEach +
+        " coins</strong> — and <strong>Rare! You found a " +
+        rare.fish.name +
+        "!</strong> Keep swimming!";
+    } else if (rare && rare.kind === "bonus") {
+      msgEl.innerHTML =
+        "You earned <strong>+" +
+        coinsEach +
+        " coins</strong> plus a rare <strong>+" +
+        rare.bonusCoins +
+        " bonus coins</strong> (you already have every fish)! Keep swimming!";
+    } else {
+      msgEl.innerHTML =
+        "You earned <strong>+" +
+        coinsEach +
+        " coins</strong> (" +
+        prize.name +
+        ")! Keep swimming!";
+    }
   }
 
   setDiverSpot(0);
