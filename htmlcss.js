@@ -131,6 +131,24 @@ function markTaskDone() {
   taskBar.classList.remove("is-help");
   taskGoal.textContent =
     "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+
+  // After every 3 tasks, open the coral trail for prizes.
+  if (shouldShowCoralTrail(taskIndex)) {
+    showNextButton(false);
+    setTip("Coral trail time! Swim up for prizes.");
+    openCoralTrail("htmlcss", {
+      onComplete: function () {
+        if (taskIndex < tasks.length - 1) {
+          taskIndex += 1;
+          showTask();
+        } else {
+          setTip("You finished all the HTML / CSS tasks. Awesome!");
+        }
+      },
+    });
+    return;
+  }
+
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
     setTip("Task complete! Tap Next task when ready.");

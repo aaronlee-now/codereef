@@ -123,6 +123,25 @@ function markTaskDone() {
   taskBar.classList.add("is-done");
   taskBar.classList.remove("is-help");
   taskGoal.textContent = "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+
+  // After every 3 tasks, open the coral trail for prizes.
+  if (shouldShowCoralTrail(taskIndex)) {
+    showNextButton(false);
+    setTip("Coral trail time! Swim up for prizes.");
+    openCoralTrail("blocks", {
+      onComplete: function () {
+        if (taskIndex < tasks.length - 1) {
+          taskIndex += 1;
+          resetFish();
+          showTask();
+        } else {
+          setTip("You finished all the block tasks. Great diving!");
+        }
+      },
+    });
+    return;
+  }
+
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
     setTip("You finished this task! Tap Next task when you are ready.");

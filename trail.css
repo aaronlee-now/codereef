@@ -1,0 +1,526 @@
+/* Coral trail overlay — kid-friendly reef progress after every 3 tasks */
+
+.trail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(4, 24, 36, 0.72);
+  animation: trail-fade-in 280ms ease-out both;
+}
+
+@keyframes trail-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.trail-panel {
+  --trail-water: #0a4a5c;
+  --trail-water-deep: #062830;
+  --trail-coral: #e07a5f;
+  --trail-coral-2: #f4a261;
+  --trail-sand: #f2e6c9;
+  --trail-foam: #e8f7f4;
+  --trail-accent: #ffd166;
+
+  position: relative;
+  width: min(26rem, 100%);
+  max-height: min(92vh, 40rem);
+  overflow: auto;
+  border-radius: 1.25rem;
+  padding: 1rem 1rem 1.15rem;
+  background: linear-gradient(
+    180deg,
+    var(--trail-water) 0%,
+    var(--trail-water-deep) 55%,
+    #041820 100%
+  );
+  border: 3px solid var(--trail-sand);
+  box-shadow: 0 18px 40px rgba(0, 10, 20, 0.45);
+  color: var(--trail-foam);
+  font-family: "Nunito", sans-serif;
+}
+
+.trail-bubbles {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.trail-bubbles::before,
+.trail-bubbles::after {
+  content: "";
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 247, 244, 0.45);
+  animation: trail-bubble 4.5s ease-in infinite;
+}
+
+.trail-bubbles::before {
+  left: 18%;
+  bottom: 8%;
+}
+
+.trail-bubbles::after {
+  left: 72%;
+  bottom: 4%;
+  width: 0.4rem;
+  height: 0.4rem;
+  animation-delay: 1.4s;
+}
+
+@keyframes trail-bubble {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-18rem) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.trail-title {
+  position: relative;
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--trail-sand);
+}
+
+.trail-subtitle {
+  position: relative;
+  margin: 0 0 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(232, 247, 244, 0.92);
+}
+
+.trail-reef {
+  position: relative;
+  height: 14rem;
+  margin: 0.25rem 0 0.75rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 40%
+  );
+  border: 2px solid rgba(242, 230, 201, 0.35);
+}
+
+.trail-path {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  bottom: 8%;
+  width: 0.55rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    var(--trail-accent),
+    var(--trail-coral),
+    var(--trail-coral-2)
+  );
+  opacity: 0.85;
+}
+
+.trail-coral {
+  position: absolute;
+  bottom: 0;
+  width: 3.2rem;
+  height: 4.5rem;
+  border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
+  background: radial-gradient(
+    circle at 40% 30%,
+    var(--trail-coral-2),
+    var(--trail-coral)
+  );
+  opacity: 0.9;
+}
+
+.trail-coral--left {
+  left: 0.4rem;
+  transform: rotate(-8deg);
+}
+
+.trail-coral--right {
+  right: 0.4rem;
+  height: 3.6rem;
+  width: 2.6rem;
+  transform: rotate(12deg);
+  background: radial-gradient(
+    circle at 50% 25%,
+    var(--trail-accent),
+    var(--trail-coral)
+  );
+}
+
+.trail-coral--left::before,
+.trail-coral--right::before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  top: -18%;
+  width: 55%;
+  height: 45%;
+  border-radius: 50%;
+  background: inherit;
+  filter: brightness(1.1);
+}
+
+.trail-spots {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  padding: 1rem 0;
+  z-index: 1;
+}
+
+.trail-spot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: transform 200ms ease;
+}
+
+.trail-spot.is-here .trail-spot__pad {
+  box-shadow: 0 0 0 3px var(--trail-sand), 0 0 16px rgba(255, 209, 102, 0.55);
+  transform: scale(1.12);
+}
+
+.trail-spot.is-earned .trail-spot__pad {
+  background: var(--trail-accent);
+  border-color: var(--trail-sand);
+}
+
+.trail-spot__pad {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: rgba(232, 247, 244, 0.25);
+  border: 3px solid var(--trail-sand);
+  transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease;
+}
+
+.trail-spot__label {
+  margin: 0;
+  min-width: 3.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--trail-sand);
+}
+
+.trail-diver {
+  position: absolute;
+  left: calc(50% - 0.85rem);
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(160deg, #74c0fc, #1c7ed6);
+  border: 2px solid #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  transition: bottom 420ms ease;
+  bottom: 12%;
+}
+
+.trail-diver::after {
+  content: "";
+  position: absolute;
+  right: -0.55rem;
+  top: 35%;
+  width: 0.7rem;
+  height: 0.45rem;
+  background: #ffd43b;
+  border-radius: 0 0.4rem 0.4rem 0;
+  transform: rotate(8deg);
+}
+
+.trail-diver.is-top {
+  animation: trail-wiggle 600ms ease;
+}
+
+@keyframes trail-wiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+.trail-msg {
+  position: relative;
+  margin: 0 0 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(242, 230, 201, 0.35);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.trail-bag {
+  position: relative;
+  margin: 0 0 0.75rem;
+  min-height: 2.5rem;
+}
+
+.trail-bag__empty,
+.trail-bag__title {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--trail-sand);
+  text-align: center;
+}
+
+.trail-bag__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.trail-prize {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(242, 230, 201, 0.4);
+  font-size: 0.8rem;
+  font-weight: 800;
+  animation: trail-prize-pop 320ms ease-out both;
+}
+
+@keyframes trail-prize-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.trail-prize__art {
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.95rem;
+  flex-shrink: 0;
+}
+
+.trail-prize__art--shell {
+  border-radius: 50% 50% 40% 40%;
+  background: conic-gradient(from 200deg, #ffa94d, #ff8787, #ffa94d);
+}
+
+.trail-prize__art--pearl {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #dee2e6 70%);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.trail-prize__art--star {
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  background: #fcc419;
+}
+
+.trail-prize__art--chest {
+  border-radius: 0.15rem 0.15rem 0.25rem 0.25rem;
+  background: linear-gradient(180deg, #f59f00, #e67700);
+  box-shadow: inset 0 0.35rem 0 #ffe066;
+}
+
+.trail-prize__art--brush {
+  border-radius: 0.2rem 0.55rem 0.55rem 0.2rem;
+  background: linear-gradient(90deg, #868e96 40%, #ff6b6b 40%);
+}
+
+.trail-prize__art--fish {
+  border-radius: 50% 40% 40% 50%;
+  background: linear-gradient(90deg, #63e6be, #20c997);
+  position: relative;
+}
+
+.trail-prize__art--coil {
+  border-radius: 50%;
+  border: 3px solid #69db7c;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px #37b24d;
+}
+
+.trail-prize__art--chip {
+  border-radius: 0.15rem;
+  background: #2b8a3e;
+  box-shadow: inset 0 0 0 2px #212529, 0 0 0 1px #51cf66;
+}
+
+.trail-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.trail-btn {
+  border: none;
+  border-radius: 999px;
+  min-height: 2.5rem;
+  padding: 0 1.25rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.trail-btn--swim {
+  background: var(--trail-accent);
+  color: #1b2b34;
+}
+
+.trail-btn--continue {
+  background: #2f9e44;
+  color: #fff;
+}
+
+.trail-btn--continue[hidden] {
+  display: none !important;
+}
+
+.trail-btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* —— Path themes —— */
+
+.trail--blocks {
+  --trail-water: #7c2d12;
+  --trail-water-deep: #431407;
+  --trail-coral: #fb7185;
+  --trail-coral-2: #fb923c;
+  --trail-sand: #ffedd5;
+  --trail-accent: #fdba74;
+}
+
+.trail--htmlcss {
+  --trail-water: #0f766e;
+  --trail-water-deep: #134e4a;
+  --trail-coral: #2dd4bf;
+  --trail-coral-2: #5eead4;
+  --trail-sand: #ccfbf1;
+  --trail-accent: #99f6e4;
+}
+
+.trail--python {
+  --trail-water: #14532d;
+  --trail-water-deep: #052e16;
+  --trail-coral: #4ade80;
+  --trail-coral-2: #86efac;
+  --trail-sand: #dcfce7;
+  --trail-accent: #bbf7d0;
+}
+
+.trail--javascript {
+  --trail-water: #854d0e;
+  --trail-water-deep: #422006;
+  --trail-coral: #facc15;
+  --trail-coral-2: #fde047;
+  --trail-sand: #fef9c3;
+  --trail-accent: #fef08a;
+}
+
+.trail--go {
+  --trail-water: #075985;
+  --trail-water-deep: #0c4a6e;
+  --trail-coral: #38bdf8;
+  --trail-coral-2: #7dd3fc;
+  --trail-sand: #e0f2fe;
+  --trail-accent: #bae6fd;
+}
+
+.trail--java {
+  --trail-water: #9a3412;
+  --trail-water-deep: #7c2d12;
+  --trail-coral: #f59e0b;
+  --trail-coral-2: #fbbf24;
+  --trail-sand: #ffedd5;
+  --trail-accent: #fcd34d;
+}
+
+.trail--cpp {
+  --trail-water: #312e81;
+  --trail-water-deep: #1e1b4b;
+  --trail-coral: #818cf8;
+  --trail-coral-2: #a78bfa;
+  --trail-sand: #e0e7ff;
+  --trail-accent: #c4b5fd;
+}
+
+.trail--assembly {
+  --trail-water: #1f2937;
+  --trail-water-deep: #111827;
+  --trail-coral: #6b7280;
+  --trail-coral-2: #9ca3af;
+  --trail-sand: #e5e7eb;
+  --trail-accent: #34d399;
+}
+
+@media (max-height: 640px) {
+  .trail-reef {
+    height: 11rem;
+  }
+
+  .trail-panel {
+    padding: 0.75rem;
+  }
+}

@@ -45,11 +45,16 @@ const tasks = [
       "A variable is a name that remembers a value. " +
       'Type fish = "clownfish" on one line (quotes around clownfish). ' +
       "On the next line type print(fish) — no quotes around fish this time, " +
-      "because you want the value inside the variable. Then press Run.",
+      "because you want the value inside the variable. " +
+      "Old print lines from earlier tasks are OK to keep. Then press Run.",
     check: function () {
       const code = codeBox.value.toLowerCase();
       const hasVar = /fish\s*=\s*["']clownfish["']/.test(code);
-      return hasVar && normalizeOut(lastOutput) === "clownfish";
+      const printsFish = /print\s*\(\s*fish\s*\)/.test(code);
+      // Allow leftover prints from earlier tasks — just need a clownfish line.
+      const lines = normalizeOut(lastOutput).split("\n");
+      const showedClownfish = lines.indexOf("clownfish") !== -1;
+      return hasVar && printsFish && showedClownfish;
     },
   },
   {
@@ -108,6 +113,24 @@ function markTaskDone() {
   taskBar.classList.remove("is-help");
   taskGoal.textContent =
     "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+
+  // After every 3 tasks, open the coral trail for prizes.
+  if (shouldShowCoralTrail(taskIndex)) {
+    showNextButton(false);
+    setTip("Coral trail time! Swim up for prizes.");
+    openCoralTrail("python", {
+      onComplete: function () {
+        if (taskIndex < tasks.length - 1) {
+          taskIndex += 1;
+          showTask();
+        } else {
+          setTip("You finished all the Python tasks. Awesome!");
+        }
+      },
+    });
+    return;
+  }
+
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
     setTip("Task complete! Tap Next task when ready.");
