@@ -58,6 +58,72 @@ body {
   pointer-events: none;
 }
 
+/* Text sitting on the laptop screen in the cover art */
+.cover__screen {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%) rotate(-1.5deg);
+  width: clamp(7.25rem, 34vw, 12.5rem);
+  min-height: 2.4rem;
+  padding: 0.35rem 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  pointer-events: none;
+  border-radius: 0.35rem;
+  background: rgba(8, 28, 42, 0.72);
+  box-shadow: 0 0 0 1px rgba(120, 220, 255, 0.25),
+    0 0 18px rgba(80, 200, 255, 0.35);
+  animation: screen-glow 2.4s ease-in-out infinite alternate;
+}
+
+.cover__screen--link {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.cover__screen--link:hover,
+.cover__screen--link:focus-visible {
+  background: rgba(8, 40, 55, 0.88);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(242, 230, 201, 0.7),
+    0 0 22px rgba(80, 200, 255, 0.5);
+}
+
+.cover__screen-text {
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 3.6vw, 1.45rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: #f4fffc;
+  text-shadow: 0 1px 2px rgba(0, 20, 30, 0.65);
+}
+
+.cover--home .cover__screen {
+  top: 46%;
+}
+
+.cover--home .cover__screen-text {
+  font-family: "Baloo 2", "Nunito", sans-serif;
+  font-size: clamp(0.9rem, 3.4vw, 1.35rem);
+}
+
+@keyframes screen-glow {
+  from {
+    box-shadow: 0 0 0 1px rgba(120, 220, 255, 0.2),
+      0 0 12px rgba(80, 200, 255, 0.25);
+  }
+  to {
+    box-shadow: 0 0 0 1px rgba(160, 240, 255, 0.4),
+      0 0 22px rgba(100, 220, 255, 0.55);
+  }
+}
+
 .cover__content {
   position: relative;
   z-index: 2;
@@ -144,6 +210,15 @@ body {
   .cover__art {
     object-position: center 20%;
   }
+
+  .cover__screen {
+    top: 38%;
+    width: clamp(9rem, 22vw, 13rem);
+  }
+
+  .cover--home .cover__screen {
+    top: 42%;
+  }
 }
 
 /* Logged-in home (like cover, but easy to tell apart) */
@@ -222,6 +297,10 @@ body {
 @media (min-width: 900px) {
   .cover__art--home {
     object-position: center 45%;
+  }
+
+  .cover--home .cover__screen {
+    top: 43%;
   }
 }
 

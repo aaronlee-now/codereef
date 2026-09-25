@@ -345,6 +345,26 @@
   flex-shrink: 0;
 }
 
+/* Coin shapes — main trail rewards */
+.trail-prize__art--coin {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe9a8, #e6a817);
+  box-shadow: inset 0 0 0 2px rgba(100, 60, 0, 0.25);
+}
+
+.trail-prize__art--pouch {
+  border-radius: 40% 40% 45% 45%;
+  background: linear-gradient(180deg, #f59f00, #d97706);
+  box-shadow: inset 0 0.2rem 0 #fde68a;
+}
+
+.trail-prize__art--gold {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff7d6, #fbbf24 45%, #d97706);
+  box-shadow: inset 0 0 0 2px rgba(120, 70, 0, 0.3), 0 0 0 1px #fde68a;
+}
+
+/* Older saved bag items may still use these shapes */
 .trail-prize__art--shell {
   border-radius: 50% 50% 40% 40%;
   background: conic-gradient(from 200deg, #ffa94d, #ff8787, #ffa94d);
@@ -522,5 +542,39 @@
 
   .trail-panel {
     padding: 0.75rem;
+  }
+}
+
+/* Coin toast when a trail prize awards coins */
+.coin-toast {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  z-index: 3000;
+  transform: translateX(-50%);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: #ffd166;
+  color: #062430;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  box-shadow: 0 10px 28px rgba(0, 20, 30, 0.35);
+  animation: coin-toast-in 280ms ease-out both;
+}
+
+.coin-toast.is-gone {
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+@keyframes coin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }

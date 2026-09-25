@@ -10,10 +10,11 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=shop3" />
+    <link rel="stylesheet" href="shop.css?v=shop3" />
   </head>
   <body class="page page--auth">
-    <a class="back-link" href="home.html">← Back home</a>
+    <a class="back-link" href="home.html?v=shop3">← Back home</a>
 
     <main class="explore">
       <header class="auth__header">
@@ -21,6 +22,13 @@
         <h1 class="auth__title">Pick a coding path</h1>
         <p class="auth__hint">Easiest at the top. Hardest at the bottom.</p>
       </header>
+
+      <p class="explore-coin-chip" id="explore-coins" hidden>0 coins</p>
+
+      <nav class="explore-reef-nav" aria-label="Reef places">
+        <a class="explore-reef-nav__aquarium" href="aquarium.html?v=shop3">My Aquarium</a>
+        <a class="explore-reef-nav__shop" href="shop.html?v=shop3">Fish Shop</a>
+      </nav>
 
       <div class="explore__list" role="list">
         <a class="path-btn path-btn--1" href="blocks.html" role="listitem">
@@ -73,7 +81,9 @@
       </div>
     </main>
 
-    <script src="auth.js"></script>
-    <script src="explore.js"></script>
+    <script src="auth.js?v=shop3"></script>
+    <script src="reef-wallet.js?v=shop3"></script>
+    <script src="explore.js?v=shop3"></script>
+    <script src="menu-fish.js?v=shop3"></script>
   </body>
 </html>

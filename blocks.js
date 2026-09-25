@@ -23,41 +23,319 @@ let taskIndex = 0;
 let taskDone = false;
 let lastActions = [];
 
+const PATH_KEY = "blocks";
+if (typeof CodeReefProgress !== "undefined") {
+  CodeReefProgress.rememberLastPath(PATH_KEY);
+}
+
+function getWorkspaceXml() {
+  if (!workspace || typeof Blockly === "undefined") {
+    return "";
+  }
+  try {
+    var xml = Blockly.Xml.workspaceToDom(workspace);
+    return Blockly.Xml.domToText(xml);
+  } catch (err) {
+    return "";
+  }
+}
+
+function loadWorkspaceXml(xmlText) {
+  if (!workspace || typeof Blockly === "undefined" || !xmlText) {
+    return false;
+  }
+  try {
+    workspace.clear();
+    var xml = Blockly.Xml.textToDom(xmlText);
+    Blockly.Xml.domToWorkspace(xml, workspace);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function snapshotProgress() {
+  return {
+    taskIndex: taskIndex,
+    taskDone: taskDone,
+    code: "",
+    workspaceXml: getWorkspaceXml(),
+  };
+}
+
+function persistLesson() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.save(PATH_KEY, snapshotProgress());
+}
+
+function persistLessonSoon() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.saveDebounced(PATH_KEY, snapshotProgress(), 400);
+}
+
+function restoreDoneWaitingForNext() {
+  taskDone = true;
+  taskBar.classList.add("is-done");
+  taskBar.classList.remove("is-help");
+  taskGoal.textContent =
+    "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  if (taskIndex < tasks.length - 1) {
+    showNextButton(true);
+    nextBtn.textContent = "Next task";
+    setTip("You finished this task! Tap Next task when you are ready.");
+  }
+}
+
 const tasks = [
   {
     goal: "Task 1: Press Go so the fish swims right.",
-    help: "Keep the yellow start block. Snap a blue “move right” under it, then press Go.",
+    help:
+      "Keep the yellow start block. Add a new block under it. " +
+      "Snap a blue “move right” under the start block, then press Go.",
     check: function (actions) {
       return countSteps(actions, "move_right") >= 1;
     },
   },
   {
     goal: "Task 2: Make the fish say Hi!",
-    help: "Open Looks, drag “say Hi!” under your blocks, then press Go.",
+    help:
+      "Keep your old blocks. Add a new block under them. " +
+      "Open Looks, drag “say Hi!” under your blocks, then press Go.",
     check: function (actions) {
       return hasType(actions, "say_hi");
     },
   },
   {
     goal: "Task 3: Make the fish swim left.",
-    help: "Add a blue “move left” block, then press Go.",
+    help:
+      "Keep your old blocks. Add a new block under them. " +
+      "Add a blue “move left” block, then press Go.",
     check: function (actions) {
       return countSteps(actions, "move_left") >= 1;
     },
   },
   {
     goal: "Task 4: Swim up 2 steps.",
-    help: "Use “move up” and set the number to 2, then press Go.",
+    help:
+      "Keep your old blocks. Add a new block under them. " +
+      "Use “move up” and set the number to 2, then press Go.",
     check: function (actions) {
       return countSteps(actions, "move_up") >= 2;
     },
   },
   {
     goal: "Task 5: Use Repeat to move right 3 times.",
-    help: "Open Control, drag “repeat”, put “move right” inside it, set times to 3.",
+    help:
+      "Keep your start block. You can rebuild the middle if it helps. " +
+      "Open Control, drag “repeat”, put “move right” inside it, set times to 3, then press Go.",
     check: function (actions) {
       return countSteps(actions, "move_right") >= 3 && usedRepeat();
     },
+  },
+];
+
+const finalIdeas = [
+  {
+    id: "swimstory",
+    title: "Swim story",
+    blurb: "Move, say Hi, and move again.",
+    plan: [
+      "Swim right at least once.",
+      "Say Hi!",
+      "Swim left or up too.",
+    ],
+    steps: [
+      {
+        goal: "Project step 1: Swim right.",
+        help:
+          "Keep the yellow start block. Add “move right”, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_right") >= 1;
+        },
+      },
+      {
+        goal: "Project step 2: Say Hi!",
+        help:
+          "Keep your old blocks. Add “say Hi!” from Looks, then press Go.",
+        check: function (ctx) {
+          return hasType(ctx.actions || [], "say_hi");
+        },
+      },
+      {
+        goal: "Project step 3: Swim another way.",
+        help:
+          "Keep your old blocks. Add move left or move up, then press Go.",
+        check: function (ctx) {
+          const a = ctx.actions || [];
+          return countSteps(a, "move_left") >= 1 || countSteps(a, "move_up") >= 1;
+        },
+      },
+    ],
+  },
+  {
+    id: "dance",
+    title: "Fish dance",
+    blurb: "Move right, left, and say Hi.",
+    plan: ["Move right.", "Move left.", "Say Hi!"],
+    steps: [
+      {
+        goal: "Project step 1: Move right.",
+        help: "Keep the yellow start block. Add move right, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_right") >= 1;
+        },
+      },
+      {
+        goal: "Project step 2: Move left.",
+        help: "Keep your old blocks. Add move left, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_left") >= 1;
+        },
+      },
+      {
+        goal: "Project step 3: Say Hi!",
+        help: "Keep your old blocks. Add say Hi!, then press Go.",
+        check: function (ctx) {
+          return hasType(ctx.actions || [], "say_hi");
+        },
+      },
+    ],
+  },
+  {
+    id: "repeatreef",
+    title: "Repeat reef",
+    blurb: "Use Repeat to swim right 3 times.",
+    plan: ["Add a Repeat block.", "Put move right inside it.", "Set times to 3 and Go."],
+    steps: [
+      {
+        goal: "Project step 1: Add a Repeat block.",
+        help:
+          "Keep the yellow start block. Open Control and snap Repeat under start, then press Go (even before filling it is OK if Repeat is there — or fill it first).",
+        check: function () {
+          return usedRepeat();
+        },
+      },
+      {
+        goal: "Project step 2: Put move right inside Repeat.",
+        help:
+          "Keep your blocks. Drag move right inside the Repeat mouth, then press Go.",
+        check: function (ctx) {
+          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 1;
+        },
+      },
+      {
+        goal: "Project step 3: Repeat 3 right moves.",
+        help:
+          "Keep your blocks. Set Repeat times to 3 so the fish moves right 3 times, then press Go.",
+        check: function (ctx) {
+          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3;
+        },
+      },
+    ],
+  },
+];
+
+const advancedIdeas = [
+  {
+    id: "longstory",
+    title: "Longer swim story",
+    blurb: "Say Hi, move many ways, and use Repeat.",
+    plan: [
+      "Say Hi!",
+      "Swim in two directions.",
+      "Use Repeat for 3 right moves.",
+    ],
+    steps: [
+      {
+        goal: "Advanced step 1: Say Hi!",
+        help: "Keep the yellow start block. Add say Hi!, then press Go.",
+        check: function (ctx) {
+          return hasType(ctx.actions || [], "say_hi");
+        },
+      },
+      {
+        goal: "Advanced step 2: Swim two ways.",
+        help: "Keep your old blocks. Add move right and move left (or up), then press Go.",
+        check: function (ctx) {
+          const a = ctx.actions || [];
+          const dirs =
+            (countSteps(a, "move_right") > 0 ? 1 : 0) +
+            (countSteps(a, "move_left") > 0 ? 1 : 0) +
+            (countSteps(a, "move_up") > 0 ? 1 : 0) +
+            (countSteps(a, "move_down") > 0 ? 1 : 0);
+          return dirs >= 2;
+        },
+      },
+      {
+        goal: "Advanced step 3: Repeat move right 3 times.",
+        help: "Keep your story blocks. Add Repeat with move right ×3, then press Go.",
+        check: function (ctx) {
+          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3;
+        },
+      },
+    ],
+  },
+  {
+    id: "uploop",
+    title: "Up the reef",
+    blurb: "Climb up and cheer.",
+    plan: ["Move up 2 steps.", "Say Hi!", "Move right too."],
+    steps: [
+      {
+        goal: "Advanced step 1: Move up 2 steps.",
+        help: "Keep the yellow start block. Add move up set to 2, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_up") >= 2;
+        },
+      },
+      {
+        goal: "Advanced step 2: Say Hi!",
+        help: "Keep your old blocks. Add say Hi!, then press Go.",
+        check: function (ctx) {
+          return hasType(ctx.actions || [], "say_hi");
+        },
+      },
+      {
+        goal: "Advanced step 3: Also move right.",
+        help: "Keep your old blocks. Add move right, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_right") >= 1;
+        },
+      },
+    ],
+  },
+  {
+    id: "squareish",
+    title: "Box swim",
+    blurb: "Right, up, left — a little path.",
+    plan: ["Move right.", "Move up.", "Move left."],
+    steps: [
+      {
+        goal: "Advanced step 1: Move right.",
+        help: "Keep the yellow start block. Add move right, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_right") >= 1;
+        },
+      },
+      {
+        goal: "Advanced step 2: Move up.",
+        help: "Keep your old blocks. Add move up, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_up") >= 1;
+        },
+      },
+      {
+        goal: "Advanced step 3: Move left.",
+        help: "Keep your old blocks. Add move left, then press Go.",
+        check: function (ctx) {
+          return countSteps(ctx.actions || [], "move_left") >= 1;
+        },
+      },
+    ],
   },
 ];
 
@@ -96,6 +374,21 @@ function setTip(text) {
   }
 }
 
+const projectApi = CodeReefProject.attach({
+  pathKey: "blocks",
+  actionLabel: "Go",
+  ideas: finalIdeas,
+  advancedIdeas: advancedIdeas,
+  setTip: setTip,
+  taskBar: taskBar,
+  taskGoal: taskGoal,
+  nextBtn: nextBtn,
+  onProjectStart: function () {
+    resetFish();
+    persistLesson();
+  },
+});
+
 function showNextButton(show) {
   if (!nextBtn) {
     return;
@@ -109,13 +402,27 @@ function showNextButton(show) {
   }
 }
 
+function projectContext(actions) {
+  return {
+    actions: actions || lastActions,
+    code: "",
+    output: "",
+    usedRepeat: usedRepeat(),
+  };
+}
+
 function showTask() {
   const task = tasks[taskIndex];
   taskDone = false;
-  taskBar.classList.remove("is-done", "is-help");
+  taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
+  nextBtn.textContent = "Next task";
   taskGoal.textContent = task.goal;
   setTip("Try the task, then press Go. Need a hint? Tap Help.");
+}
+
+function afterSkillsComplete() {
+  projectApi.beginFinal();
 }
 
 function markTaskDone() {
@@ -123,19 +430,20 @@ function markTaskDone() {
   taskBar.classList.add("is-done");
   taskBar.classList.remove("is-help");
   taskGoal.textContent = "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  persistLesson();
 
-  // After every 3 tasks, open the coral trail for prizes.
   if (shouldShowCoralTrail(taskIndex)) {
     showNextButton(false);
-    setTip("Coral trail time! Swim up for prizes.");
+    setTip("Coral trail time! Swim up to earn coins!");
     openCoralTrail("blocks", {
       onComplete: function () {
         if (taskIndex < tasks.length - 1) {
           taskIndex += 1;
           resetFish();
           showTask();
+          persistLesson();
         } else {
-          setTip("You finished all the block tasks. Great diving!");
+          afterSkillsComplete();
         }
       },
     });
@@ -144,14 +452,18 @@ function markTaskDone() {
 
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
+    nextBtn.textContent = "Next task";
     setTip("You finished this task! Tap Next task when you are ready.");
   } else {
-    showNextButton(false);
-    setTip("You finished all the block tasks. Great diving!");
+    afterSkillsComplete();
   }
 }
 
 function checkTask(actions) {
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    projectApi.tryCheck(projectContext(actions));
+    return;
+  }
   if (taskDone || stopRequested) {
     return;
   }
@@ -547,21 +859,52 @@ function startEditor() {
     },
   });
 
-  seedStarterBlocks();
+  var saved =
+    typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
+  if (saved) {
+    taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
+  }
+
+  var restored = saved && saved.workspaceXml && loadWorkspaceXml(saved.workspaceXml);
+  if (!restored) {
+    seedStarterBlocks();
+  }
+
+  workspace.addChangeListener(function (event) {
+    if (!event || event.isUiEvent) {
+      return;
+    }
+    persistLessonSoon();
+  });
+
   resizeCanvas();
+  if (projectApi.resumeIfNeeded()) {
+    return;
+  }
   showTask();
+  if (saved && saved.taskDone) {
+    restoreDoneWaitingForNext();
+  }
 }
 
 helpBtn.addEventListener("click", function () {
+  if (projectApi.showHelp()) {
+    return;
+  }
   taskBar.classList.add("is-help");
   setTip(tasks[taskIndex].help);
 });
 
 nextBtn.addEventListener("click", function () {
+  if (projectApi.handleNext()) {
+    persistLesson();
+    return;
+  }
   if (taskIndex < tasks.length - 1) {
     taskIndex += 1;
     resetFish();
     showTask();
+    persistLesson();
   }
 });
 
@@ -572,7 +915,21 @@ document.getElementById("stop-btn").addEventListener("click", function () {
   stopRequested = true;
 });
 document.getElementById("reset-btn").addEventListener("click", function () {
+  if (typeof CodeReefProgress !== "undefined") {
+    CodeReefProgress.clear(PATH_KEY);
+  }
   resetFish();
+  if (workspace) {
+    workspace.clear();
+    seedStarterBlocks();
+  }
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    persistLesson();
+    setTip("Blocks reset for your project. Press Go when ready.");
+    return;
+  }
+  showTask();
+  persistLesson();
 });
 window.addEventListener("resize", function () {
   resizeCanvas();

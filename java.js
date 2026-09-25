@@ -14,18 +14,57 @@ let taskIndex = 0;
 let taskDone = false;
 let lastOutput = "";
 
-const starterCode = `System.out.println("Hello, reef!");
-`;
+const PATH_KEY = "java";
+if (typeof CodeReefProgress !== "undefined") {
+  CodeReefProgress.rememberLastPath(PATH_KEY);
+}
+
+function snapshotProgress() {
+  return {
+    taskIndex: taskIndex,
+    taskDone: taskDone,
+    code: codeBox.value,
+  };
+}
+
+function persistLesson() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.save(PATH_KEY, snapshotProgress());
+}
+
+function persistLessonSoon() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.saveDebounced(PATH_KEY, snapshotProgress(), 400);
+}
+
+function restoreDoneWaitingForNext() {
+  taskDone = true;
+  taskBar.classList.add("is-done");
+  taskBar.classList.remove("is-help");
+  taskGoal.textContent =
+    "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  if (taskIndex < tasks.length - 1) {
+    showNextButton(true);
+    nextBtn.textContent = "Next task";
+    setTip("Task complete! Tap Next task when ready.");
+  }
+}
+
+const starterCode = `System.out.println("Hello, reef!");\n`;
+const projectStarter = `System.out.println("My reef project");\n`;
 
 const tasks = [
   {
     goal: 'Task 1: Make Java say Hello, ocean!',
     help:
+      "Replace only the word reef with ocean; keep the rest of the line. " +
       'Find System.out.println("Hello, reef!"); in your code. ' +
-      "Change the word reef to ocean. Keep the quotes, parentheses, and semicolon. " +
-      'It should look like System.out.println("Hello, ocean!"); Then press Run. ' +
-      "(In real Java this lives inside public class Main and public static void main — " +
-      "this playground is OK with or without that wrapper.)",
+      'Change it to System.out.println("Hello, ocean!"); — keep quotes, parentheses, and the semicolon. ' +
+      "Then press Run. (class/main wrappers are optional here.)",
     check: function () {
       return normalizeOut(lastOutput) === "hello, ocean!";
     },
@@ -33,10 +72,10 @@ const tasks = [
   {
     goal: "Task 2: Print two lines — Hello, ocean! then I love Java!",
     help:
-      "You need two System.out.println lines, one under the other. " +
-      'Line 1: System.out.println("Hello, ocean!"); ' +
-      'Line 2: System.out.println("I love Java!"); ' +
-      "Each println goes on its own line and ends with a semicolon. Then press Run.",
+      "Keep your old code. Add a new line under it. " +
+      'Keep System.out.println("Hello, ocean!"); on line 1. ' +
+      'Under it, type System.out.println("I love Java!"); ' +
+      "Each println ends with a semicolon. Then press Run.",
     check: function () {
       return normalizeOut(lastOutput) === "hello, ocean!\ni love java!";
     },
@@ -44,30 +83,212 @@ const tasks = [
   {
     goal: 'Task 3: Make a variable String fish = "clownfish"; and print it.',
     help:
+      "Keep your old code. Add new lines under it (old prints are OK). " +
       "In Java, String means text. " +
-      'Type String fish = "clownfish"; on one line (quotes around clownfish, semicolon at the end). ' +
-      "On the next line type System.out.println(fish); — no quotes around fish, " +
-      "because you want the value inside the variable. Then press Run.",
+      'Type String fish = "clownfish"; on one line. ' +
+      "On the next line type System.out.println(fish); — no quotes around fish. Then press Run.",
     check: function () {
       const code = codeBox.value.toLowerCase();
       const hasVar = /string\s+fish\s*=\s*["']clownfish["']/.test(code);
-      return hasVar && normalizeOut(lastOutput) === "clownfish";
+      const lines = normalizeOut(lastOutput).split("\n");
+      return hasVar && lines.indexOf("clownfish") !== -1;
     },
   },
   {
     goal: "Task 4: Use a for loop to print 1, then 2, then 3.",
     help:
-      "Java for loops use int (a whole number) and braces { }. Type exactly:\n" +
+      "You can delete the old code and start fresh for this task (loops are easier on a clean page). " +
+      "Type exactly:\n" +
       "for (int i = 1; i <= 3; i++) {\n" +
       "  System.out.println(i);\n" +
       "}\n" +
-      "int i = 1 starts at 1. i <= 3 means keep going while i is 1, 2, or 3. " +
-      "i++ means add 1 each time. The println line sits between the braces. Press Run.",
+      "Then press Run.",
     check: function () {
       const code = codeBox.value.toLowerCase();
       const usedLoop = /for\s*\(\s*int\s+\w+\s*=/.test(code);
       return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
     },
+  },
+];
+
+const finalIdeas = [
+  {
+    id: "story",
+    title: "Story printer",
+    blurb: "Print a tiny ocean story, one line at a time.",
+    plan: ["Print a story title.", "Add a second line.", "Add a third ending line."],
+    steps: [
+      {
+        goal: "Project step 1: Print a story title.",
+        help: 'You can delete the old code and start fresh for this project. Type System.out.println("Ocean Story"); Then press Run.',
+        check: function (ctx) {
+          return /System\.out\.println/.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Project step 2: Add a second story line.",
+        help: "Keep your old code. Add another System.out.println under it. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+      {
+        goal: "Project step 3: Add a third story line.",
+        help: "Keep your old code. Add one more println for the ending. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
+        },
+      },
+    ],
+  },
+  {
+    id: "names",
+    title: "Fish name generator",
+    blurb: "Store a fish name in a String and print it.",
+    plan: ["Make a name variable.", "Print the name.", "Print a hello line."],
+    steps: [
+      {
+        goal: "Project step 1: Make a name variable.",
+        help: 'You can delete the old code and start fresh for this project. Type String name = "Bubbles"; Then press Run.',
+        check: function (ctx) {
+          return /string\s+\w+\s*=\s*["']/i.test(ctx.code);
+        },
+      },
+      {
+        goal: "Project step 2: Print the name.",
+        help: "Keep your old code. Add System.out.println(name); Then press Run.",
+        check: function (ctx) {
+          return /System\.out\.println\s*\(\s*\w+\s*\)/.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Project step 3: Print a hello line.",
+        help: 'Keep your old code. Add System.out.println("Hello!"); Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+    ],
+  },
+  {
+    id: "quiz",
+    title: "Mini quiz",
+    blurb: "Ask a question and print an answer.",
+    plan: ["Print a question.", "Make an answer variable.", "Print the answer."],
+    steps: [
+      {
+        goal: "Project step 1: Print a question.",
+        help: 'You can delete the old code and start fresh for this project. Type System.out.println("What color is the ocean?"); Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Project step 2: Make an answer variable.",
+        help: 'Keep your old code. Add String answer = "blue"; Then press Run.',
+        check: function (ctx) {
+          return /string\s+\w+\s*=/i.test(ctx.code);
+        },
+      },
+      {
+        goal: "Project step 3: Print the answer.",
+        help: "Keep your old code. Add System.out.println(answer); Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+    ],
+  },
+];
+
+const advancedIdeas = [
+  {
+    id: "adventure",
+    title: "Ocean adventure",
+    blurb: "Title, hero variable, and a counting loop.",
+    plan: ["Print a title.", "Make a hero variable.", "Loop to print 1, 2, 3."],
+    steps: [
+      {
+        goal: "Advanced step 1: Print an adventure title.",
+        help: 'You can delete the old code and start fresh for this advanced project. Type System.out.println("Ocean Adventure"); Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Make a hero variable and print it.",
+        help: 'Keep your old code. Add String hero = "Fin"; and System.out.println(hero); Then press Run.',
+        check: function (ctx) {
+          return /string\s+\w+\s*=/i.test(ctx.code) && /System\.out\.println\s*\(\s*\w+\s*\)/.test(ctx.code);
+        },
+      },
+      {
+        goal: "Advanced step 3: Loop to print 1, 2, 3.",
+        help: "Keep your title if you want. Add a for loop that prints 1, 2, 3. Then press Run.",
+        check: function (ctx) {
+          const lines = normalizeOut(ctx.output).split("\n");
+          return /for\s*\(\s*int/.test(ctx.code.toLowerCase()) && lines.indexOf("1") !== -1 && lines.indexOf("3") !== -1;
+        },
+      },
+    ],
+  },
+  {
+    id: "scorequiz",
+    title: "Score quiz",
+    blurb: "Question, answer, and score prints.",
+    plan: ["Print a question.", "Make two variables.", "Print both values."],
+    steps: [
+      {
+        goal: "Advanced step 1: Print a quiz question.",
+        help: 'You can delete the old code and start fresh for this advanced project. Type System.out.println("How many legs?"); Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Make answer and score variables.",
+        help: 'Keep your old code. Add String answer = "8"; and String score = "10"; Then press Run.',
+        check: function (ctx) {
+          return (ctx.code.match(/String\s+\w+\s*=/gi) || []).length >= 2;
+        },
+      },
+      {
+        goal: "Advanced step 3: Print answer and score.",
+        help: "Keep your old code. Print both variables. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+    ],
+  },
+  {
+    id: "catalog",
+    title: "Creature catalog",
+    blurb: "List sea creatures with println.",
+    plan: ["Print a title.", "Print two creatures.", "Print one more."],
+    steps: [
+      {
+        goal: "Advanced step 1: Print a catalog title.",
+        help: 'You can delete the old code and start fresh for this advanced project. Type System.out.println("Sea Creatures"); Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Print two creature names.",
+        help: "Keep your old code. Add two more println lines. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
+        },
+      },
+      {
+        goal: "Advanced step 3: Print one more creature.",
+        help: "Keep your old code. Add another println. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 4;
+        },
+      },
+    ],
   },
 ];
 
@@ -84,6 +305,24 @@ function setTip(text) {
   }
 }
 
+const projectApi = CodeReefProject.attach({
+  pathKey: "java",
+  actionLabel: "Run",
+  ideas: finalIdeas,
+  advancedIdeas: advancedIdeas,
+  setTip: setTip,
+  taskBar: taskBar,
+  taskGoal: taskGoal,
+  nextBtn: nextBtn,
+  onProjectStart: function () {
+    codeBox.value = projectStarter;
+    lastOutput = "";
+    outputBox.textContent = "Press Run to see output here.";
+    outputBox.classList.remove("is-error");
+    persistLesson();
+  },
+});
+
 function showNextButton(show) {
   if (!nextBtn) {
     return;
@@ -97,12 +336,21 @@ function showNextButton(show) {
   }
 }
 
+function projectContext() {
+  return { code: codeBox.value, output: lastOutput };
+}
+
 function showTask() {
   taskDone = false;
-  taskBar.classList.remove("is-done", "is-help");
+  taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
+  nextBtn.textContent = "Next task";
   taskGoal.textContent = tasks[taskIndex].goal;
   setTip("Do the task, then press Run. Tap Help if you get stuck.");
+}
+
+function afterSkillsComplete() {
+  projectApi.beginFinal();
 }
 
 function markTaskDone() {
@@ -111,18 +359,19 @@ function markTaskDone() {
   taskBar.classList.remove("is-help");
   taskGoal.textContent =
     "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  persistLesson();
 
-  // After every 3 tasks, open the coral trail for prizes.
   if (shouldShowCoralTrail(taskIndex)) {
     showNextButton(false);
-    setTip("Coral trail time! Swim up for prizes.");
+    setTip("Coral trail time! Swim up to earn coins!");
     openCoralTrail("java", {
       onComplete: function () {
         if (taskIndex < tasks.length - 1) {
           taskIndex += 1;
           showTask();
+          persistLesson();
         } else {
-          setTip("You finished all the Java tasks. Awesome!");
+          afterSkillsComplete();
         }
       },
     });
@@ -131,14 +380,18 @@ function markTaskDone() {
 
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
+    nextBtn.textContent = "Next task";
     setTip("Task complete! Tap Next task when ready.");
   } else {
-    showNextButton(false);
-    setTip("You finished all the Java tasks. Awesome!");
+    afterSkillsComplete();
   }
 }
 
 function checkTask() {
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    projectApi.tryCheck(projectContext());
+    return;
+  }
   if (taskDone) {
     return;
   }
@@ -355,35 +608,80 @@ function runCode() {
     lastOutput = "";
     outputBox.textContent = "Oops: " + err.message;
     outputBox.classList.add("is-error");
-    if (!taskDone) {
+    if (!taskDone && !(projectApi.isHandlingTasks() && projectApi.getPhase() === "building")) {
       setTip("Java got stuck. Read the red error, or tap Help.");
     }
   }
 }
 
 function resetCode() {
+  if (typeof CodeReefProgress !== "undefined") {
+    CodeReefProgress.clear(PATH_KEY);
+  }
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    codeBox.value = projectStarter;
+    lastOutput = "";
+    outputBox.textContent = "Press Run to see output here.";
+    outputBox.classList.remove("is-error");
+    setTip("Code reset for your project. Press Run when ready.");
+    persistLesson();
+    return;
+  }
   codeBox.value = starterCode;
   lastOutput = "";
   outputBox.textContent = "Press Run to see output here.";
   outputBox.classList.remove("is-error");
   showTask();
+  persistLesson();
 }
 
 helpBtn.addEventListener("click", function () {
+  if (projectApi.showHelp()) {
+    return;
+  }
   taskBar.classList.add("is-help");
   setTip(tasks[taskIndex].help);
 });
 
 nextBtn.addEventListener("click", function () {
+  if (projectApi.handleNext()) {
+    persistLesson();
+    return;
+  }
   if (taskIndex < tasks.length - 1) {
     taskIndex += 1;
     showTask();
+    persistLesson();
   }
 });
 
 document.getElementById("run-btn").addEventListener("click", runCode);
 document.getElementById("reset-btn").addEventListener("click", resetCode);
 
-codeBox.value = starterCode;
+codeBox.addEventListener("input", persistLessonSoon);
+
 outputBox.textContent = "Press Run to see output here.";
-showTask();
+
+(function bootLesson() {
+  var saved =
+    typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
+  if (saved) {
+    taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
+    if (typeof saved.code === "string" && saved.code.length > 0) {
+      codeBox.value = saved.code;
+    } else {
+      codeBox.value = starterCode;
+    }
+  } else {
+    codeBox.value = starterCode;
+  }
+
+  if (projectApi.resumeIfNeeded()) {
+    return;
+  }
+
+  showTask();
+  if (saved && saved.taskDone) {
+    restoreDoneWaitingForNext();
+  }
+})();

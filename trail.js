@@ -1,85 +1,85 @@
-// Coral trail — after every 3 tasks, swim up and earn prizes.
-// Each coding path has its own reef colors and prize names.
+// Coral trail — after every 3 tasks, swim up and earn coins.
+// Each coding path has its own reef colors; every stop gives coins.
 
 var TRAIL_THEMES = {
   blocks: {
     title: "Block Coral Trail",
-    subtitle: "You finished 3 block tasks! Swim up the warm reef.",
+    subtitle: "You finished 3 block tasks! Swim up to earn coins!",
     className: "trail--blocks",
     prizes: [
-      { id: "block-shell", name: "Blocky Shell", shape: "shell" },
-      { id: "block-pearl", name: "Pixel Pearl", shape: "pearl" },
-      { id: "block-chest", name: "Brick Treasure", shape: "chest" },
+      { id: "block-coin", name: "Block Coin", shape: "coin" },
+      { id: "block-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "block-gold", name: "Gold Coin", shape: "gold" },
     ],
   },
   htmlcss: {
     title: "Paintbrush Reef Trail",
-    subtitle: "You finished 3 HTML/CSS tasks! Swim the teal reef.",
+    subtitle: "You finished 3 HTML/CSS tasks! Swim up to earn coins!",
     className: "trail--htmlcss",
     prizes: [
-      { id: "css-brush", name: "Sea Paintbrush", shape: "brush" },
-      { id: "css-pearl", name: "Style Pearl", shape: "pearl" },
-      { id: "css-star", name: "Color Starfish", shape: "star" },
+      { id: "css-coin", name: "Style Coin", shape: "coin" },
+      { id: "css-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "css-gold", name: "Teal Coin", shape: "gold" },
     ],
   },
   python: {
     title: "Sea Grass Trail",
-    subtitle: "You finished 3 Python tasks! Swim through the green grass.",
+    subtitle: "You finished 3 Python tasks! Swim up to earn coins!",
     className: "trail--python",
     prizes: [
-      { id: "py-fish", name: "Friendly Fish", shape: "fish" },
-      { id: "py-coil", name: "Sea Coil", shape: "coil" },
-      { id: "py-pearl", name: "Python Pearl", shape: "pearl" },
+      { id: "py-coin", name: "Python Coin", shape: "coin" },
+      { id: "py-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "py-gold", name: "Reef Coin", shape: "gold" },
     ],
   },
   javascript: {
     title: "Golden Coral Trail",
-    subtitle: "You finished 3 JavaScript tasks! Swim the golden reef.",
+    subtitle: "You finished 3 JavaScript tasks! Swim up to earn coins!",
     className: "trail--javascript",
     prizes: [
-      { id: "js-shell", name: "Gold Shell", shape: "shell" },
-      { id: "js-spark", name: "Spark Pearl", shape: "pearl" },
-      { id: "js-chest", name: "Sunken Chest", shape: "chest" },
+      { id: "js-coin", name: "Spark Coin", shape: "coin" },
+      { id: "js-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "js-gold", name: "Gold Coin", shape: "gold" },
     ],
   },
   go: {
     title: "Gopher Ocean Trail",
-    subtitle: "You finished 3 Go tasks! Swim the blue gopher reef.",
+    subtitle: "You finished 3 Go tasks! Swim up to earn coins!",
     className: "trail--go",
     prizes: [
-      { id: "go-shell", name: "Blue Shell", shape: "shell" },
-      { id: "go-star", name: "Ocean Starfish", shape: "star" },
-      { id: "go-chest", name: "Gopher Chest", shape: "chest" },
+      { id: "go-coin", name: "Ocean Coin", shape: "coin" },
+      { id: "go-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "go-gold", name: "Blue Coin", shape: "gold" },
     ],
   },
   java: {
     title: "Amber Coral Trail",
-    subtitle: "You finished 3 Java tasks! Swim the amber reef.",
+    subtitle: "You finished 3 Java tasks! Swim up to earn coins!",
     className: "trail--java",
     prizes: [
-      { id: "java-shell", name: "Amber Shell", shape: "shell" },
-      { id: "java-pearl", name: "Warm Pearl", shape: "pearl" },
-      { id: "java-star", name: "Honey Starfish", shape: "star" },
+      { id: "java-coin", name: "Amber Coin", shape: "coin" },
+      { id: "java-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "java-gold", name: "Honey Coin", shape: "gold" },
     ],
   },
   cpp: {
     title: "Deep Purple Trail",
-    subtitle: "You finished 3 C++ tasks! Swim the purple-blue reef.",
+    subtitle: "You finished 3 C++ tasks! Swim up to earn coins!",
     className: "trail--cpp",
     prizes: [
-      { id: "cpp-shell", name: "Deep Shell", shape: "shell" },
-      { id: "cpp-pearl", name: "Indigo Pearl", shape: "pearl" },
-      { id: "cpp-chest", name: "Depths Chest", shape: "chest" },
+      { id: "cpp-coin", name: "Deep Coin", shape: "coin" },
+      { id: "cpp-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "cpp-gold", name: "Indigo Coin", shape: "gold" },
     ],
   },
   assembly: {
     title: "Rocky Chip Reef",
-    subtitle: "You finished 3 Assembly tasks! Swim the rocky dark reef.",
+    subtitle: "You finished 3 Assembly tasks! Swim up to earn coins!",
     className: "trail--assembly",
     prizes: [
-      { id: "asm-chip", name: "Microchip Shell", shape: "chip" },
-      { id: "asm-pearl", name: "Bit Pearl", shape: "pearl" },
-      { id: "asm-chest", name: "Circuit Chest", shape: "chest" },
+      { id: "asm-coin", name: "Chip Coin", shape: "coin" },
+      { id: "asm-pouch", name: "Coin Pouch", shape: "pouch" },
+      { id: "asm-gold", name: "Circuit Coin", shape: "gold" },
     ],
   },
 };
@@ -132,6 +132,8 @@ function openCoralTrail(trailId, options) {
   var batchNumber = progress.batchesDone + 1;
   var spotIndex = 0;
   var onComplete = options && options.onComplete ? options.onComplete : function () {};
+  var coinsEach =
+    typeof COINS_PER_PRIZE === "number" ? COINS_PER_PRIZE : 5;
 
   // Remove any old overlay first.
   var old = document.getElementById("coral-trail");
@@ -153,9 +155,9 @@ function openCoralTrail(trailId, options) {
       i +
       '">' +
       '<div class="trail-spot__pad"></div>' +
-      '<p class="trail-spot__label">Stop ' +
-      (i + 1) +
-      "</p>" +
+      '<p class="trail-spot__label">+' +
+      coinsEach +
+      " coins</p>" +
       "</div>";
   }
 
@@ -177,7 +179,7 @@ function openCoralTrail(trailId, options) {
     "</div>" +
     '<div class="trail-diver" id="trail-diver" aria-hidden="true"></div>' +
     "</div>" +
-    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> to move to the next coral stop.</p>' +
+    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> to earn coins at the next stop.</p>' +
     '<div class="trail-bag" id="trail-bag"></div>' +
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
@@ -196,10 +198,11 @@ function openCoralTrail(trailId, options) {
 
   function renderBag() {
     if (progress.prizes.length === 0) {
-      bagEl.innerHTML = '<p class="trail-bag__empty">Your prize bag is empty — swim up!</p>';
+      bagEl.innerHTML =
+        '<p class="trail-bag__empty">No coins yet — swim up to earn some!</p>';
       return;
     }
-    var html = '<p class="trail-bag__title">Your prizes</p><ul class="trail-bag__list">';
+    var html = '<p class="trail-bag__title">Coins you earned</p><ul class="trail-bag__list">';
     var p;
     for (p = 0; p < progress.prizes.length; p += 1) {
       var saved = progress.prizes[p];
@@ -208,14 +211,16 @@ function openCoralTrail(trailId, options) {
         prizeShapeHtml(saved.shape) +
         "<span>" +
         saved.name +
-        "</span></li>";
+        " <strong>+" +
+        coinsEach +
+        "</strong></span></li>";
     }
     html += "</ul>";
     bagEl.innerHTML = html;
   }
 
   function setDiverSpot(index) {
-    // Spots go bottom → top visually (first prize at bottom).
+    // Spots go bottom → top visually (first coin stop at bottom).
     var total = theme.prizes.length;
     var fromBottom = index;
     var pct = total <= 1 ? 12 : 12 + (fromBottom / (total - 1)) * 70;
@@ -227,7 +232,7 @@ function openCoralTrail(trailId, options) {
     continueBtn.hidden = false;
     continueBtn.removeAttribute("hidden");
     msgEl.innerHTML =
-      "You swam the whole trail! Awesome diving. Tap <strong>Continue</strong> when ready.";
+      "You swam the whole trail and earned coins! Tap <strong>Continue</strong> when ready.";
     progress.batchesDone = batchNumber;
     saveTrailProgress(trailId, progress);
   }
@@ -244,13 +249,25 @@ function openCoralTrail(trailId, options) {
         shape: prize.shape,
       });
       saveTrailProgress(trailId, progress);
+
+      // Each stop adds coins for the Fish Shop.
+      if (typeof addCoins === "function") {
+        addCoins(coinsEach);
+        if (typeof showCoinToast === "function") {
+          showCoinToast(coinsEach);
+        }
+      }
     }
     if (spotEls[index]) {
       spotEls[index].classList.add("is-earned");
     }
     renderBag();
     msgEl.innerHTML =
-      "You found a <strong>" + prize.name + "</strong>! Keep swimming!";
+      "You earned <strong>+" +
+      coinsEach +
+      " coins</strong> (" +
+      prize.name +
+      ")! Keep swimming!";
   }
 
   setDiverSpot(0);
@@ -266,7 +283,7 @@ function openCoralTrail(trailId, options) {
       return;
     }
 
-    // Earn prize at current stop, then swim to next (or finish).
+    // Earn coins at current stop, then swim to next (or finish).
     earnPrizeAt(spotIndex);
     if (spotEls[spotIndex]) {
       spotEls[spotIndex].classList.remove("is-here");

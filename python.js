@@ -14,16 +14,69 @@ let taskIndex = 0;
 let taskDone = false;
 let lastOutput = "";
 
+const PATH_KEY = "python";
+if (typeof CodeReefProgress !== "undefined") {
+  CodeReefProgress.rememberLastPath(PATH_KEY);
+}
+
 const starterCode = `print("Hello, reef!")
 `;
+
+const projectStarter = `print("My reef project")
+`;
+
+function snapshotProgress() {
+  return {
+    taskIndex: taskIndex,
+    taskDone: taskDone,
+    code: codeBox.value,
+  };
+}
+
+function persistLesson() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.save(PATH_KEY, snapshotProgress());
+}
+
+function persistLessonSoon() {
+  if (typeof CodeReefProgress === "undefined") {
+    return;
+  }
+  CodeReefProgress.saveDebounced(PATH_KEY, snapshotProgress(), 400);
+}
+
+function restoreDoneWaitingForNext() {
+  taskDone = true;
+  taskBar.classList.add("is-done");
+  taskBar.classList.remove("is-help");
+  taskGoal.textContent =
+    "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  if (taskIndex < tasks.length - 1) {
+    showNextButton(true);
+    nextBtn.textContent = "Next task";
+    setTip("Task complete! Tap Next task when ready.");
+  }
+}
+
+function outHas(line) {
+  const lines = normalizeOut(lastOutput).split("\n");
+  return lines.indexOf(String(line).toLowerCase()) !== -1;
+}
+
+function outContains(bit) {
+  return normalizeOut(lastOutput).indexOf(String(bit).toLowerCase()) !== -1;
+}
 
 const tasks = [
   {
     goal: 'Task 1: Make Python say Hello, ocean!',
     help:
+      "Replace only the word reef with ocean; keep the rest of the line. " +
       'Find print("Hello, reef!") in your code. ' +
-      "Change the word reef to ocean. Keep the quotes and the parentheses. " +
-      'It should look like print("Hello, ocean!") Then press Run.',
+      'Change it to print("Hello, ocean!") — keep the quotes and parentheses. ' +
+      "Then press Run.",
     check: function () {
       return normalizeOut(lastOutput) === "hello, ocean!";
     },
@@ -31,9 +84,9 @@ const tasks = [
   {
     goal: "Task 2: Print two lines — Hello, ocean! then I love Python!",
     help:
-      "You need two print lines, one under the other. " +
-      'Line 1: print("Hello, ocean!") ' +
-      'Line 2: print("I love Python!") ' +
+      "Keep your old code. Add a new line under it. " +
+      'Keep print("Hello, ocean!") on line 1. ' +
+      'Under it, type print("I love Python!") on line 2. ' +
       "Each print goes on its own line. Then press Run.",
     check: function () {
       return normalizeOut(lastOutput) === "hello, ocean!\ni love python!";
@@ -42,34 +95,272 @@ const tasks = [
   {
     goal: 'Task 3: Make a variable fish = "clownfish" and print it.',
     help:
+      "Keep your old code. Add new lines under it (old prints are OK). " +
       "A variable is a name that remembers a value. " +
       'Type fish = "clownfish" on one line (quotes around clownfish). ' +
-      "On the next line type print(fish) — no quotes around fish this time, " +
-      "because you want the value inside the variable. " +
-      "Old print lines from earlier tasks are OK to keep. Then press Run.",
+      "On the next line type print(fish) — no quotes around fish this time. " +
+      "Then press Run.",
     check: function () {
       const code = codeBox.value.toLowerCase();
       const hasVar = /fish\s*=\s*["']clownfish["']/.test(code);
       const printsFish = /print\s*\(\s*fish\s*\)/.test(code);
-      // Allow leftover prints from earlier tasks — just need a clownfish line.
-      const lines = normalizeOut(lastOutput).split("\n");
-      const showedClownfish = lines.indexOf("clownfish") !== -1;
-      return hasVar && printsFish && showedClownfish;
+      return hasVar && printsFish && outHas("clownfish");
     },
   },
   {
     goal: "Task 4: Use a for loop to print 1, then 2, then 3.",
     help:
-      "A for loop repeats code. Type exactly:\n" +
+      "You can delete the old code and start fresh for this task (loops are easier on a clean page). " +
+      "Type exactly:\n" +
       "for i in range(1, 4):\n" +
       "    print(i)\n" +
       "The second line must be indented (press Tab or Space a few times). " +
-      "range(1, 4) means start at 1 and stop before 4, so you get 1, 2, 3. Press Run.",
+      "range(1, 4) means start at 1 and stop before 4. Then press Run.",
     check: function () {
       const code = codeBox.value.toLowerCase();
       const usedLoop = /for\s+\w+\s+in\s+range\s*\(/.test(code);
       return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
     },
+  },
+];
+
+const finalIdeas = [
+  {
+    id: "story",
+    title: "Story printer",
+    blurb: "Print a tiny ocean story, one line at a time.",
+    plan: [
+      "Start fresh with a story title line.",
+      "Add a second story line.",
+      "Add a third line that ends the story.",
+    ],
+    steps: [
+      {
+        goal: "Project step 1: Print a story title.",
+        help:
+          "You can delete the old code and start fresh for this project. " +
+          'Type print("Ocean Story") (or any title you like with the word Story or Ocean). Then press Run.',
+        check: function (ctx) {
+          return (
+            /print\s*\(/i.test(ctx.code) &&
+            (/(story|ocean|reef|wave)/i.test(ctx.output) ||
+              normalizeOut(ctx.output).length > 0)
+          );
+        },
+      },
+      {
+        goal: "Project step 2: Add a second story line.",
+        help:
+          "Keep your old code. Add a new print under it with the next sentence. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+      {
+        goal: "Project step 3: Add a third story line.",
+        help:
+          "Keep your old code. Add one more print for the ending. Then press Run.",
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
+        },
+      },
+    ],
+  },
+  {
+    id: "names",
+    title: "Fish name generator",
+    blurb: "Store a fish name in a variable and print it.",
+    plan: [
+      "Clear or keep a clean page.",
+      "Make a variable with a fish name.",
+      "Print a hello line that uses that name.",
+    ],
+    steps: [
+      {
+        goal: "Project step 1: Make a fish name variable.",
+        help:
+          "You can delete the old code and start fresh for this project. " +
+          'Type name = "Bubbles" (any fishy name in quotes). Then press Run — it is OK if nothing prints yet, or add print(name).',
+        check: function (ctx) {
+          return /\w+\s*=\s*["'][^"']+["']/.test(ctx.code);
+        },
+      },
+      {
+        goal: "Project step 2: Print the fish name.",
+        help:
+          "Keep your old code. Add print(name) (use your variable’s name). Then press Run.",
+        check: function (ctx) {
+          return /print\s*\(\s*\w+\s*\)/.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Project step 3: Print a hello line with words + the name.",
+        help:
+          'Keep your old code. Add something like print("Hello, " + name) then press Run.',
+        check: function (ctx) {
+          const lines = normalizeOut(ctx.output).split("\n").filter(Boolean);
+          return lines.length >= 2 || /hello|hi|meet|named/.test(normalizeOut(ctx.output));
+        },
+      },
+    ],
+  },
+  {
+    id: "quiz",
+    title: "Mini quiz",
+    blurb: "Ask a question and print the answer.",
+    plan: [
+      "Print a quiz question.",
+      "Store the answer in a variable.",
+      "Print the answer.",
+    ],
+    steps: [
+      {
+        goal: "Project step 1: Print a question.",
+        help:
+          "You can delete the old code and start fresh for this project. " +
+          'Type print("What color is the ocean?") Then press Run.',
+        check: function (ctx) {
+          return /print\s*\(/i.test(ctx.code) && /\?|what|which|who|color/.test(normalizeOut(ctx.output) + ctx.code.toLowerCase());
+        },
+      },
+      {
+        goal: "Project step 2: Make an answer variable.",
+        help:
+          'Keep your old code. Add answer = "blue" (or your answer in quotes). Then press Run.',
+        check: function (ctx) {
+          return /answer\s*=\s*["'][^"']+["']/i.test(ctx.code) || /\w+\s*=\s*["'][^"']+["']/.test(ctx.code);
+        },
+      },
+      {
+        goal: "Project step 3: Print the answer.",
+        help:
+          "Keep your old code. Add print(answer) (or print your variable). Then press Run.",
+        check: function (ctx) {
+          return /print\s*\(\s*\w+\s*\)/.test(ctx.code) && normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+    ],
+  },
+];
+
+const advancedIdeas = [
+  {
+    id: "adventure",
+    title: "Ocean adventure",
+    blurb: "Title + variable + a loop that counts waves.",
+    plan: [
+      "Print an adventure title.",
+      "Make a variable for your hero fish.",
+      "Use a for loop to print wave numbers.",
+    ],
+    steps: [
+      {
+        goal: "Advanced step 1: Print an adventure title.",
+        help:
+          "You can delete the old code and start fresh for this advanced project. " +
+          'Type print("Ocean Adventure") Then press Run.',
+        check: function (ctx) {
+          return /print\s*\(/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Make a hero variable and print it.",
+        help:
+          'Keep your old code. Add hero = "Fin" and print(hero). Then press Run.',
+        check: function (ctx) {
+          return /\w+\s*=\s*["'][^"']+["']/.test(ctx.code) && /print\s*\(\s*\w+\s*\)/.test(ctx.code);
+        },
+      },
+      {
+        goal: "Advanced step 3: Loop to print 1, 2, 3 (waves).",
+        help:
+          "Keep your title and hero if you want. Add:\n" +
+          "for i in range(1, 4):\n" +
+          "    print(i)\n" +
+          "Then press Run. (Seeing 1 2 3 in the output is the goal.)",
+        check: function (ctx) {
+          const code = ctx.code.toLowerCase();
+          const usedLoop = /for\s+\w+\s+in\s+range\s*\(/.test(code);
+          const lines = normalizeOut(ctx.output).split("\n");
+          return usedLoop && lines.indexOf("1") !== -1 && lines.indexOf("2") !== -1 && lines.indexOf("3") !== -1;
+        },
+      },
+    ],
+  },
+  {
+    id: "scorequiz",
+    title: "Score quiz",
+    blurb: "Question, answer, and a score number.",
+    plan: [
+      "Print a hard question.",
+      "Store answer and score variables.",
+      "Print both answer and score.",
+    ],
+    steps: [
+      {
+        goal: "Advanced step 1: Print a quiz question.",
+        help:
+          "You can delete the old code and start fresh for this advanced project. " +
+          'Type print("How many legs does an octopus have?") Then press Run.',
+        check: function (ctx) {
+          return /print\s*\(/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Make answer and score variables.",
+        help:
+          'Keep your old code. Add answer = "8" and score = "10" (quotes are OK). Then press Run.',
+        check: function (ctx) {
+          const assigns = ctx.code.match(/\w+\s*=\s*["']?[^"'\n]+["']?/g);
+          return assigns && assigns.length >= 2;
+        },
+      },
+      {
+        goal: "Advanced step 3: Print answer and score.",
+        help:
+          "Keep your old code. Add print(answer) and print(score). Then press Run.",
+        check: function (ctx) {
+          return (ctx.code.match(/print\s*\(/gi) || []).length >= 2 && normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
+        },
+      },
+    ],
+  },
+  {
+    id: "catalog",
+    title: "Creature catalog",
+    blurb: "List three sea creatures with prints.",
+    plan: [
+      "Print a catalog title.",
+      "Print two creature names.",
+      "Print a third creature name.",
+    ],
+    steps: [
+      {
+        goal: "Advanced step 1: Print a catalog title.",
+        help:
+          "You can delete the old code and start fresh for this advanced project. " +
+          'Type print("Sea Creatures") Then press Run.',
+        check: function (ctx) {
+          return /print\s*\(/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
+        },
+      },
+      {
+        goal: "Advanced step 2: Print two creature names.",
+        help:
+          'Keep your old code. Add print("clownfish") and print("turtle"). Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
+        },
+      },
+      {
+        goal: "Advanced step 3: Print one more creature.",
+        help:
+          'Keep your old code. Add another print("dolphin") (or any creature). Then press Run.',
+        check: function (ctx) {
+          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 4;
+        },
+      },
+    ],
   },
 ];
 
@@ -86,6 +377,24 @@ function setTip(text) {
   }
 }
 
+const projectApi = CodeReefProject.attach({
+  pathKey: "python",
+  actionLabel: "Run",
+  ideas: finalIdeas,
+  advancedIdeas: advancedIdeas,
+  setTip: setTip,
+  taskBar: taskBar,
+  taskGoal: taskGoal,
+  nextBtn: nextBtn,
+  onProjectStart: function () {
+    codeBox.value = projectStarter;
+    lastOutput = "";
+    outputBox.textContent = "Press Run to see output here.";
+    outputBox.classList.remove("is-error");
+    persistLesson();
+  },
+});
+
 function showNextButton(show) {
   if (!nextBtn) {
     return;
@@ -99,12 +408,21 @@ function showNextButton(show) {
   }
 }
 
+function projectContext() {
+  return { code: codeBox.value, output: lastOutput };
+}
+
 function showTask() {
   taskDone = false;
-  taskBar.classList.remove("is-done", "is-help");
+  taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
+  nextBtn.textContent = "Next task";
   taskGoal.textContent = tasks[taskIndex].goal;
   setTip("Do the task, then press Run. Tap Help if you get stuck.");
+}
+
+function afterSkillsComplete() {
+  projectApi.beginFinal();
 }
 
 function markTaskDone() {
@@ -113,18 +431,19 @@ function markTaskDone() {
   taskBar.classList.remove("is-help");
   taskGoal.textContent =
     "Nice job! " + tasks[taskIndex].goal.replace(/^Task \d+:\s*/, "");
+  persistLesson();
 
-  // After every 3 tasks, open the coral trail for prizes.
   if (shouldShowCoralTrail(taskIndex)) {
     showNextButton(false);
-    setTip("Coral trail time! Swim up for prizes.");
+    setTip("Coral trail time! Swim up to earn coins!");
     openCoralTrail("python", {
       onComplete: function () {
         if (taskIndex < tasks.length - 1) {
           taskIndex += 1;
           showTask();
+          persistLesson();
         } else {
-          setTip("You finished all the Python tasks. Awesome!");
+          afterSkillsComplete();
         }
       },
     });
@@ -133,14 +452,18 @@ function markTaskDone() {
 
   if (taskIndex < tasks.length - 1) {
     showNextButton(true);
+    nextBtn.textContent = "Next task";
     setTip("Task complete! Tap Next task when ready.");
   } else {
-    showNextButton(false);
-    setTip("You finished all the Python tasks. Awesome!");
+    afterSkillsComplete();
   }
 }
 
 function checkTask() {
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    projectApi.tryCheck(projectContext());
+    return;
+  }
   if (taskDone) {
     return;
   }
@@ -315,35 +638,80 @@ function runCode() {
     lastOutput = "";
     outputBox.textContent = "Oops: " + err.message;
     outputBox.classList.add("is-error");
-    if (!taskDone) {
+    if (!taskDone && !(projectApi.isHandlingTasks() && projectApi.getPhase() === "building")) {
       setTip("Python got stuck. Read the red error, or tap Help.");
     }
   }
 }
 
 function resetCode() {
+  if (typeof CodeReefProgress !== "undefined") {
+    CodeReefProgress.clear(PATH_KEY);
+  }
+  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
+    codeBox.value = projectStarter;
+    lastOutput = "";
+    outputBox.textContent = "Press Run to see output here.";
+    outputBox.classList.remove("is-error");
+    setTip("Code reset for your project. Press Run when ready.");
+    persistLesson();
+    return;
+  }
   codeBox.value = starterCode;
   lastOutput = "";
   outputBox.textContent = "Press Run to see output here.";
   outputBox.classList.remove("is-error");
   showTask();
+  persistLesson();
 }
 
 helpBtn.addEventListener("click", function () {
+  if (projectApi.showHelp()) {
+    return;
+  }
   taskBar.classList.add("is-help");
   setTip(tasks[taskIndex].help);
 });
 
 nextBtn.addEventListener("click", function () {
+  if (projectApi.handleNext()) {
+    persistLesson();
+    return;
+  }
   if (taskIndex < tasks.length - 1) {
     taskIndex += 1;
     showTask();
+    persistLesson();
   }
 });
 
 document.getElementById("run-btn").addEventListener("click", runCode);
 document.getElementById("reset-btn").addEventListener("click", resetCode);
 
-codeBox.value = starterCode;
+codeBox.addEventListener("input", persistLessonSoon);
+
 outputBox.textContent = "Press Run to see output here.";
-showTask();
+
+(function bootLesson() {
+  var saved =
+    typeof CodeReefProgress !== "undefined" ? CodeReefProgress.load(PATH_KEY) : null;
+  if (saved) {
+    taskIndex = CodeReefProgress.clampTaskIndex(saved.taskIndex, tasks.length);
+    if (typeof saved.code === "string" && saved.code.length > 0) {
+      codeBox.value = saved.code;
+    } else {
+      codeBox.value = starterCode;
+    }
+  } else {
+    codeBox.value = starterCode;
+  }
+
+  if (projectApi.resumeIfNeeded()) {
+    return;
+  }
+
+  showTask();
+  if (saved && saved.taskDone) {
+    restoreDoneWaitingForNext();
+  }
+})();

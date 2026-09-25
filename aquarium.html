@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Aquarium — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=shop3" />
+    <link rel="stylesheet" href="shop.css?v=shop3" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="home.html?v=shop3">← Back home</a>
+
+    <main class="aquarium-page">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title">My Aquarium</h1>
+        <p class="auth__hint">Watch the fish you bought swim around!</p>
+      </header>
+
+      <div class="shop-coin-bar" aria-live="polite">
+        <span class="shop-coin-bar__icon" aria-hidden="true"></span>
+        <span id="aquarium-coins">0 coins</span>
+      </div>
+
+      <div class="aquarium-tank" id="aquarium-tank" aria-label="Your aquarium">
+        <div class="aquarium-tank__sand" aria-hidden="true"></div>
+      </div>
+
+      <nav class="shop-links">
+        <a href="shop.html?v=shop3">Fish Shop</a>
+        <a href="home.html?v=shop3">Home</a>
+      </nav>
+    </main>
+
+    <script src="auth.js?v=shop3"></script>
+    <script src="reef-wallet.js?v=shop3"></script>
+    <script src="aquarium.js?v=shop3"></script>
+  </body>
+</html>
