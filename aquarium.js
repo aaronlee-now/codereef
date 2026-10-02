@@ -22,6 +22,7 @@ var raceFrame = 0;
 var raceOn = false;
 var raceToken = 0;
 var tipTimer = 0;
+var RACE_MIN = 2;
 var RACE_LIMIT = 10;
 var COURSE_TANKS = 4.2;
 var lastLineup = null;
@@ -426,7 +427,7 @@ function renderPicker() {
     pickerCountEl.textContent = total + " of " + RACE_LIMIT + " picked";
   }
   if (pickerStartBtn) {
-    pickerStartBtn.disabled = total !== RACE_LIMIT;
+    pickerStartBtn.disabled = total < RACE_MIN || total > RACE_LIMIT;
   }
   pickerGridEl.innerHTML = "";
   var i;
@@ -454,8 +455,8 @@ function openPicker() {
 
 function askToRace() {
   var copies = ownedRaceCopies();
-  if (copies.length === 0) {
-    setRaceMsg("Buy a fish in the shop, then come race!");
+  if (copies.length < RACE_MIN) {
+    setRaceMsg("You need at least 2 fish to race.");
     return;
   }
   if (copies.length <= RACE_LIMIT) {
@@ -723,8 +724,8 @@ function layoutRaceObstacles(tankH, sandH, finishX, leadX) {
 
 function startRace(lineup) {
   stopRaceLoop();
-  if (!lineup || lineup.length === 0) {
-    setRaceMsg("Buy a fish in the shop, then come race!");
+  if (!lineup || lineup.length < RACE_MIN) {
+    setRaceMsg("You need at least 2 fish to race.");
     return;
   }
   if (lineup.length > RACE_LIMIT) {
@@ -967,7 +968,7 @@ if (raceBtn) {
 }
 if (againBtn) {
   againBtn.addEventListener("click", function () {
-    if (lastLineup && lastLineup.length > 0 && lastLineup.length <= RACE_LIMIT) {
+    if (lastLineup && lastLineup.length >= RACE_MIN && lastLineup.length <= RACE_LIMIT) {
       startRace(lastLineup);
       return;
     }
@@ -979,7 +980,7 @@ if (swimBtn) {
 }
 if (pickerStartBtn) {
   pickerStartBtn.addEventListener("click", function () {
-    if (pickedTotal() !== RACE_LIMIT) {
+    if (pickedTotal() < RACE_MIN || pickedTotal() > RACE_LIMIT) {
       return;
     }
     startRace(lineupFromPicker());
