@@ -6,13 +6,16 @@
   left: 50%;
   z-index: 3000;
   transform: translateX(-50%);
+  max-width: min(32rem, calc(100% - 1.5rem));
   padding: 0.75rem 1.25rem;
-  border-radius: 999px;
+  border-radius: 1.25rem;
   background: #ffd166;
   color: #062430;
   font-family: "Nunito", sans-serif;
   font-weight: 800;
   font-size: 1.05rem;
+  line-height: 1.35;
+  text-align: center;
   box-shadow: 0 10px 28px rgba(0, 20, 30, 0.35);
   animation: coin-toast-in 280ms ease-out both;
 }
@@ -61,15 +64,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 1.25rem;
   padding: 0.65rem 1rem;
-  border-radius: 999px;
+  border-radius: 1.25rem;
   background: rgba(6, 36, 48, 0.45);
   border: 2px solid rgba(255, 209, 102, 0.55);
   color: #ffd166;
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .shop-coin-bar__icon {
@@ -104,6 +110,14 @@
   text-align: center;
 }
 
+/* Same fish on different cards don't flap in lockstep. */
+.shop-card:nth-child(6n + 1) { --stroke-delay: 0s; }
+.shop-card:nth-child(6n + 2) { --stroke-delay: -0.28s; }
+.shop-card:nth-child(6n + 3) { --stroke-delay: -0.55s; }
+.shop-card:nth-child(6n + 4) { --stroke-delay: -0.13s; }
+.shop-card:nth-child(6n + 5) { --stroke-delay: -0.71s; }
+.shop-card:nth-child(6n + 6) { --stroke-delay: -0.4s; }
+
 .shop-card__preview {
   display: flex;
   align-items: center;
@@ -118,6 +132,24 @@
 .shop-card__preview .reef-fish {
   width: 7.5rem;
   height: 4.2rem;
+  position: relative;
+}
+
+.shop-card__preview .reef-fish__wiggle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-origin: 22% 52%;
+  animation:
+    fish-preview-bob 4.8s ease-in-out infinite,
+    fish-body-wave 1.25s ease-in-out infinite;
+}
+
+.shop-card__preview .reef-fish--shark .reef-fish__wiggle,
+.shop-card__preview .reef-fish--octopus .reef-fish__wiggle,
+.shop-card__preview .reef-fish--turtle .reef-fish__wiggle {
+  animation-duration: 6s, 2.4s;
 }
 
 .shop-card__name {
@@ -132,6 +164,13 @@
   margin: 0;
   font-weight: 700;
   color: #ffd166;
+}
+
+.shop-card__have {
+  margin: 0;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--foam);
 }
 
 .shop-card__btn {
@@ -237,10 +276,87 @@
   animation: rise-in 700ms ease-out both;
 }
 
+.aquarium-page .auth__header {
+  margin-bottom: 0.35rem;
+}
+
+.aquarium-page .shop-coin-bar {
+  margin-bottom: 0.55rem;
+}
+
+.aquarium-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  position: relative;
+  z-index: 4;
+  min-height: 2.7rem;
+}
+
+.aquarium-race-btn {
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 2px solid #e6a817;
+  background: #ffd166;
+  color: #062430;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.aquarium-race-btn:hover,
+.aquarium-race-btn:focus-visible {
+  background: #ffe08a;
+  outline: none;
+}
+
+.aquarium-race-btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.aquarium-race-btn--calm {
+  border-color: #2a9d8f;
+  background: #2a9d8f;
+  color: #f4fffc;
+}
+
+.aquarium-race-btn--calm:hover,
+.aquarium-race-btn--calm:focus-visible {
+  background: #21867a;
+}
+
+.aquarium-race-msg {
+  min-height: 1.35rem;
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-weight: 800;
+  color: var(--sand);
+}
+
+.aquarium-race-msg--win {
+  color: #ffd166;
+  font-size: 1.2rem;
+}
+
+.aquarium-count:empty {
+  display: none;
+}
+
+.aquarium-count {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--sand);
+}
+
 .aquarium-tank {
   position: relative;
-  height: min(28rem, 62vh);
-  margin-top: 1rem;
+  height: min(20rem, 48vh);
+  margin-top: 0.55rem;
   overflow: hidden;
   border-radius: 1.25rem;
   border: 3px solid rgba(242, 230, 201, 0.45);
@@ -279,18 +395,86 @@
 
 .aquarium-swimmer {
   position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  /* One continuous lap: swim right, flip, swim left, flip. Never alternate without a flip. */
-  animation: aquarium-swim var(--swim-time, 14s) infinite;
+  z-index: 3;
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform;
+}
+
+/* One direction only — glide across the tank. Always face the way they go. */
+.aquarium-swimmer--right {
+  animation: aquarium-swim-right var(--swim-time, 22s) infinite;
+}
+
+.aquarium-swimmer--left {
+  animation: aquarium-swim-left var(--swim-time, 22s) infinite;
+}
+
+.aquarium-swimmer--race,
+.aquarium-swimmer--race.aquarium-swimmer--right,
+.aquarium-swimmer--race.aquarium-swimmer--left {
+  animation: none;
+}
+
+.aquarium-swimmer--winner .reef-fish__img {
+  filter: drop-shadow(0 0 7px #ffd166);
+}
+
+.aquarium-swimmer__face {
+  display: block;
+}
+
+/* Art faces LEFT. Going right → flip. Going left → no flip. */
+.aquarium-swimmer--right .aquarium-swimmer__face {
+  transform: scaleX(-1);
+}
+
+.aquarium-swimmer--left .aquarium-swimmer__face {
+  transform: scaleX(1);
 }
 
 .aquarium-swimmer .reef-fish {
   width: 5.5rem;
   height: 3.1rem;
+  position: relative;
+  display: block;
   transform: scale(var(--fish-scale, 1));
-  animation: fish-bob var(--bob-time, 2.8s) ease-in-out infinite;
-  animation-delay: var(--bob-delay, 0s);
+}
+
+.aquarium-swimmer .reef-fish--shark,
+.aquarium-swimmer .reef-fish--octopus,
+.aquarium-swimmer .reef-fish--turtle {
+  width: 6.8rem;
+  height: 3.8rem;
+}
+
+.aquarium-swimmer .reef-fish__wiggle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-origin: 20% 50%;
+  animation: fish-body-wave var(--stroke, 1.15s) ease-in-out infinite;
+  animation-delay: var(--stroke-delay, 0s);
+}
+
+.aquarium-swimmer .reef-fish--shark .reef-fish__wiggle,
+.aquarium-swimmer .reef-fish--octopus .reef-fish__wiggle,
+.aquarium-swimmer .reef-fish--turtle .reef-fish__wiggle {
+  --stroke: 2.35s;
+}
+
+.aquarium-swimmer--race .reef-fish {
+  width: 4.6rem;
+  height: 2.6rem;
+  transform-origin: top left;
+}
+
+.aquarium-swimmer--race .reef-fish--shark,
+.aquarium-swimmer--race .reef-fish--octopus,
+.aquarium-swimmer--race .reef-fish--turtle {
+  width: 5.4rem;
+  height: 3rem;
 }
 
 .aquarium-decor {
@@ -306,42 +490,473 @@
   transform-origin: bottom center;
 }
 
-/*
-  Fish art faces LEFT by default.
-  scaleX(-1) = face right while moving right.
-  scaleX(1)  = face left while moving left.
-  step-start on turn keyframes so flip is instant (no squash through scaleX(0)).
-*/
-@keyframes aquarium-swim {
+@keyframes aquarium-swim-right {
   0% {
-    transform: translate(0, 0) scaleX(-1);
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.37, 0.02, 0.2, 1);
+  }
+  14% {
+    transform: translate3d(20vw, -0.72rem, 0);
     animation-timing-function: ease-in-out;
   }
-  49% {
-    transform: translate(var(--swim-x, 10rem), 0) scaleX(-1);
-    animation-timing-function: step-start;
+  28% {
+    transform: translate3d(31vw, 0.18rem, 0);
+    animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
   }
-  50% {
-    transform: translate(var(--swim-x, 10rem), 0) scaleX(1);
+  43% {
+    transform: translate3d(54vw, 0.68rem, 0);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  57% {
+    transform: translate3d(66vw, -0.12rem, 0);
     animation-timing-function: ease-in-out;
   }
-  99% {
-    transform: translate(0, 0) scaleX(1);
-    animation-timing-function: step-start;
+  72% {
+    transform: translate3d(88vw, -0.58rem, 0);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  86% {
+    transform: translate3d(99vw, 0.36rem, 0);
+    animation-timing-function: ease-out;
   }
   100% {
-    transform: translate(0, 0) scaleX(-1);
+    transform: translate3d(114vw, 0, 0);
   }
 }
 
-@keyframes fish-bob {
+@keyframes aquarium-swim-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.37, 0.02, 0.2, 1);
+  }
+  14% {
+    transform: translate3d(-20vw, -0.72rem, 0);
+    animation-timing-function: ease-in-out;
+  }
+  28% {
+    transform: translate3d(-31vw, 0.18rem, 0);
+    animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+  43% {
+    transform: translate3d(-54vw, 0.68rem, 0);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  57% {
+    transform: translate3d(-66vw, -0.12rem, 0);
+    animation-timing-function: ease-in-out;
+  }
+  72% {
+    transform: translate3d(-88vw, -0.58rem, 0);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  86% {
+    transform: translate3d(-99vw, 0.36rem, 0);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate3d(-114vw, 0, 0);
+  }
+}
+
+@keyframes fish-preview-bob {
   0%,
   100% {
-    transform: scale(var(--fish-scale, 1)) translateY(0);
+    translate: 0 0.05rem;
   }
-  50% {
-    transform: scale(var(--fish-scale, 1)) translateY(-0.35rem);
+  38% {
+    translate: 0 -0.2rem;
   }
+  67% {
+    translate: 0 0.16rem;
+  }
+}
+
+/* Pivot near the head so the tail swings. Small skew sells a body wave. */
+@keyframes fish-body-wave {
+  0% {
+    transform: rotate(0deg) skewY(0deg);
+  }
+  22% {
+    transform: rotate(-1.7deg) skewY(-1.15deg);
+  }
+  48% {
+    transform: rotate(0.35deg) skewY(0.2deg);
+  }
+  74% {
+    transform: rotate(1.8deg) skewY(1.2deg);
+  }
+  100% {
+    transform: rotate(0deg) skewY(0deg);
+  }
+}
+
+@keyframes fish-body-wave-soft {
+  0% {
+    transform: rotate(0deg) skewY(0deg);
+  }
+  22% {
+    transform: rotate(-1deg) skewY(-0.7deg);
+  }
+  48% {
+    transform: rotate(0.2deg) skewY(0.1deg);
+  }
+  74% {
+    transform: rotate(1.05deg) skewY(0.7deg);
+  }
+  100% {
+    transform: rotate(0deg) skewY(0deg);
+  }
+}
+
+/* Moving tail, fins, flippers, and arms.
+   The pictures face left, so the tail sits on the right side of the fish.
+   Pieces bend on their own so the tip lags behind the base. */
+.reef-fish {
+  --limb: #ffc56a;
+  --limb-line: #6a3a10;
+  --limb-tip: #f0a04a;
+}
+
+.reef-fish--shark {
+  --limb: #d5e3ec;
+  --limb-line: #3a4d5c;
+}
+
+.reef-fish--turtle {
+  --limb: #7dce68;
+  --limb-line: #1c5528;
+}
+
+.reef-fish--octopus {
+  --limb: #c06ad0;
+  --limb-line: #4a1c58;
+  --limb-tip: #f0a04a;
+}
+
+.reef-limb {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.reef-limb .seg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  background: none;
+  border-radius: 0;
+}
+
+.limb-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.limb-shape {
+  fill: var(--limb);
+  stroke: var(--limb-line);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.limb-ray {
+  fill: none;
+  stroke: var(--limb-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.limb-shape--tip {
+  fill: var(--limb-tip);
+}
+
+/* Side fin — a flat paddle, slower than the tail and out of step with it. */
+.reef-limb--fin {
+  left: 44%;
+  top: 52%;
+  width: 16%;
+  height: 42%;
+  transform-origin: 50% 4%;
+  animation: fin-paddle 1.7s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.48s);
+}
+
+.reef-limb--fin-small {
+  left: 56%;
+  top: 66%;
+  width: 11%;
+  height: 28%;
+  animation: fin-paddle-small 2.1s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.9s);
+}
+
+/* Dorsal fin — a triangle on the back. */
+.reef-limb--dorsal {
+  left: 46%;
+  top: 0;
+  width: 16%;
+  height: 34%;
+  transform-origin: 50% 100%;
+  animation: dorsal-sway 1.35s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.18s);
+}
+
+/* Tail — sweeps up and down. The tip lags the base. */
+.reef-limb--tail {
+  left: 64%;
+  top: 30%;
+  width: 34%;
+  height: 42%;
+}
+
+.reef-limb--tail .seg--base {
+  transform-origin: 4% 50%;
+  animation: caudal-base 0.86s ease-in-out infinite both;
+  animation-delay: var(--stroke-delay, 0s);
+}
+
+.reef-limb--tail .seg--mid {
+  transform-origin: 27% 50%;
+  animation: caudal-mid 0.86s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.1s);
+}
+
+.reef-limb--tail .seg--tip {
+  transform-origin: 50% 50%;
+  animation: caudal-tip 0.86s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.2s);
+}
+
+/* Shark — crescent tail, taller back fin, smaller side fin. */
+.reef-fish--shark .reef-limb--fin {
+  left: 40%;
+  top: 56%;
+  width: 13%;
+  height: 34%;
+  animation: fin-paddle-small 2.15s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.55s);
+}
+
+.reef-fish--shark .reef-limb--dorsal {
+  left: 42%;
+  top: 0;
+  width: 14%;
+  height: 40%;
+  animation-duration: 1.7s;
+}
+
+.reef-fish--shark .reef-limb--tail {
+  left: 58%;
+  top: 2%;
+  width: 26%;
+  height: 96%;
+}
+
+.reef-limb--crescent .seg--base { transform-origin: 0% 58%; }
+.reef-limb--crescent .seg--mid { transform-origin: 22% 57%; }
+.reef-limb--crescent .seg--tip { transform-origin: 38% 56%; }
+
+.reef-fish--shark .reef-limb--tail .seg--base,
+.reef-fish--shark .reef-limb--tail .seg--mid,
+.reef-fish--shark .reef-limb--tail .seg--tip {
+  animation-duration: 1.12s;
+}
+
+.reef-fish--shark .reef-limb--tail .seg--mid {
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.14s);
+}
+
+.reef-fish--shark .reef-limb--tail .seg--tip {
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.28s);
+}
+
+/* Turtle flippers. Front pair sweeps down and back. Back pair is smaller and later. */
+.reef-limb--flipper {
+  transform-origin: 50% 0%;
+}
+
+.reef-limb--flipper.front {
+  left: 30%;
+  top: 48%;
+  width: 20%;
+  height: 52%;
+  animation: flipper-stroke 1.55s ease-in-out infinite both;
+  animation-delay: var(--stroke-delay, 0s);
+}
+
+.reef-limb--flipper.front.far {
+  left: 40%;
+  top: 54%;
+  width: 14%;
+  height: 40%;
+  opacity: 0.85;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.12s);
+}
+
+.reef-limb--flipper.back {
+  left: 60%;
+  top: 60%;
+  width: 14%;
+  height: 34%;
+  animation: flipper-stroke-back 1.55s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.48s);
+}
+
+.reef-limb--flipper.back.far {
+  left: 68%;
+  top: 64%;
+  width: 11%;
+  height: 26%;
+  opacity: 0.8;
+  animation: flipper-stroke-back 1.55s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + 0.62s);
+}
+
+/* Arms — thick at the body, thin at the tip. The wave travels outward. */
+.reef-limb--tentacle {
+  width: 8%;
+  height: 50%;
+  top: 62%;
+  transform-origin: 50% 0%;
+}
+
+.reef-limb--tentacle .seg--base {
+  transform-origin: 50% 0%;
+  animation: arm-base 2.4s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + var(--arm, 0s));
+}
+
+.reef-limb--tentacle .seg--mid {
+  transform-origin: 50% 34%;
+  animation: arm-mid 2.4s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + var(--arm, 0s) + 0.28s);
+}
+
+.reef-limb--tentacle .seg--tip {
+  transform-origin: 50% 68%;
+  animation: arm-tip 2.4s ease-in-out infinite both;
+  animation-delay: calc(var(--stroke-delay, 0s) + var(--arm, 0s) + 0.56s);
+}
+
+.reef-limb--tentacle.t1 { --arm: 0s; left: 16%; height: 44%; top: 56%; transform: rotate(-42deg); }
+.reef-limb--tentacle.t2 { --arm: 0.2s; left: 30%; height: 54%; top: 64%; transform: rotate(-16deg); }
+.reef-limb--tentacle.t3 { --arm: 0.4s; left: 46%; height: 58%; top: 68%; transform: rotate(2deg); }
+.reef-limb--tentacle.t4 { --arm: 0.12s; left: 60%; height: 52%; top: 64%; transform: rotate(20deg); }
+.reef-limb--tentacle.t5 { --arm: 0.5s; left: 72%; height: 42%; top: 54%; transform: rotate(40deg); }
+
+@keyframes fin-paddle {
+  0% {
+    transform: rotate(26deg);
+    animation-timing-function: cubic-bezier(0.42, 0.04, 0.75, 0.32);
+  }
+  42% {
+    transform: rotate(-34deg);
+    animation-timing-function: cubic-bezier(0.2, 0.62, 0.3, 1);
+  }
+  100% {
+    transform: rotate(26deg);
+  }
+}
+
+@keyframes fin-paddle-small {
+  0% {
+    transform: rotate(16deg);
+    animation-timing-function: cubic-bezier(0.42, 0.04, 0.75, 0.32);
+  }
+  42% {
+    transform: rotate(-20deg);
+    animation-timing-function: cubic-bezier(0.2, 0.62, 0.3, 1);
+  }
+  100% {
+    transform: rotate(16deg);
+  }
+}
+
+@keyframes dorsal-sway {
+  0%,
+  100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes caudal-base {
+  0%,
+  100% { transform: rotate(-18deg); }
+  50% { transform: rotate(18deg); }
+}
+
+@keyframes caudal-mid {
+  0%,
+  100% { transform: rotate(-24deg); }
+  50% { transform: rotate(24deg); }
+}
+
+@keyframes caudal-tip {
+  0%,
+  100% { transform: rotate(-32deg); }
+  50% { transform: rotate(34deg); }
+}
+
+@keyframes flipper-stroke {
+  0% {
+    transform: translateY(-8%) rotate(48deg);
+    animation-timing-function: cubic-bezier(0.45, 0.02, 0.82, 0.28);
+  }
+  34% {
+    transform: translateY(16%) rotate(-40deg);
+    animation-timing-function: cubic-bezier(0.18, 0.64, 0.28, 1);
+  }
+  100% {
+    transform: translateY(-8%) rotate(48deg);
+  }
+}
+
+@keyframes flipper-stroke-back {
+  0% {
+    transform: translateY(-4%) rotate(24deg);
+    animation-timing-function: cubic-bezier(0.45, 0.02, 0.8, 0.35);
+  }
+  36% {
+    transform: translateY(10%) rotate(-22deg);
+    animation-timing-function: cubic-bezier(0.18, 0.64, 0.28, 1);
+  }
+  100% {
+    transform: translateY(-4%) rotate(24deg);
+  }
+}
+
+@keyframes arm-base {
+  0%,
+  100% { transform: rotate(-18deg); }
+  50% { transform: rotate(18deg); }
+}
+
+@keyframes arm-mid {
+  0%,
+  100% { transform: rotate(-28deg); }
+  50% { transform: rotate(28deg); }
+}
+
+@keyframes arm-tip {
+  0%,
+  100% { transform: rotate(-40deg); }
+  50% { transform: rotate(42deg); }
+}
+
+.reef-fish__img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* Menu background fish (home / explore) */
@@ -353,7 +968,6 @@
   overflow: hidden;
 }
 
-/* On explore (no cover), fish sit behind the path list */
 body > .menu-fish-layer {
   position: fixed;
   z-index: 0;
@@ -369,40 +983,201 @@ body > .menu-fish-layer {
 
 .menu-fish-layer .menu-fish {
   position: absolute;
-  opacity: 0.72;
-  /* Default: swim right while facing right (art faces left, so flip). */
-  animation: menu-fish-right var(--drift, 18s) linear infinite;
+  opacity: 0.75;
+  will-change: transform;
 }
 
-.menu-fish-layer .menu-fish--leftward {
-  /* Odd fish swim left while facing left — no flip needed. */
-  animation-name: menu-fish-left;
+.menu-fish-layer .menu-fish--right {
+  animation: menu-fish-right var(--drift, 26s) infinite;
+}
+
+.menu-fish-layer .menu-fish--left {
+  animation: menu-fish-left var(--drift, 26s) infinite;
+}
+
+.menu-fish-layer .menu-fish--right .menu-fish__face {
+  transform: scaleX(-1);
+}
+
+.menu-fish-layer .menu-fish--left .menu-fish__face {
+  transform: scaleX(1);
 }
 
 .menu-fish-layer .menu-fish .reef-fish {
   width: 4.8rem;
   height: 2.7rem;
+  position: relative;
+  display: block;
   transform: scale(var(--fish-scale, 0.9));
-  animation: fish-bob var(--bob-time, 3s) ease-in-out infinite;
-  animation-delay: var(--bob-delay, 0s);
+}
+
+.menu-fish-layer .menu-fish .reef-fish--shark,
+.menu-fish-layer .menu-fish .reef-fish--octopus,
+.menu-fish-layer .menu-fish .reef-fish--turtle {
+  width: 5.8rem;
+  height: 3.2rem;
+}
+
+.menu-fish-layer .menu-fish .reef-fish__wiggle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-origin: 20% 50%;
+  animation: fish-body-wave-soft var(--stroke, 1.55s) ease-in-out infinite;
+  animation-delay: var(--stroke-delay, 0s);
+}
+
+.menu-fish-layer .menu-fish .reef-fish--shark .reef-fish__wiggle,
+.menu-fish-layer .menu-fish .reef-fish--octopus .reef-fish__wiggle,
+.menu-fish-layer .menu-fish .reef-fish--turtle .reef-fish__wiggle {
+  --stroke: 2.6s;
 }
 
 @keyframes menu-fish-right {
-  from {
-    transform: translateX(-5rem) scaleX(-1);
+  0% {
+    transform: translate3d(-8rem, 0, 0);
+    animation-timing-function: cubic-bezier(0.4, 0.02, 0.2, 1);
   }
-  to {
-    transform: translateX(calc(100vw + 5rem)) scaleX(-1);
+  18% {
+    transform: translate3d(16vw, -0.28rem, 0);
+    animation-timing-function: ease-in-out;
+  }
+  40% {
+    transform: translate3d(34vw, 0.16rem, 0);
+    animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+  62% {
+    transform: translate3d(62vw, 0.3rem, 0);
+    animation-timing-function: ease-in-out;
+  }
+  82% {
+    transform: translate3d(84vw, -0.22rem, 0);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate3d(calc(100vw + 8rem), 0, 0);
   }
 }
 
 @keyframes menu-fish-left {
-  from {
-    transform: translateX(calc(100vw + 5rem)) scaleX(1);
+  0% {
+    transform: translate3d(calc(100vw + 8rem), 0, 0);
+    animation-timing-function: cubic-bezier(0.4, 0.02, 0.2, 1);
   }
-  to {
-    transform: translateX(-5rem) scaleX(1);
+  18% {
+    transform: translate3d(78vw, -0.28rem, 0);
+    animation-timing-function: ease-in-out;
   }
+  40% {
+    transform: translate3d(52vw, 0.16rem, 0);
+    animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+  62% {
+    transform: translate3d(28vw, 0.3rem, 0);
+    animation-timing-function: ease-in-out;
+  }
+  82% {
+    transform: translate3d(8vw, -0.22rem, 0);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate3d(-8rem, 0, 0);
+  }
+}
+
+.aquarium-tip {
+  position: absolute;
+  z-index: 6;
+  margin: 0;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: #ffd166;
+  color: #062430;
+  font-weight: 800;
+  font-size: 0.85rem;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.aquarium-finish {
+  position: absolute;
+  top: 0.35rem;
+  bottom: 2.6rem;
+  right: 0.65rem;
+  z-index: 2;
+  width: 0;
+  border-right: 3px dashed rgba(255, 209, 102, 0.9);
+  pointer-events: none;
+}
+
+.aquarium-finish span {
+  position: absolute;
+  top: 0;
+  right: 0.4rem;
+  color: #ffd166;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.aquarium-obstacle {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aquarium-obstacle--rock {
+  width: 3.5rem;
+  height: 2.9rem;
+  border-radius: 46% 54% 48% 42%;
+  background:
+    radial-gradient(circle at 32% 30%, #d7c6b4, #7a6252 58%, #3f332c);
+  box-shadow: inset 0 -0.35rem 0 rgba(0, 0, 0, 0.22);
+}
+
+.aquarium-obstacle--coral {
+  width: 3.4rem;
+  height: 4.4rem;
+}
+
+.aquarium-obstacle--coral i {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 0.72rem;
+  border-radius: 999px 999px 0.25rem 0.25rem;
+  background: linear-gradient(180deg, #ffb3c6, #e05a3c);
+}
+
+.aquarium-obstacle--coral i:nth-child(1) {
+  left: 0.15rem;
+  height: 2.5rem;
+  transform: rotate(-16deg);
+}
+
+.aquarium-obstacle--coral i:nth-child(2) {
+  left: 1.25rem;
+  height: 3.6rem;
+}
+
+.aquarium-obstacle--coral i:nth-child(3) {
+  left: 2.3rem;
+  height: 2.2rem;
+  transform: rotate(14deg);
+  background: linear-gradient(180deg, #ffd166, #e07a3a);
+}
+
+.aquarium-obstacle--weed {
+  width: 2.6rem;
+  height: 4.8rem;
+}
+
+.aquarium-obstacle--weed .shop-decor-preview {
+  position: absolute;
+  left: 0.15rem;
+  bottom: 0;
+  transform: scale(1.15);
+  transform-origin: bottom center;
 }
 
 /* Home / explore nav buttons */
@@ -464,16 +1239,159 @@ body > .menu-fish-layer {
   outline: none;
 }
 
+.explore-coin-chip[hidden] {
+  display: none;
+}
+
 .explore-coin-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 0.35rem;
+  width: 100%;
   margin: 0 auto 0.75rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 1.25rem;
   background: rgba(6, 36, 48, 0.4);
   border: 2px solid rgba(255, 209, 102, 0.45);
   color: #ffd166;
   font-weight: 800;
   font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Fish race picker — choose exactly 8 when you own more than 8. */
+.aquarium-picker[hidden],
+.aquarium-tank[hidden] {
+  display: none;
+}
+
+.aquarium-picker {
+  margin-top: 0.55rem;
+  padding: 0.75rem 0.7rem 0.85rem;
+  border-radius: 1.25rem;
+  border: 3px solid rgba(242, 230, 201, 0.45);
+  background: rgba(6, 36, 48, 0.55);
+}
+
+.aquarium-picker__title {
+  margin: 0;
+  text-align: center;
+  font-family: "Baloo 2", cursive;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  color: #ffd166;
+}
+
+.aquarium-picker__count {
+  margin: 0.2rem 0 0.65rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--foam, #f4fffc);
+}
+
+.aquarium-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.2rem, 1fr));
+  gap: 0.55rem;
+  max-height: min(24rem, 52vh);
+  overflow: auto;
+  padding: 0.1rem;
+}
+
+.aquarium-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  border-radius: 1rem;
+  border: 3px solid transparent;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.aquarium-pick--on {
+  border-color: #ffd166;
+  background: rgba(255, 209, 102, 0.2);
+}
+
+.aquarium-pick__fish {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0.2rem 0.25rem;
+  border: 0;
+  border-radius: 0.8rem;
+  background: transparent;
+  color: #f4fffc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.aquarium-pick__fish img {
+  width: 6.4rem;
+  height: 3.7rem;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.aquarium-pick__name {
+  font-size: 0.95rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.aquarium-pick__have {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #d7f6ef;
+}
+
+.aquarium-pick__step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.aquarium-pick__num {
+  min-width: 1.4rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffd166;
+}
+
+.aquarium-pick__btn {
+  min-height: 2.5rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  border: 2px solid #2a9d8f;
+  background: #2a9d8f;
+  color: #f4fffc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.aquarium-pick__btn:disabled,
+.aquarium-picker .aquarium-race-btn:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.aquarium-picker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
 }

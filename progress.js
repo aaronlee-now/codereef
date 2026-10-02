@@ -6,10 +6,17 @@
   "use strict";
 
   var debounceTimers = Object.create(null);
+  var pendingSaves = Object.create(null);
 
   function kidName() {
     var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-    return user && user.kidName ? String(user.kidName).toLowerCase() : "guest";
+    if (!user || !user.kidName) {
+      return "guest";
+    }
+    if (typeof normalizeName === "function") {
+      return normalizeName(user.kidName);
+    }
+    return String(user.kidName).trim().toLowerCase();
   }
 
   function storageKey(path) {
@@ -80,14 +87,35 @@
   // Debounced save so typing does not spam localStorage (~400ms).
   function saveProgressDebounced(path, data, waitMs) {
     var wait = typeof waitMs === "number" ? waitMs : 400;
+    pendingSaves[path] = data;
     if (debounceTimers[path]) {
       clearTimeout(debounceTimers[path]);
     }
     debounceTimers[path] = setTimeout(function () {
       debounceTimers[path] = null;
-      saveProgress(path, data);
+      var latest = pendingSaves[path];
+      delete pendingSaves[path];
+      saveProgress(path, latest);
     }, wait);
   }
+
+  // Write any typing that has not been saved yet (logout or closing the tab).
+  function flushProgress() {
+    var path;
+    for (path in pendingSaves) {
+      if (!Object.prototype.hasOwnProperty.call(pendingSaves, path)) {
+        continue;
+      }
+      if (debounceTimers[path]) {
+        clearTimeout(debounceTimers[path]);
+        debounceTimers[path] = null;
+      }
+      saveProgress(path, pendingSaves[path]);
+      delete pendingSaves[path];
+    }
+  }
+
+  window.addEventListener("pagehide", flushProgress);
 
   function clampTaskIndex(index, taskCount) {
     var n = typeof index === "number" ? index : 0;
@@ -170,6 +198,7 @@
     clampTaskIndex: clampTaskIndex,
     rememberLastPath: rememberLastPath,
     getLastPath: getLastPath,
+    flush: flushProgress,
     // Aliases matching the request wording
     saveProgress: saveProgress,
     loadProgress: loadProgress,

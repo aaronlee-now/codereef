@@ -90,278 +90,351 @@ function restoreDoneWaitingForNext() {
   }
 }
 
-const tasks = [
-  {
-    goal: "Task 1: Press Go so the fish swims right.",
-    help:
-      "Keep the yellow start block. Add a new block under it. " +
-      "Snap a blue “move right” under the start block, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_right") >= 1;
+function numbered(lines) {
+  const parts = [];
+  for (let n = 0; n < lines.length; n += 1) {
+    parts.push(n + 1 + ". " + lines[n]);
+  }
+  return parts.join(" ");
+}
+
+function moveHelp(fresh, label, steps, extra) {
+  const lines = [];
+  if (fresh) {
+    lines.push("Keep the yellow block that says when Go clicked. You can pull the other blocks off if the stack is too long.");
+  } else {
+    lines.push("Keep your old blocks. Do not throw them away.");
+  }
+  lines.push("Look at the left side. Tap the Motion group. Those blocks are blue.");
+  lines.push("Drag the block that says " + label + ". Snap it under your last block so they stick together.");
+  lines.push("Click the number on that " + label + " block. Delete the old number and type " + steps + ".");
+  if (extra) lines.push(extra);
+  lines.push("Press the Go button. The fish should " + label + ".");
+  return numbered(lines);
+}
+
+function sayHelp(fresh, label) {
+  const lines = [];
+  lines.push(fresh
+    ? "Keep the yellow when Go clicked block. You can pull other blocks off."
+    : "Keep your old blocks. Do not throw them away.");
+  lines.push("Look at the left side. Tap the Looks group.");
+  lines.push("Drag the block that says " + label + ". Snap it under your last block.");
+  lines.push("Press the Go button. The fish should " + label + ".");
+  return numbered(lines);
+}
+
+function repeatHelp(label, times) {
+  return numbered([
+    "Keep the yellow when Go clicked block. You can pull other blocks off so you can see the new ones.",
+    "Look at the left side. Tap the Control group.",
+    "Drag the block that says repeat. Snap it under the yellow start block.",
+    "Click the number on repeat. Type " + times + ".",
+    "Tap the Motion group. Drag " + label + " inside the repeat block, in the mouth that says do.",
+    "Press the Go button. The fish should " + label + " more than once.",
+  ]);
+}
+
+const tasks = (function buildBlockTasks() {
+  const list = [];
+  function add(goal, help, check, actions) {
+    list.push({
+      goal: "Task " + (list.length + 1) + ": " + goal,
+      help: help,
+      check: check,
+      sampleActions: actions,
+    });
+  }
+
+  add(
+    "Press Go so the fish swims right.",
+    moveHelp(false, "move right", 1),
+    function (actions) { return countSteps(actions || [], "move_right") >= 1; },
+    [{ type: "move_right", steps: 1 }]
+  );
+  add(
+    "Make the fish say Hi!",
+    sayHelp(false, "say Hi!"),
+    function (actions) { return hasType(actions || [], "say_hi"); },
+    [{ type: "say_hi", steps: 1 }]
+  );
+  add(
+    "Make the fish swim left.",
+    moveHelp(false, "move left", 1),
+    function (actions) { return countSteps(actions || [], "move_left") >= 1; },
+    [{ type: "move_left", steps: 1 }]
+  );
+  add(
+    "Swim up 2 steps.",
+    moveHelp(false, "move up", 2),
+    function (actions) { return countSteps(actions || [], "move_up") >= 2; },
+    [{ type: "move_up", steps: 2 }]
+  );
+  add(
+    "Use Repeat to move right 3 times.",
+    repeatHelp("move right", 3),
+    function (actions) { return countSteps(actions || [], "move_right") >= 3 && usedRepeat(); },
+    [{ type: "move_right", steps: 3 }]
+  );
+  add(
+    "Make the fish swim down.",
+    moveHelp(false, "move down", 1),
+    function (actions) { return countSteps(actions || [], "move_down") >= 1; },
+    [{ type: "move_down", steps: 1 }]
+  );
+  add(
+    "Swim right and say Hi! in the same run.",
+    numbered([
+      "Keep the yellow when Go clicked block.",
+      "Make sure a move right block is under it. Tap Motion and drag move right if you need one.",
+      "Tap Looks. Drag say Hi! under the move block.",
+      "Press the Go button. The fish should swim and say Hi!.",
+    ]),
+    function (actions) {
+      const a = actions || [];
+      return countSteps(a, "move_right") >= 1 && hasType(a, "say_hi");
     },
-  },
-  {
-    goal: "Task 2: Make the fish say Hi!",
-    help:
-      "Keep your old blocks. Add a new block under them. " +
-      "Open Looks, drag “say Hi!” under your blocks, then press Go.",
-    check: function (actions) {
-      return hasType(actions, "say_hi");
-    },
-  },
-  {
-    goal: "Task 3: Make the fish swim left.",
-    help:
-      "Keep your old blocks. Add a new block under them. " +
-      "Add a blue “move left” block, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_left") >= 1;
-    },
-  },
-  {
-    goal: "Task 4: Swim up 2 steps.",
-    help:
-      "Keep your old blocks. Add a new block under them. " +
-      "Use “move up” and set the number to 2, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_up") >= 2;
-    },
-  },
-  {
-    goal: "Task 5: Use Repeat to move right 3 times.",
-    help:
-      "Keep your start block. You can rebuild the middle if it helps. " +
-      "Open Control, drag “repeat”, put “move right” inside it, set times to 3, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_right") >= 3 && usedRepeat();
-    },
-  },
-  {
-    goal: "Task 6: Make the fish swim down.",
-    help:
-      "Keep your old blocks. Add a new block under them. " +
-      "Add a blue “move down” block, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_down") >= 1;
-    },
-  },
-  {
-    goal: "Task 7: Swim right and say Hi! in the same run.",
-    help:
-      "Keep your start block. Make sure you have both a “move right” and a “say Hi!” " +
-      "somewhere under start, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_right") >= 1 && hasType(actions, "say_hi");
-    },
-  },
-  {
-    goal: "Task 8: Use Repeat to move left 2 times.",
-    help:
-      "You can rebuild if it helps. Open Control, drag “repeat”, put “move left” inside it, " +
-      "set times to 2, then press Go.",
-    check: function (actions) {
-      return countSteps(actions, "move_left") >= 2 && usedRepeat();
-    },
-  },
-];
+    [{ type: "move_right", steps: 1 }, { type: "say_hi", steps: 1 }]
+  );
+  add(
+    "Use Repeat to move left 2 times.",
+    repeatHelp("move left", 2),
+    function (actions) { return countSteps(actions || [], "move_left") >= 2 && usedRepeat(); },
+    [{ type: "move_left", steps: 2 }]
+  );
+
+  const dirs = [
+    ["move_right", "move right"],
+    ["move_left", "move left"],
+    ["move_up", "move up"],
+    ["move_down", "move down"],
+  ];
+  const says = [
+    ["say_hi", "say Hi!"],
+    ["say_wow", "say Wow!"],
+    ["say_splash", "say Splash!"],
+  ];
+  let n = 0;
+  while (list.length < 100) {
+    const dir = dirs[n % dirs.length];
+    const say = says[n % says.length];
+    const steps = (n % 4) + 1;
+    const times = (n % 3) + 2;
+    const kind = n % 6;
+    if (kind === 0) {
+      add(
+        "Swim with " + dir[1] + " set to " + steps + ".",
+        moveHelp(false, dir[1], steps),
+        function (actions) { return countSteps(actions || [], dir[0]) >= steps; },
+        [{ type: dir[0], steps: steps }]
+      );
+    } else if (kind === 1) {
+      add(
+        "Use Repeat so the fish will " + dir[1] + " " + times + " times.",
+        repeatHelp(dir[1], times),
+        function (actions) { return usedRepeat() && countSteps(actions || [], dir[0]) >= times; },
+        [{ type: dir[0], steps: times }]
+      );
+    } else if (kind === 2) {
+      add(
+        "Make the fish " + say[1] + ".",
+        sayHelp(false, say[1]),
+        function (actions) { return hasType(actions || [], say[0]); },
+        [{ type: say[0], steps: 1 }]
+      );
+    } else if (kind === 3) {
+      add(
+        dir[1] + " and " + say[1] + " in one Go.",
+        numbered([
+          "Keep your old blocks, and keep the yellow start block.",
+          "Tap Motion. Drag " + dir[1] + " under the stack. Set its number to " + steps + ".",
+          "Tap Looks. Drag " + say[1] + " under that.",
+          "Press the Go button.",
+        ]),
+        function (actions) {
+          const a = actions || [];
+          return countSteps(a, dir[0]) >= steps && hasType(a, say[0]);
+        },
+        [{ type: dir[0], steps: steps }, { type: say[0], steps: 1 }]
+      );
+    } else if (kind === 4) {
+      const other = dirs[(n + 1) % dirs.length];
+      add(
+        dir[1] + " and also " + other[1] + ".",
+        numbered([
+          "Keep your old blocks.",
+          "Tap Motion. Drag " + dir[1] + ". Set the number to 1.",
+          "Drag " + other[1] + " under it. Set the number to 1.",
+          "Press the Go button. The fish should move two ways.",
+        ]),
+        function (actions) {
+          const a = actions || [];
+          return countSteps(a, dir[0]) >= 1 && countSteps(a, other[0]) >= 1;
+        },
+        [{ type: dir[0], steps: 1 }, { type: other[0], steps: 1 }]
+      );
+    } else {
+      add(
+        "Repeat " + say[1] + " " + times + " times.",
+        numbered([
+          "Keep the yellow when Go clicked block. You can pull other blocks off.",
+          "Tap Control. Drag repeat under the yellow block. Set the number to " + times + ".",
+          "Tap Looks. Drag " + say[1] + " inside the repeat, in the do mouth.",
+          "Press the Go button.",
+        ]),
+        function (actions) { return usedRepeat() && hasType(actions || [], say[0]); },
+        [{ type: say[0], steps: times }]
+      );
+    }
+    n += 1;
+  }
+  return list;
+})();
+
+function blockStep(goal, help, check) {
+  return { goal: goal, help: help, check: check };
+}
 
 const finalIdeas = [
   {
     id: "swimstory",
     title: "Swim story",
-    blurb: "Move, say Hi, and move again.",
-    plan: [
-      "Swim right at least once.",
-      "Say Hi!",
-      "Swim left or up too.",
-    ],
+    blurb: "A long swim with moves, words, and repeat.",
+    plan: ["Swim a few ways.", "Say Hi, Wow, and Splash.", "Use repeat to finish."],
     steps: [
-      {
-        goal: "Project step 1: Swim right.",
-        help:
-          "Keep the yellow start block. Add “move right”, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_right") >= 1;
-        },
-      },
-      {
-        goal: "Project step 2: Say Hi!",
-        help:
-          "Keep your old blocks. Add “say Hi!” from Looks, then press Go.",
-        check: function (ctx) {
-          return hasType(ctx.actions || [], "say_hi");
-        },
-      },
-      {
-        goal: "Project step 3: Swim another way.",
-        help:
-          "Keep your old blocks. Add move left or move up, then press Go.",
-        check: function (ctx) {
-          const a = ctx.actions || [];
-          return countSteps(a, "move_left") >= 1 || countSteps(a, "move_up") >= 1;
-        },
-      },
+      blockStep("Project step 1: Swim right.", moveHelp(true, "move right", 1), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 1; }),
+      blockStep("Project step 2: Say Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Project step 3: Swim left.", moveHelp(false, "move left", 1), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 1; }),
+      blockStep("Project step 4: Swim up 2.", moveHelp(false, "move up", 2), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Project step 5: Swim down.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
+      blockStep("Project step 6: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 7: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 8: Move right 2 steps.", moveHelp(false, "move right", 2), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 2; }),
+      blockStep("Project step 9: Repeat move right 3 times.", repeatHelp("move right", 3), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Project step 10: Repeat move up 2 times.", repeatHelp("move up", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Project step 11: Add a wait.", numbered(["Keep your old blocks.", "Tap Control. Drag wait under the stack.", "The number can stay 1. That means wait 1 second.", "Press the Go button."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Project step 12: Swim left 2 steps.", moveHelp(false, "move left", 2), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Project step 13: Say Hi again.", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Project step 14: Move down 2 steps.", moveHelp(false, "move down", 2), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 2; }),
+      blockStep("Project step 15: Repeat Splash 2 times.", numbered(["Keep the yellow start block.", "Tap Control. Drag repeat. Set it to 2.", "Tap Looks. Put say Splash! inside the repeat.", "Press the Go button."]), function (ctx) { return usedRepeat() && hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 16: Swim right one more time.", moveHelp(false, "move right", 1), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 1; }),
+      blockStep("Project step 17: Say Wow one more time.", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 18: Use all four directions.", numbered(["Keep your blocks.", "Make sure you have move right, move left, move up, and move down somewhere under the yellow block.", "Press the Go button."]), function (ctx) { const a = ctx.actions || []; return countSteps(a, "move_right") >= 1 && countSteps(a, "move_left") >= 1 && countSteps(a, "move_up") >= 1 && countSteps(a, "move_down") >= 1; }),
     ],
   },
   {
     id: "dance",
     title: "Fish dance",
-    blurb: "Move right, left, and say Hi.",
-    plan: ["Move right.", "Move left.", "Say Hi!"],
+    blurb: "A dance made of left, right, and words.",
+    plan: ["Step right and left.", "Add words.", "Repeat the dance."],
     steps: [
-      {
-        goal: "Project step 1: Move right.",
-        help: "Keep the yellow start block. Add move right, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_right") >= 1;
-        },
-      },
-      {
-        goal: "Project step 2: Move left.",
-        help: "Keep your old blocks. Add move left, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_left") >= 1;
-        },
-      },
-      {
-        goal: "Project step 3: Say Hi!",
-        help: "Keep your old blocks. Add say Hi!, then press Go.",
-        check: function (ctx) {
-          return hasType(ctx.actions || [], "say_hi");
-        },
-      },
+      blockStep("Project step 1: Step right.", moveHelp(true, "move right", 1), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 1; }),
+      blockStep("Project step 2: Step left.", moveHelp(false, "move left", 1), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 1; }),
+      blockStep("Project step 3: Step right 2.", moveHelp(false, "move right", 2), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 2; }),
+      blockStep("Project step 4: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 5: Step up.", moveHelp(false, "move up", 1), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 1; }),
+      blockStep("Project step 6: Step down.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
+      blockStep("Project step 7: Say Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Project step 8: Repeat right 3 times.", repeatHelp("move right", 3), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Project step 9: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 10: Wait one second.", numbered(["Keep your blocks.", "Tap Control. Drag wait. Leave the number at 1.", "Press Go."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Project step 11: Move left 2.", moveHelp(false, "move left", 2), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Project step 12: Repeat up 2 times.", repeatHelp("move up", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Project step 13: Say Wow again.", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 14: Move down 2.", moveHelp(false, "move down", 2), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 2; }),
+      blockStep("Project step 15: Move right 3.", moveHelp(false, "move right", 3), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Project step 16: Say Splash again.", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 17: Repeat left 2 times.", repeatHelp("move left", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Project step 18: End with Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
     ],
   },
   {
-    id: "repeatreef",
-    title: "Repeat reef",
-    blurb: "Use Repeat to swim right 3 times.",
-    plan: ["Add a Repeat block.", "Put move right inside it.", "Set times to 3 and Go."],
+    id: "path",
+    title: "Reef path",
+    blurb: "A path around the reef using every direction.",
+    plan: ["Draw a path.", "Talk along the way.", "Repeat a piece of the path."],
     steps: [
-      {
-        goal: "Project step 1: Add a Repeat block.",
-        help:
-          "Keep the yellow start block. Open Control and snap Repeat under start, then press Go (even before filling it is OK if Repeat is there — or fill it first).",
-        check: function () {
-          return usedRepeat();
-        },
-      },
-      {
-        goal: "Project step 2: Put move right inside Repeat.",
-        help:
-          "Keep your blocks. Drag move right inside the Repeat mouth, then press Go.",
-        check: function (ctx) {
-          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 1;
-        },
-      },
-      {
-        goal: "Project step 3: Repeat 3 right moves.",
-        help:
-          "Keep your blocks. Set Repeat times to 3 so the fish moves right 3 times, then press Go.",
-        check: function (ctx) {
-          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3;
-        },
-      },
+      blockStep("Project step 1: Go right.", moveHelp(true, "move right", 2), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 2; }),
+      blockStep("Project step 2: Go up.", moveHelp(false, "move up", 2), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Project step 3: Go left.", moveHelp(false, "move left", 2), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Project step 4: Go down.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
+      blockStep("Project step 5: Say Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Project step 6: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 7: Wait.", numbered(["Keep your blocks.", "Tap Control. Add wait.", "Press Go."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Project step 8: Repeat right 3 times.", repeatHelp("move right", 3), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Project step 9: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 10: Move up 1.", moveHelp(false, "move up", 1), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 1; }),
+      blockStep("Project step 11: Move down 2.", moveHelp(false, "move down", 2), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 2; }),
+      blockStep("Project step 12: Repeat Splash.", numbered(["Keep the yellow block.", "Use repeat set to 2.", "Put say Splash! inside it.", "Press Go."]), function (ctx) { return usedRepeat() && hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Project step 13: Move left 1.", moveHelp(false, "move left", 1), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 1; }),
+      blockStep("Project step 14: Say Hi again.", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Project step 15: Move right 1.", moveHelp(false, "move right", 1), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 1; }),
+      blockStep("Project step 16: Repeat up.", repeatHelp("move up", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Project step 17: Say Wow again.", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Project step 18: Finish with down.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
     ],
   },
 ];
 
 const advancedIdeas = [
   {
-    id: "longstory",
-    title: "Longer swim story",
-    blurb: "Say Hi, move many ways, and use Repeat.",
-    plan: [
-      "Say Hi!",
-      "Swim in two directions.",
-      "Use Repeat for 3 right moves.",
-    ],
+    id: "show",
+    title: "Reef show",
+    blurb: "A show with repeat, words, and a wait.",
+    plan: ["Move in a pattern.", "Say three words.", "Repeat the ending."],
     steps: [
-      {
-        goal: "Advanced step 1: Say Hi!",
-        help: "Keep the yellow start block. Add say Hi!, then press Go.",
-        check: function (ctx) {
-          return hasType(ctx.actions || [], "say_hi");
-        },
-      },
-      {
-        goal: "Advanced step 2: Swim two ways.",
-        help: "Keep your old blocks. Add move right and move left (or up), then press Go.",
-        check: function (ctx) {
-          const a = ctx.actions || [];
-          const dirs =
-            (countSteps(a, "move_right") > 0 ? 1 : 0) +
-            (countSteps(a, "move_left") > 0 ? 1 : 0) +
-            (countSteps(a, "move_up") > 0 ? 1 : 0) +
-            (countSteps(a, "move_down") > 0 ? 1 : 0);
-          return dirs >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 3: Repeat move right 3 times.",
-        help: "Keep your story blocks. Add Repeat with move right ×3, then press Go.",
-        check: function (ctx) {
-          return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3;
-        },
-      },
+      blockStep("Advanced step 1: Move right 3.", moveHelp(true, "move right", 3), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Advanced step 2: Say Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Advanced step 3: Move left 2.", moveHelp(false, "move left", 2), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Advanced step 4: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Advanced step 5: Move up 2.", moveHelp(false, "move up", 2), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Advanced step 6: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Advanced step 7: Repeat right 4 times.", repeatHelp("move right", 4), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 4; }),
+      blockStep("Advanced step 8: Add wait.", numbered(["Keep your blocks.", "Tap Control. Drag wait under the stack.", "Press Go."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Advanced step 9: Move down 2.", moveHelp(false, "move down", 2), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 2; }),
+      blockStep("Advanced step 10: Repeat Wow.", numbered(["Keep the yellow block.", "Drag repeat and set it to 2.", "Put say Wow! inside.", "Press Go."]), function (ctx) { return usedRepeat() && hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Advanced step 11: Move left 1.", moveHelp(false, "move left", 1), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 1; }),
+      blockStep("Advanced step 12: End with Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
     ],
   },
   {
-    id: "uploop",
-    title: "Up the reef",
-    blurb: "Climb up and cheer.",
-    plan: ["Move up 2 steps.", "Say Hi!", "Move right too."],
+    id: "square",
+    title: "Square swim",
+    blurb: "Swim a square, then talk.",
+    plan: ["Four sides.", "A word on each turn.", "Repeat one side."],
     steps: [
-      {
-        goal: "Advanced step 1: Move up 2 steps.",
-        help: "Keep the yellow start block. Add move up set to 2, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_up") >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 2: Say Hi!",
-        help: "Keep your old blocks. Add say Hi!, then press Go.",
-        check: function (ctx) {
-          return hasType(ctx.actions || [], "say_hi");
-        },
-      },
-      {
-        goal: "Advanced step 3: Also move right.",
-        help: "Keep your old blocks. Add move right, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_right") >= 1;
-        },
-      },
+      blockStep("Advanced step 1: Right side.", moveHelp(true, "move right", 2), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 2; }),
+      blockStep("Advanced step 2: Up side.", moveHelp(false, "move up", 2), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Advanced step 3: Left side.", moveHelp(false, "move left", 2), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 2; }),
+      blockStep("Advanced step 4: Down side.", moveHelp(false, "move down", 2), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 2; }),
+      blockStep("Advanced step 5: Say Hi!", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Advanced step 6: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Advanced step 7: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Advanced step 8: Repeat the right side.", repeatHelp("move right", 3), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 3; }),
+      blockStep("Advanced step 9: Wait.", numbered(["Keep your blocks.", "Add a wait block from Control.", "Press Go."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Advanced step 10: Repeat up.", repeatHelp("move up", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_up") >= 2; }),
+      blockStep("Advanced step 11: Move down 1.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
+      blockStep("Advanced step 12: Say Hi to finish.", sayHelp(false, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
     ],
   },
   {
-    id: "squareish",
-    title: "Box swim",
-    blurb: "Right, up, left — a little path.",
-    plan: ["Move right.", "Move up.", "Move left."],
+    id: "cheer",
+    title: "Cheer stack",
+    blurb: "Words and repeats that cheer the fish on.",
+    plan: ["Three cheers.", "Moves between them.", "A repeat ending."],
     steps: [
-      {
-        goal: "Advanced step 1: Move right.",
-        help: "Keep the yellow start block. Add move right, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_right") >= 1;
-        },
-      },
-      {
-        goal: "Advanced step 2: Move up.",
-        help: "Keep your old blocks. Add move up, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_up") >= 1;
-        },
-      },
-      {
-        goal: "Advanced step 3: Move left.",
-        help: "Keep your old blocks. Add move left, then press Go.",
-        check: function (ctx) {
-          return countSteps(ctx.actions || [], "move_left") >= 1;
-        },
-      },
+      blockStep("Advanced step 1: Say Hi!", sayHelp(true, "say Hi!"), function (ctx) { return hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Advanced step 2: Move right.", moveHelp(false, "move right", 1), function (ctx) { return countSteps(ctx.actions || [], "move_right") >= 1; }),
+      blockStep("Advanced step 3: Say Wow!", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Advanced step 4: Move left.", moveHelp(false, "move left", 1), function (ctx) { return countSteps(ctx.actions || [], "move_left") >= 1; }),
+      blockStep("Advanced step 5: Say Splash!", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
+      blockStep("Advanced step 6: Move up.", moveHelp(false, "move up", 1), function (ctx) { return countSteps(ctx.actions || [], "move_up") >= 1; }),
+      blockStep("Advanced step 7: Repeat Hi.", numbered(["Keep the yellow block.", "Drag repeat, set it to 3.", "Put say Hi! inside.", "Press Go."]), function (ctx) { return usedRepeat() && hasType(ctx.actions || [], "say_hi"); }),
+      blockStep("Advanced step 8: Wait.", numbered(["Keep your blocks.", "Add wait from Control.", "Press Go."]), function (ctx) { return hasType(ctx.actions || [], "wait_block"); }),
+      blockStep("Advanced step 9: Move down.", moveHelp(false, "move down", 1), function (ctx) { return countSteps(ctx.actions || [], "move_down") >= 1; }),
+      blockStep("Advanced step 10: Repeat right 2 times.", repeatHelp("move right", 2), function (ctx) { return usedRepeat() && countSteps(ctx.actions || [], "move_right") >= 2; }),
+      blockStep("Advanced step 11: Say Wow again.", sayHelp(false, "say Wow!"), function (ctx) { return hasType(ctx.actions || [], "say_wow"); }),
+      blockStep("Advanced step 12: Say Splash again.", sayHelp(false, "say Splash!"), function (ctx) { return hasType(ctx.actions || [], "say_splash"); }),
     ],
   },
 ];
@@ -392,6 +465,69 @@ function usedRepeat() {
   });
 }
 
+function blockTypesNow() {
+  if (!workspace) {
+    return [];
+  }
+  const types = [];
+  workspace.getAllBlocks(false).forEach(function (block) {
+    if (types.indexOf(block.type) === -1) {
+      types.push(block.type);
+    }
+  });
+  return types;
+}
+
+let restoringBlocks = false;
+
+function putBlockBack(type) {
+  if (!workspace || typeof Blockly === "undefined") {
+    return;
+  }
+  Blockly.Events.disable();
+  try {
+    const block = workspace.newBlock(type);
+    if (block.getField("STEPS")) {
+      block.setFieldValue(1, "STEPS");
+    }
+    if (block.getField("TIMES")) {
+      block.setFieldValue(3, "TIMES");
+    }
+    block.initSvg();
+    block.render();
+    if (type === "when_flag") {
+      block.moveBy(40, 40);
+      const tops = workspace.getTopBlocks(false);
+      for (let i = 0; i < tops.length; i += 1) {
+        if (
+          tops[i] !== block &&
+          tops[i].previousConnection &&
+          block.nextConnection &&
+          !block.getNextBlock()
+        ) {
+          block.nextConnection.connect(tops[i].previousConnection);
+          break;
+        }
+      }
+      return;
+    }
+    const start = findStartBlock();
+    if (start && block.previousConnection) {
+      let tail = start;
+      while (tail.getNextBlock()) {
+        tail = tail.getNextBlock();
+      }
+      if (tail.nextConnection) {
+        tail.nextConnection.connect(block.previousConnection);
+        return;
+      }
+    }
+    block.moveBy(40, 160);
+  } finally {
+    Blockly.Events.enable();
+  }
+}
+
 function setTip(text) {
   if (helpLine) {
     helpLine.textContent = text;
@@ -413,6 +549,9 @@ const projectApi = CodeReefProject.attach({
   onProjectStart: function () {
     resetFish();
     persistLesson();
+  },
+  getParts: function () {
+    return { blocks: blockTypesNow() };
   },
 });
 
@@ -696,6 +835,20 @@ function defineBlocks() {
       colour: 290,
     },
     {
+      type: "say_wow",
+      message0: "say Wow!",
+      previousStatement: null,
+      nextStatement: null,
+      colour: 290,
+    },
+    {
+      type: "say_splash",
+      message0: "say Splash!",
+      previousStatement: null,
+      nextStatement: null,
+      colour: 290,
+    },
+    {
       type: "wait_block",
       message0: "wait %1 seconds",
       args0: [
@@ -816,9 +969,9 @@ async function runProgram() {
         drawStage();
         await sleep(180);
       }
-    } else if (action.type === "say_hi") {
+    } else if (action.type === "say_hi" || action.type === "say_wow" || action.type === "say_splash") {
       speech.hidden = false;
-      speech.textContent = "Hi!";
+      speech.textContent = action.type === "say_wow" ? "Wow!" : action.type === "say_splash" ? "Splash!" : "Hi!";
       await sleep(900);
       if (!stopRequested) {
         speech.hidden = true;
@@ -898,8 +1051,16 @@ function startEditor() {
   }
 
   workspace.addChangeListener(function (event) {
-    if (!event || event.isUiEvent) {
+    if (!event || event.isUiEvent || restoringBlocks) {
       return;
+    }
+    if (projectApi.getPhase() === "building") {
+      const missing = projectApi.guardBlockTypes(blockTypesNow());
+      if (missing.length) {
+        restoringBlocks = true;
+        missing.forEach(putBlockBack);
+        restoringBlocks = false;
+      }
     }
     persistLessonSoon();
   });
@@ -940,23 +1101,6 @@ document.getElementById("run-btn").addEventListener("click", function () {
 });
 document.getElementById("stop-btn").addEventListener("click", function () {
   stopRequested = true;
-});
-document.getElementById("reset-btn").addEventListener("click", function () {
-  if (typeof CodeReefProgress !== "undefined") {
-    CodeReefProgress.clear(PATH_KEY);
-  }
-  resetFish();
-  if (workspace) {
-    workspace.clear();
-    seedStarterBlocks();
-  }
-  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
-    persistLesson();
-    setTip("Blocks reset for your project. Press Go when ready.");
-    return;
-  }
-  showTask();
-  persistLesson();
 });
 window.addEventListener("resize", function () {
   resizeCanvas();

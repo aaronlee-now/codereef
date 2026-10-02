@@ -60,325 +60,585 @@ const starterCode = `console.log("Hello, reef!");
 const projectStarter = `console.log("My reef project");
 `;
 
-const tasks = [
-  {
-    goal: 'Task 1: Make JavaScript say Hello, ocean!',
-    help:
-      "Replace only the word reef with ocean; keep the rest of the line. " +
-      'Find console.log("Hello, reef!"); in your code. ' +
-      'Change it to console.log("Hello, ocean!"); — keep quotes, parentheses, and the semicolon. ' +
-      "Then press Run.",
-    check: function () {
-      return normalizeOut(lastOutput) === "hello, ocean!";
-    },
-  },
-  {
-    goal: "Task 2: Log two lines — Hello, ocean! then I love JavaScript!",
-    help:
-      "Keep your old code. Add a new line under it. " +
-      'Keep console.log("Hello, ocean!"); on line 1. ' +
-      'Under it, type console.log("I love JavaScript!"); ' +
-      "Each log goes on its own line. Then press Run.",
-    check: function () {
-      return normalizeOut(lastOutput) === "hello, ocean!\ni love javascript!";
-    },
-  },
-  {
-    goal: 'Task 3: Make a variable let fish = "clownfish"; and log it.',
-    help:
-      "Keep your old code. Add new lines under it (old logs are OK). " +
-      "In JavaScript we often start variables with let. " +
-      'Type let fish = "clownfish"; on one line. ' +
-      "On the next line type console.log(fish); — no quotes around fish. Then press Run.",
-    check: function () {
-      const code = codeBox.value.toLowerCase();
-      const hasVar = /let\s+fish\s*=\s*["']clownfish["']/.test(code);
-      const lines = normalizeOut(lastOutput).split("\n");
-      return hasVar && lines.indexOf("clownfish") !== -1;
-    },
-  },
-  {
-    goal: "Task 4: Make a function double that returns n * 2, then log double(5).",
-    help:
-      "You can delete the old code and start fresh for this task (functions are easier on a clean page). " +
-      "Type:\n" +
-      "function double(n) {\n" +
-      "  return n * 2;\n" +
-      "}\n" +
-      "console.log(double(5));\n" +
-      "The curly braces { } wrap the function body. double(5) should print 10. Then press Run.",
-    check: function () {
-      const code = codeBox.value.toLowerCase();
-      const hasFn = /function\s+double\s*\(/.test(code);
-      return hasFn && normalizeOut(lastOutput) === "10";
-    },
-  },
-  {
-    goal: "Task 5: Log the number 5.",
-    help:
-      "You can delete the old code and start fresh for this task. " +
-      "Type: console.log(5); — no quotes around 5. Then press Run.",
-    check: function () {
-      return normalizeOut(lastOutput) === "5";
-    },
-  },
-  {
-    goal: 'Task 6: Make let coral = "reef"; and log it.',
-    help:
-      "Keep your old code or start fresh — either is OK. " +
-      'Type let coral = "reef"; then console.log(coral); ' +
-      "Then press Run.",
-    check: function () {
-      const code = codeBox.value.toLowerCase();
-      const hasVar = /let\s+coral\s*=\s*["']reef["']/.test(code);
-      return hasVar && normalizeOut(lastOutput).split("\n").indexOf("reef") !== -1;
-    },
-  },
-  {
-    goal: "Task 7: Use a for loop to log 1, then 2, then 3.",
-    help:
-      "You can delete the old code and start fresh for this task. " +
-      "Type:\n" +
-      "for (let i = 1; i <= 3; i++) {\n" +
-      "  console.log(i);\n" +
-      "}\n" +
-      "Then press Run.",
-    check: function () {
-      const code = codeBox.value.toLowerCase();
-      const usedLoop = /for\s*\(/.test(code);
-      return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
-    },
-  },
-];
+function numbered(lines) {
+  const parts = [];
+  for (let n = 0; n < lines.length; n += 1) {
+    parts.push(n + 1 + ". " + lines[n]);
+  }
+  return parts.join(" ");
+}
+
+function L(text, indent) {
+  return { text: text, indent: !!indent };
+}
+
+function codeFrom(lines) {
+  return (
+    lines
+      .map(function (line) {
+        return (line.indent ? "  " : "") + line.text;
+      })
+      .join("\n") + "\n"
+  );
+}
+
+function explainJsLine(line) {
+  const t = String(line || "").trim();
+  let m = t.match(/^console\.log\("([^"]*)"\);$/);
+  if (m) {
+    return (
+      'Type console.log("' +
+      m[1] +
+      '"); That is the word console, a dot ., the word log, then (, then a quote ", then ' +
+      m[1] +
+      ', then a quote ", then ), then a semicolon ; . A semicolon ; ends the line.'
+    );
+  }
+  m = t.match(/^console\.log\("([^"]*)"\s*\+\s*([A-Za-z_][A-Za-z0-9_]*)\);$/);
+  if (m) {
+    return (
+      'Type console.log("' +
+      m[1] +
+      '" + ' +
+      m[2] +
+      "); A plus sign + sticks words together. End with a semicolon ; ."
+    );
+  }
+  m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]\);$/);
+  if (m) {
+    return (
+      "Type console.log(" +
+      m[1] +
+      "[" +
+      m[2] +
+      "]); [" +
+      m[2] +
+      "] means spot " +
+      m[2] +
+      ". Lists start at 0, so 0 is the first word. End with a semicolon ; ."
+    );
+  }
+  m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\);$/);
+  if (m) {
+    return (
+      "Type console.log(" +
+      m[1] +
+      "); Type console.log, (, " +
+      m[1] +
+      " with no quotes, ), then a semicolon ; ."
+    );
+  }
+  m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\s*\+\s*(\d+)\);$/);
+  if (m) {
+    return "Type console.log(" + m[1] + " + " + m[2] + "); Plus + adds numbers. End with a semicolon ; .";
+  }
+  m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\s*-\s*(\d+)\);$/);
+  if (m) {
+    return "Type console.log(" + m[1] + " - " + m[2] + "); Minus - takes away. End with a semicolon ; .";
+  }
+  m = t.match(/^console\.log\((\d+)\s*([+\-*])\s*(\d+)\);$/);
+  if (m) {
+    const word = m[2] === "+" ? "plus +" : m[2] === "-" ? "minus -" : "times *";
+    return "Type console.log(" + m[1] + " " + m[2] + " " + m[3] + "); " + word + " is math. No quotes. End with a semicolon ; .";
+  }
+  m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\[.*\]);$/);
+  if (m) {
+    return (
+      "Type let " +
+      m[1] +
+      " = " +
+      m[2] +
+      "; A list is a box of words. let makes a variable, a name that remembers something. Type let, a space, " +
+      m[1] +
+      ", a space, =, a space, " +
+      m[2] +
+      ", then a semicolon ; ."
+    );
+  }
+  m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*"([^"]*)";$/);
+  if (m) {
+    return (
+      'Type let ' +
+      m[1] +
+      ' = "' +
+      m[2] +
+      '"; let makes a variable. A variable is a name that remembers a word. Type let, a space, ' +
+      m[1] +
+      ", a space, =, a space, a quote, " +
+      m[2] +
+      ", a quote, then a semicolon ; ."
+    );
+  }
+  m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(-?\d+);$/);
+  if (m) {
+    return (
+      "Type let " +
+      m[1] +
+      " = " +
+      m[2] +
+      "; This variable remembers a number. Type let, a space, " +
+      m[1] +
+      ", a space, =, a space, " +
+      m[2] +
+      ", then a semicolon ; . No quotes."
+    );
+  }
+  m = t.match(
+    /^for\s*\(\s*let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\d+)\s*;\s*\1\s*(<=|<)\s*(\d+)\s*;\s*\1\+\+\s*\)\s*\{$/
+  );
+  if (m) {
+    return (
+      "Type " +
+      t +
+      " A loop repeats. Type for, a space, (, let, a space, " +
+      m[1] +
+      " = " +
+      m[2] +
+      ", a semicolon ;, a space, " +
+      m[1] +
+      " " +
+      m[3] +
+      " " +
+      m[4] +
+      ", a semicolon ;, a space, " +
+      m[1] +
+      "++, ), a space, then { . { opens the loop."
+    );
+  }
+  m = t.match(/^for\s*\(\s*let\s+([A-Za-z_][A-Za-z0-9_]*)\s+of\s+([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*\{$/);
+  if (m) {
+    return (
+      "Type " +
+      t +
+      " This loop walks through a list. Type for, (, let, a space, " +
+      m[1] +
+      ", a space, of, a space, " +
+      m[2] +
+      ", ), a space, then { ."
+    );
+  }
+  m = t.match(/^if\s*\((.+)\)\s*\{$/);
+  if (m) return "Type " + t + " if picks a path. Type if, a space, (, " + m[1] + ", ), a space, then { .";
+  if (t === "else {") return "Type else { . else is the other path. { opens that path.";
+  if (t === "}") return "Type } . This curly brace } closes the block that started with { .";
+  m = t.match(/^function\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*\{$/);
+  if (m) {
+    return (
+      "Type " +
+      t +
+      " function makes a recipe you can run later. Type function, a space, " +
+      m[1] +
+      ", (, " +
+      (m[2] || "nothing") +
+      ", ), a space, then { ."
+    );
+  }
+  m = t.match(/^([A-Za-z_][A-Za-z0-9_]*)\("([^"]*)"\);$/);
+  if (m) {
+    return (
+      "Type " +
+      m[1] +
+      '("' +
+      m[2] +
+      '"); This runs the recipe. Type ' +
+      m[1] +
+      ", (, a quote, " +
+      m[2] +
+      ", a quote, ), then a semicolon ; ."
+    );
+  }
+  m = t.match(/^([A-Za-z_][A-Za-z0-9_]*)\(\);$/);
+  if (m) return "Type " + m[1] + "(); This runs the recipe. Type " + m[1] + ", (, ), then a semicolon ; .";
+  return "Type this exactly: " + t;
+}
+
+function helpForLines(fresh, lines, see, note) {
+  const steps = [];
+  if ((fresh)) {
+    steps.push("Start fresh. Click in the code box, highlight the old code, and press Delete.");
+  } else {
+    steps.push("Keep your old code. Do not erase it.");
+  }
+  steps.push(fresh ? "Click in the empty code box." : "Click in the code box at the end of the last line.");
+  if (note) steps.push(note);
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    let where = "";
+    if (!fresh && i === 0) where = "Press the Enter key for a new line. ";
+    else if (i > 0) where = "Press the Enter key. ";
+    if (line.indent) where += "Press the space bar 2 times so this line sits inside the curly braces. ";
+    else if (i > 0 && lines[i - 1].indent) where += "Press Backspace until this line starts at the left edge. ";
+    steps.push(where + explainJsLine(line.text));
+  }
+  steps.push("Press the Run button." + (see ? " You should see " + see + ". Old lines can stay. That is OK." : ""));
+  return numbered(steps);
+}
+
+function specOk(spec, code, output) {
+  if ((spec.contains)) {
+    const bits = Array.isArray(spec.contains) ? spec.contains : [spec.contains];
+    for (let b = 0; b < bits.length; b += 1) {
+      if (output.indexOf(String(bits[b]).toLowerCase()) === -1) return false;
+    }
+  }
+  if ((spec.line)) {
+    const lines = output.split("\n");
+    const bits = Array.isArray(spec.line) ? spec.line : [spec.line];
+    for (let b = 0; b < bits.length; b += 1) {
+      if (lines.indexOf(String(bits[b]).toLowerCase()) === -1) return false;
+    }
+  }
+  if ((spec.minCount)) {
+    const want = String(spec.minCount.line).toLowerCase();
+    const n = output.split("\n").filter(function (item) { return item === want; }).length;
+    if (n < spec.minCount.n) return false;
+  }
+  if (spec.code && !spec.code.test(code)) return false;
+  if (spec.minLines && output.split("\n").filter(Boolean).length < spec.minLines) return false;
+  return true;
+}
+
+function skillOk(spec) {
+  return function () {
+    return specOk(spec, codeBox.value, normalizeOut(lastOutput));
+  };
+}
+
+function stepCheck(spec) {
+  return function (ctx) {
+    return specOk(spec, ctx.code || "", normalizeOut(ctx.output || ""));
+  };
+}
+
+const tasks = (function buildJsTasks() {
+  const list = [];
+  function add(goal, fresh, lines, spec, see, sample, note) {
+    list.push({
+      goal: "Task " + (list.length + 1) + ": " + goal,
+      help: helpForLines(fresh, lines, see, note),
+      check: skillOk(spec),
+      sample: sample || codeFrom(lines),
+      fresh: fresh,
+      lines: lines,
+    });
+  }
+
+  add("Make JavaScript say Hello, ocean!", true, [L('console.log("Hello, ocean!");')], { contains: "hello, ocean!" }, "Hello, ocean!");
+  list[0].help = numbered([
+    "Keep the line you already have. Do not erase the whole line.",
+    "Click in the code box on the word reef.",
+    "Delete the letters r e e f. Type the word ocean in that same spot.",
+    'The line should look like this: console.log("Hello, ocean!");',
+    'That is console, a dot, log, then (, then a quote ", then Hello, ocean!, then a quote ", then ), then a semicolon ; . A semicolon ends the line.',
+    "Press the Run button. You should see Hello, ocean!",
+  ]);
+
+  add(
+    "Prlet two lines — Hello, ocean! then I love JavaScript!",
+    false,
+    [L('console.log("I love JavaScript!");')],
+    { contains: ["hello, ocean!", "i love javascript!"] },
+    "I love JavaScript!",
+    'console.log("Hello, ocean!");\nconsole.log("I love JavaScript!");\n'
+  );
+  add(
+    'Make a variable let fish = "clownfish"; and prlet it.',
+    false,
+    [L('let fish = "clownfish";'), L("console.log(fish);")],
+    { code: /fish\s*=\s*["']clownfish["']/, line: "clownfish" },
+    "clownfish"
+  );
+  add(
+    "Use a for loop to prlet 1, then 2, then 3.",
+    true,
+    [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")],
+    { code: /for\s*\(/, line: ["1", "2", "3"] },
+    "1 then 2 then 3"
+  );
+  add("Prlet the number 5.", true, [L("console.log(5);")], { line: "5" }, "5");
+  add(
+    'Make let coral = "reef"; and prlet it.',
+    false,
+    [L('let coral = "reef";'), L("console.log(coral);")],
+    { code: /coral\s*=\s*["']reef["']/, line: "reef" },
+    "reef"
+  );
+  add(
+    "Loop to prlet splash three times.",
+    true,
+    [L("for (let i = 1; i <= 3; i++) {"), L('console.log("splash");', true), L("}")],
+    { code: /for\s*\(/, minCount: { line: "splash", n: 3 } },
+    "splash three times"
+  );
+
+  ["bubble", "wave", "crab", "dolphin", "turtle", "coral", "sand", "shell", "whale", "shark", "starfish", "eel"].forEach(function (word) {
+    add("Prlet the word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
+  });
+
+  [
+    ["pet", "crab"], ["boat", "blue"], ["hero", "Fin"], ["snack", "kelp"],
+    ["home", "reef"], ["friend", "Nemo"], ["color", "teal"], ["toy", "shell"],
+    ["pal", "otter"], ["ride", "wave"], ["team", "pods"], ["gem", "pearl"],
+  ].forEach(function (pair) {
+    add(
+      'Make ' + pair[0] + ' = "' + pair[1] + '" and prlet it.',
+      false,
+      [L('let ' + pair[0] + ' = "' + pair[1] + '";'), L("console.log(" + pair[0] + ");")],
+      { code: new RegExp(pair[0] + "\\s*=\\s*[\"']" + pair[1] + "[\"']", "i"), line: pair[1].toLowerCase() },
+      pair[1]
+    );
+  });
+
+  [["2 + 3", "5"], ["4 + 1", "5"], ["10 - 3", "7"], ["8 - 2", "6"], ["2 * 3", "6"], ["4 * 2", "8"], ["1 + 6", "7"], ["9 - 4", "5"], ["3 * 3", "9"], ["5 + 5", "10"]].forEach(function (row) {
+    add("Prlet the math " + row[0] + ".", true, [L("console.log(" + row[0] + ");")], { line: row[1], code: /console\.log\s*\(/ }, row[1]);
+  });
+
+  ["splash", "bubble", "yay", "hi", "wave", "go"].forEach(function (word) {
+    add(
+      'Use a loop to prlet "' + word + '" three times.',
+      true,
+      [L("for (let i = 1; i <= 3; i++) {"), L('console.log("' + word + '");', true), L("}")],
+      { code: /for\s*\(/, minCount: { line: word, n: 3 } },
+      word + " three times"
+    );
+  });
+  [["1", "<=", "3", ["1", "2", "3"]], ["1", "<=", "4", ["1", "2", "3", "4"]], ["0", "<", "3", ["0", "1", "2"]], ["2", "<=", "4", ["2", "3", "4"]], ["1", "<=", "5", ["1", "2", "3", "4", "5"]], ["4", "<=", "6", ["4", "5", "6"]]].forEach(function (row) {
+    add(
+      "Use a loop to prlet " + row[3].join(", then ") + ".",
+      true,
+      [L("for (let i = " + row[0] + "; i " + row[1] + " " + row[2] + "; i++) {"), L("console.log(i);", true), L("}")],
+      { code: /for\s*\(/, line: row[3] },
+      row[3].join(" then ")
+    );
+  });
+
+  [["9", ">", "5", "big", "small", "big"], ["1", ">", "5", "big", "small", "small"], ["8", ">", "3", "yes", "no", "yes"], ["2", "<", "4", "low", "high", "low"], ["10", ">", "7", "tall", "short", "tall"], ["0", ">", "2", "hot", "cold", "cold"], ["6", ">", "6", "same", "notyet", "notyet"], ["4", "<", "9", "ok", "nope", "ok"], ["3", ">", "1", "swim", "rest", "swim"], ["5", "<", "5", "up", "down", "down"], ["7", ">", "2", "pass", "try", "pass"], ["1", "<", "1", "a", "b", "b"]].forEach(function (row) {
+    add(
+      "Use if and else so the path prints " + row[5] + ".",
+      true,
+      [L("let score = " + row[0] + ";"), L("if (score " + row[1] + " " + row[2] + ") {"), L('console.log("' + row[3] + '");', true), L("}"), L("else {"), L('console.log("' + row[4] + '");', true), L("}")],
+      { code: /\bif\b[\s\S]*\belse\b/, line: row[5] },
+      row[5]
+    );
+  });
+
+  ["wave", "splash", "hi", "yay", "wow", "go", "pop"].forEach(function (word) {
+    add(
+      "Make a function " + word + " that prints " + word + ", then run it.",
+      true,
+      [L("function " + word + "() {"), L('console.log("' + word + '");', true), L("}"), L(word + "();")],
+      { code: new RegExp("function\\s+" + word + "\\s*\\("), line: word },
+      word
+    );
+  });
+  [["cheer", "reef"], ["greet", "sam"], ["shout", "go"], ["call", "fin"], ["hail", "nemo"], ["sayhi", "otter"]].forEach(function (pair) {
+    add(
+      "Make a function " + pair[0] + " that prints the name you give it.",
+      true,
+      [L("function " + pair[0] + "(name) {"), L("console.log(name);", true), L("}"), L(pair[0] + '("' + pair[1] + '");')],
+      { code: new RegExp("function\\s+" + pair[0] + "\\s*\\("), line: pair[1] },
+      pair[1]
+    );
+  });
+
+  [
+    ["crab", "eel"], ["whale", "shark"], ["sand", "shell"],
+    ["blue", "teal"], ["fin", "bubbles"], ["kelp", "coral"],
+  ].forEach(function (pair) {
+    add(
+      "Make a list pets and log the first word " + pair[0] + ".",
+      true,
+      [L('let pets = ["' + pair[0] + '", "' + pair[1] + '"];'), L("console.log(pets[0]);")],
+      { code: /pets\s*\[\s*0\s*\]/, line: pair[0] },
+      pair[0]
+    );
+    add(
+      "Loop through the list and log " + pair[0] + " and " + pair[1] + ".",
+      true,
+      [L('let pets = ["' + pair[0] + '", "' + pair[1] + '"];'), L("for (let pet of pets) {"), L("console.log(pet);", true), L("}")],
+      { code: /for\s*\(\s*let\s+\w+\s+of\s+pets/, line: [pair[0], pair[1]] },
+      pair[0] + " and " + pair[1]
+    );
+  });
+
+  add("Save a hero name, then use if to prlet found.", true, [L('let hero = "Fin";'), L("console.log(hero);"), L('if (hero == "Fin") {'), L('console.log("found");', true), L("}")], { code: /\bif\b/, line: "found" }, "found");
+  add("Add 1 to a number and prlet it.", true, [L("let waves = 3;"), L("console.log(waves + 1);")], { code: /waves\s*\+\s*1/, line: "4" }, "4");
+  add("Take 2 away from a score and prlet it.", true, [L("let score = 9;"), L("console.log(score - 2);")], { code: /score\s*-\s*2/, line: "7" }, "7");
+  add("Use a function and a variable together.", true, [L('let pet = "crab";'), L("function show() {"), L('console.log("ready");', true), L("}"), L("show();"), L("console.log(pet);")], { code: /function\s+show\s*\(/, line: ["ready", "crab"] }, "ready and crab");
+  add("Loop 2 times and also prlet a title.", true, [L('console.log("Title");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("go");', true), L("}")], { code: /for\s*\(/, contains: "title", minCount: { line: "go", n: 2 } }, "Title and go go");
+  add("If a score is big, prlet pass.", true, [L("let score = 10;"), L("if (score > 5) {"), L('console.log("pass");', true), L("}"), L("else {"), L('console.log("try");', true), L("}")], { code: /\bif\b/, line: "pass" }, "pass");
+  add("Make two functions and run both.", true, [L("function ping() {"), L('console.log("ping");', true), L("}"), L("function pong() {"), L('console.log("pong");', true), L("}"), L("ping();"), L("pong();")], { code: /function\s+ping\s*\(/, line: ["ping", "pong"] }, "ping and pong");
+  add("Prlet a name, then loop the word splash twice.", true, [L('console.log("Fin");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("splash");', true), L("}")], { code: /for\s*\(/, line: "fin", minCount: { line: "splash", n: 2 } }, "Fin and splash");
+  add("Remember two names and prlet both.", true, [L('let one = "crab";'), L('let two = "eel";'), L("console.log(one);"), L("console.log(two);")], { line: ["crab", "eel"] }, "crab and eel");
+  add("Count with a loop from 1 to 2, then prlet done.", true, [L("for (let i = 1; i <= 2; i++) {"), L("console.log(i);", true), L("}"), L('console.log("done");')], { code: /for\s*\(/, line: ["1", "2"], contains: "done" }, "1, 2, and done");
+
+  const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
+  let pad = 0;
+  while (list.length < 100) {
+    const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
+    pad += 1;
+    add("Prlet the extra word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
+  }
+  return list;
+})();
+
+function buildJsSteps(prefix, rows) {
+  return rows.map(function (row, idx) {
+    return {
+      goal: prefix + " " + (idx + 1) + ": " + row.goal,
+      help: helpForLines(!!row.fresh, row.lines, row.see, row.note),
+      check: stepCheck(row.spec),
+      fresh: !!row.fresh,
+      lines: row.lines,
+    };
+  });
+}
 
 const finalIdeas = [
   {
-    id: "messages",
-    title: "Button page messages",
-    blurb: "Log friendly messages like a button was pressed.",
-    plan: [
-      "Start with a welcome message.",
-      "Add a second “button clicked” message.",
-      "Add a third cheer message.",
-    ],
-    steps: [
-      {
-        goal: "Project step 1: Log a welcome message.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          'Type console.log("Welcome!"); Then press Run.',
-        check: function (ctx) {
-          return /console\.log\s*\(/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 2: Log a second message.",
-        help:
-          'Keep your old code. Add console.log("Button clicked!"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-      {
-        goal: "Project step 3: Log a cheer message.",
-        help:
-          'Keep your old code. Add console.log("You did it!"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
-        },
-      },
-    ],
+    id: "story",
+    title: "Ocean story",
+    blurb: "A long story with a name, math, if, a loop, and a function.",
+    plan: ["Prlet a title and two story lines.", "Save a hero and say hello.", "Count waves, then use if, a loop, and a function."],
+    steps: buildJsSteps("Project step", [
+      { goal: "Prlet a story title.", fresh: true, lines: [L('console.log("Ocean Story");')], spec: { contains: "ocean story" }, see: "Ocean Story" },
+      { goal: "Add a story line.", lines: [L('console.log("A fish swam out.");')], spec: { minLines: 2 }, see: "A fish swam out." },
+      { goal: "Add a blue-water line.", lines: [L('console.log("The water was blue.");')], spec: { minLines: 3 }, see: "The water was blue." },
+      { goal: "Save the hero name Fin.", lines: [L('let hero = "Fin";')], spec: { code: /hero\s*=\s*["']Fin["']/ }, see: "your old story lines" },
+      { goal: "Prlet the hero name.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "Say hello to the hero.", lines: [L('console.log("Hello " + hero);')], spec: { contains: "hello fin" }, see: "Hello Fin" },
+      { goal: "Save the number of waves.", lines: [L("let waves = 3;")], spec: { code: /waves\s*=\s*3/ }, see: "your old lines" },
+      { goal: "Prlet how many waves.", lines: [L("console.log(waves);")], spec: { line: "3" }, see: "3" },
+      { goal: "Prlet one more than the waves.", lines: [L("console.log(waves + 1);")], spec: { line: "4" }, see: "4" },
+      { goal: "If waves are more than 2, prlet big.", lines: [L("if (waves > 2) {"), L('console.log("big");', true), L("}")], spec: { code: /\bif\b/, line: "big" }, see: "big" },
+      { goal: "Add the other path, else.", lines: [L("else {"), L('console.log("calm");', true), L("}")], spec: { code: /\belse\b/ }, see: "big still, because 3 is more than 2", note: "Click after the } that closes the if." },
+      { goal: "Save a friend name.", lines: [L('let friend = "Bubbles";')], spec: { code: /friend\s*=/ }, see: "your old lines" },
+      { goal: "Prlet the friend.", lines: [L("console.log(friend);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Loop to prlet 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "Make a cheer function.", lines: [L("function cheer() {"), L('console.log("yay");', true), L("}")], spec: { code: /function\s+cheer\s*\(/ }, see: "your old lines" },
+      { goal: "Run the cheer function.", lines: [L("cheer();")], spec: { line: "yay" }, see: "yay" },
+      { goal: "Prlet The end.", lines: [L('console.log("The end");')], spec: { contains: "the end" }, see: "The end" },
+      { goal: "Prlet You did it!", lines: [L('console.log("You did it!");')], spec: { contains: "you did it" }, see: "You did it!" },
+    ]),
   },
   {
-    id: "score",
-    title: "Score counter",
-    blurb: "Keep a score in a variable and log it.",
-    plan: [
-      "Make a score variable.",
-      "Log the score.",
-      "Log a “new high score” line.",
-    ],
-    steps: [
-      {
-        goal: "Project step 1: Make a score variable.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          "Type let score = 0; Then press Run.",
-        check: function (ctx) {
-          return /let\s+score\s*=/.test(ctx.code.toLowerCase());
-        },
-      },
-      {
-        goal: "Project step 2: Log the score.",
-        help:
-          "Keep your old code. Add console.log(score); Then press Run.",
-        check: function (ctx) {
-          return /console\.log\s*\(\s*score\s*\)/.test(ctx.code.toLowerCase()) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 3: Log a high-score message.",
-        help:
-          'Keep your old code. Add console.log("New high score!"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    id: "names",
+    title: "Fish name generator",
+    blurb: "Name two fish, count them, and cheer.",
+    plan: ["Prlet a title and save two names.", "Say hello to each name.", "Count, compare, loop, and cheer."],
+    steps: buildJsSteps("Project step", [
+      { goal: "Prlet a title.", fresh: true, lines: [L('console.log("Fish Names");')], spec: { contains: "fish names" }, see: "Fish Names" },
+      { goal: "Save the name Bubbles.", lines: [L('let name = "Bubbles";')], spec: { code: /name\s*=\s*["']Bubbles["']/ }, see: "the title" },
+      { goal: "Prlet the name.", lines: [L("console.log(name);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Say hello to the name.", lines: [L('console.log("Hello " + name);')], spec: { contains: "hello bubbles" }, see: "Hello Bubbles" },
+      { goal: "Save a friend name.", lines: [L('let friend = "Coral";')], spec: { code: /friend\s*=\s*["']Coral["']/ }, see: "your old lines" },
+      { goal: "Prlet the friend.", lines: [L("console.log(friend);")], spec: { line: "coral" }, see: "Coral" },
+      { goal: "Say meet the friend.", lines: [L('console.log("Meet " + friend);')], spec: { contains: "meet coral" }, see: "Meet Coral" },
+      { goal: "Save the number 2.", lines: [L("let count = 2;")], spec: { code: /count\s*=\s*2/ }, see: "your old lines" },
+      { goal: "Prlet the count.", lines: [L("console.log(count);")], spec: { line: "2" }, see: "2" },
+      { goal: "Prlet one more than the count.", lines: [L("console.log(count + 1);")], spec: { line: "3" }, see: "3" },
+      { goal: "If count is more than 1, prlet many.", lines: [L("if (count > 1) {"), L('console.log("many");', true), L("}")], spec: { code: /\bif\b/, line: "many" }, see: "many" },
+      { goal: "Add else.", lines: [L("else {"), L('console.log("one");', true), L("}")], spec: { code: /\belse\b/ }, see: "many still", note: "Click after the } that closes the if." },
+      { goal: "Loop two times and prlet hi.", lines: [L("for (let i = 1; i <= 2; i++) {"), L('console.log("hi");', true), L("}")], spec: { code: /for\s*\(/, minCount: { line: "hi", n: 2 } }, see: "hi twice" },
+      { goal: "Prlet both names again.", lines: [L("console.log(name);"), L("console.log(friend);")], spec: { minCount: { line: "bubbles", n: 1 } }, see: "Bubbles and Coral" },
+      { goal: "Make a splash function.", lines: [L("function yay() {"), L('console.log("splash");', true), L("}")], spec: { code: /function\s+yay\s*\(/ }, see: "your old lines" },
+      { goal: "Run yay.", lines: [L("yay();")], spec: { line: "splash" }, see: "splash" },
+      { goal: "Prlet All named!", lines: [L('console.log("All named!");')], spec: { contains: "all named" }, see: "All named!" },
+      { goal: "Prlet a goodbye line.", lines: [L('console.log("Bye fish!");')], spec: { contains: "bye fish" }, see: "Bye fish!" },
+    ]),
   },
   {
-    id: "greeting",
-    title: "Greeting machine",
-    blurb: "Store a name and say hello.",
-    plan: [
-      "Make a name variable.",
-      "Log the name.",
-      "Log a hello line.",
-    ],
-    steps: [
-      {
-        goal: "Project step 1: Make a name variable.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          'Type let name = "Sam"; Then press Run.',
-        check: function (ctx) {
-          return /let\s+name\s*=\s*["'][^"']+["']/.test(ctx.code.toLowerCase());
-        },
-      },
-      {
-        goal: "Project step 2: Log the name.",
-        help:
-          "Keep your old code. Add console.log(name); Then press Run.",
-        check: function (ctx) {
-          return /console\.log\s*\(\s*name\s*\)/.test(ctx.code.toLowerCase()) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 3: Log a greeting.",
-        help:
-          'Keep your old code. Add console.log("Hello!"); Then press Run.',
-        check: function (ctx) {
-          return /hello|hi|hey/.test(normalizeOut(ctx.output)) || normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    id: "quiz",
+    title: "Mini quiz",
+    blurb: "Ask a question, save the answer, and keep a score.",
+    plan: ["Prlet a question and save the answer.", "Use a score and math.", "Use if, a loop, and a function to finish."],
+    steps: buildJsSteps("Project step", [
+      { goal: "Prlet Quiz Time.", fresh: true, lines: [L('console.log("Quiz Time");')], spec: { contains: "quiz time" }, see: "Quiz Time" },
+      { goal: "Prlet a question.", lines: [L('console.log("How many arms does a starfish have?");')], spec: { contains: "?" }, see: "the question" },
+      { goal: "Save the answer 5.", lines: [L('let answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
+      { goal: "Prlet the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
+      { goal: "Prlet The answer is plus the answer.", lines: [L('console.log("The answer is " + answer);')], spec: { contains: "the answer is 5" }, see: "The answer is 5" },
+      { goal: "Save let score = 10;.", lines: [L("let score = 10;")], spec: { code: /score\s*=\s*10/ }, see: "your old lines" },
+      { goal: "Prlet the score.", lines: [L("console.log(score);")], spec: { line: "10" }, see: "10" },
+      { goal: "Prlet score minus 2.", lines: [L("console.log(score - 2);")], spec: { line: "8" }, see: "8" },
+      { goal: "If score is more than 5, prlet pass.", lines: [L("if (score > 5) {"), L('console.log("pass");', true), L("}")], spec: { code: /\bif\b/, line: "pass" }, see: "pass" },
+      { goal: "Add else.", lines: [L("else {"), L('console.log("try again");', true), L("}")], spec: { code: /\belse\b/ }, see: "pass still", note: "Click after the } that closes the if." },
+      { goal: "Save let bonus = 1;.", lines: [L("let bonus = 1;")], spec: { code: /bonus\s*=\s*1/ }, see: "your old lines" },
+      { goal: "Prlet the bonus.", lines: [L("console.log(bonus);")], spec: { line: "1" }, see: "1" },
+      { goal: "Loop 1 and 2.", lines: [L("for (let i = 1; i <= 2; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2"] }, see: "1 and 2" },
+      { goal: "Prlet a fact.", lines: [L('console.log("five arms");')], spec: { contains: "five arms" }, see: "five arms" },
+      { goal: "Prlet another fact.", lines: [L('console.log("lives in the sea");')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
+      { goal: "Make a done function.", lines: [L("function done() {"), L('console.log("quiz done");', true), L("}")], spec: { code: /function\s+done\s*\(/ }, see: "your old lines" },
+      { goal: "Run done.", lines: [L("done();")], spec: { contains: "quiz done" }, see: "quiz done" },
+      { goal: "Prlet You finished the quiz!", lines: [L('console.log("You finished the quiz!");')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+    ]),
   },
 ];
 
 const advancedIdeas = [
   {
-    id: "doubleplus",
-    title: "Double machine",
-    blurb: "Build double() and log a few answers.",
-    plan: [
-      "Write a double function.",
-      "Log double(5).",
-      "Log double(8) too.",
-    ],
-    steps: [
-      {
-        goal: "Advanced step 1: Make function double.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          "Type:\nfunction double(n) {\n  return n * 2;\n}\nThen press Run.",
-        check: function (ctx) {
-          return /function\s+double\s*\(/.test(ctx.code.toLowerCase());
-        },
-      },
-      {
-        goal: "Advanced step 2: Log double(5).",
-        help:
-          "Keep your old code. Add console.log(double(5)); Then press Run.",
-        check: function (ctx) {
-          return /double\s*\(\s*5\s*\)/.test(ctx.code) && normalizeOut(ctx.output).indexOf("10") !== -1;
-        },
-      },
-      {
-        goal: "Advanced step 3: Also log double(8).",
-        help:
-          "Keep your old code. Add console.log(double(8)); Then press Run.",
-        check: function (ctx) {
-          const out = normalizeOut(ctx.output);
-          return out.indexOf("10") !== -1 && out.indexOf("16") !== -1;
-        },
-      },
-    ],
+    id: "adventure",
+    title: "Ocean adventure",
+    blurb: "A hero, a counting loop, and a victory function.",
+    plan: ["Name the hero.", "Count and loop.", "Finish with a function."],
+    steps: buildJsSteps("Advanced step", [
+      { goal: "Prlet Ocean Adventure.", fresh: true, lines: [L('console.log("Ocean Adventure");')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
+      { goal: "Save hero Fin.", lines: [L('let hero = "Fin";')], spec: { code: /hero\s*=/ }, see: "the title" },
+      { goal: "Prlet the hero.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "Prlet Go plus the hero.", lines: [L('console.log("Go " + hero);')], spec: { contains: "go fin" }, see: "Go Fin" },
+      { goal: "Save let hearts = 3;.", lines: [L("let hearts = 3;")], spec: { code: /hearts\s*=\s*3/ }, see: "your old lines" },
+      { goal: "Prlet hearts.", lines: [L("console.log(hearts);")], spec: { line: "3" }, see: "3" },
+      { goal: "Loop to prlet 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "If hearts are more than 2, prlet strong.", lines: [L("if (hearts > 2) {"), L('console.log("strong");', true), L("}")], spec: { code: /\bif\b/, line: "strong" }, see: "strong" },
+      { goal: "Add else.", lines: [L("else {"), L('console.log("rest");', true), L("}")], spec: { code: /\belse\b/ }, see: "strong still", note: "Click after the } that closes the if." },
+      { goal: "Save a pal name.", lines: [L('let pal = "Bubbles";')], spec: { code: /pal\s*=/ }, see: "your old lines" },
+      { goal: "Prlet the pal.", lines: [L("console.log(pal);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Make win and run it.", lines: [L("function win() {"), L('console.log("You win!");', true), L("}"), L("win();")], spec: { code: /function\s+win\s*\(/, contains: "you win" }, see: "You win!" },
+    ]),
   },
   {
-    id: "chatty",
-    title: "Chatty page",
-    blurb: "Four friendly console messages.",
-    plan: [
-      "Log a title.",
-      "Log two more lines.",
-      "Log a goodbye.",
-    ],
-    steps: [
-      {
-        goal: "Advanced step 1: Log a title.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          'Type console.log("Chatty Page"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Advanced step 2: Log two more lines.",
-        help:
-          "Keep your old code. Add two more console.log lines. Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
-        },
-      },
-      {
-        goal: "Advanced step 3: Log goodbye.",
-        help:
-          'Keep your old code. Add console.log("Goodbye!"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 4;
-        },
-      },
-    ],
+    id: "scorequiz",
+    title: "Score quiz",
+    blurb: "A harder question, a score, and a clap function.",
+    plan: ["Ask and answer.", "Do score math.", "Clap at the end."],
+    steps: buildJsSteps("Advanced step", [
+      { goal: "Prlet Hard Quiz.", fresh: true, lines: [L('console.log("Hard Quiz");')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
+      { goal: "Prlet a math question.", lines: [L('console.log("What is 2 + 3?");')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
+      { goal: "Save answer 5.", lines: [L('let answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
+      { goal: "Prlet the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
+      { goal: "Save let points = 10;.", lines: [L("let points = 10;")], spec: { code: /points\s*=\s*10/ }, see: "your old lines" },
+      { goal: "Prlet the points.", lines: [L("console.log(points);")], spec: { line: "10" }, see: "10" },
+      { goal: "Prlet points minus 1.", lines: [L("console.log(points - 1);")], spec: { line: "9" }, see: "9" },
+      { goal: "If points are more than 8, prlet super.", lines: [L("if (points > 8) {"), L('console.log("super");', true), L("}")], spec: { code: /\bif\b/, line: "super" }, see: "super" },
+      { goal: "Add else.", lines: [L("else {"), L('console.log("ok");', true), L("}")], spec: { code: /\belse\b/ }, see: "super still", note: "Click after the } that closes the if." },
+      { goal: "Make a clap function.", lines: [L("function clap() {"), L('console.log("clap");', true), L("}")], spec: { code: /function\s+clap\s*\(/ }, see: "your old lines" },
+      { goal: "Run clap.", lines: [L("clap();")], spec: { line: "clap" }, see: "clap" },
+      { goal: "Prlet Quiz star!", lines: [L('console.log("Quiz star!");')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+    ]),
   },
   {
-    id: "nametag",
-    title: "Name tag printer",
-    blurb: "Variable name + hello + fun fact.",
-    plan: [
-      "Make a name variable.",
-      "Log hello and the name.",
-      "Log a fun fact line.",
-    ],
-    steps: [
-      {
-        goal: "Advanced step 1: Make a name variable.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          'Type let name = "Reefy"; Then press Run.',
-        check: function (ctx) {
-          return /let\s+\w+\s*=\s*["']/.test(ctx.code.toLowerCase());
-        },
-      },
-      {
-        goal: "Advanced step 2: Log the name.",
-        help:
-          "Keep your old code. Add console.log(name); Then press Run.",
-        check: function (ctx) {
-          return /console\.log\s*\(\s*\w+\s*\)/.test(ctx.code.toLowerCase()) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Advanced step 3: Log a fun fact.",
-        help:
-          'Keep your old code. Add console.log("I love coding!"); Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    id: "catalog",
+    title: "Creature catalog",
+    blurb: "Three animals and a goodbye function.",
+    plan: ["Prlet three animals.", "Save a name and a count.", "Finish the catalog."],
+    steps: buildJsSteps("Advanced step", [
+      { goal: "Prlet Sea Catalog.", fresh: true, lines: [L('console.log("Sea Catalog");')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
+      { goal: "Prlet crab.", lines: [L('console.log("crab");')], spec: { line: "crab" }, see: "crab" },
+      { goal: "Prlet eel.", lines: [L('console.log("eel");')], spec: { line: "eel" }, see: "eel" },
+      { goal: "Prlet whale.", lines: [L('console.log("whale");')], spec: { line: "whale" }, see: "whale" },
+      { goal: "Save first = crab.", lines: [L('let first = "crab";')], spec: { code: /first\s*=\s*["']crab["']/ }, see: "your old lines" },
+      { goal: "Prlet first.", lines: [L("console.log(first);")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
+      { goal: "Save let count = 3;.", lines: [L("let count = 3;")], spec: { code: /count\s*=\s*3/ }, see: "your old lines" },
+      { goal: "Prlet the count.", lines: [L("console.log(count);")], spec: { line: "3" }, see: "3" },
+      { goal: "Loop the word swim twice.", lines: [L("for (let i = 1; i <= 2; i++) {"), L('console.log("swim");', true), L("}")], spec: { code: /for\s*\(/, minCount: { line: "swim", n: 2 } }, see: "swim twice" },
+      { goal: "If count is 3, prlet full tank.", lines: [L("if (count == 3) {"), L('console.log("full tank");', true), L("}")], spec: { code: /\bif\b/, contains: "full tank" }, see: "full tank" },
+      { goal: "Add else.", lines: [L("else {"), L('console.log("more");', true), L("}")], spec: { code: /\belse\b/ }, see: "full tank still", note: "Click after the } that closes the if." },
+      { goal: "Make bye and run it.", lines: [L("function bye() {"), L('console.log("catalog done");', true), L("}"), L("bye();")], spec: { code: /function\s+bye\s*\(/, contains: "catalog done" }, see: "catalog done" },
+    ]),
   },
 ];
+
+
 
 function normalizeOut(text) {
   return String(text || "")
@@ -408,6 +668,9 @@ const projectApi = CodeReefProject.attach({
     outputBox.textContent = "Press Run to see output here.";
     outputBox.classList.remove("is-error");
     persistLesson();
+  },
+  getParts: function () {
+    return { code: codeBox.value };
   },
 });
 
@@ -527,27 +790,6 @@ function runCode() {
   }
 }
 
-function resetCode() {
-  if (typeof CodeReefProgress !== "undefined") {
-    CodeReefProgress.clear(PATH_KEY);
-  }
-  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
-    codeBox.value = projectStarter;
-    lastOutput = "";
-    outputBox.textContent = "Press Run to see output here.";
-    outputBox.classList.remove("is-error");
-    setTip("Code reset for your project. Press Run when ready.");
-    persistLesson();
-    return;
-  }
-  codeBox.value = starterCode;
-  lastOutput = "";
-  outputBox.textContent = "Press Run to see output here.";
-  outputBox.classList.remove("is-error");
-  showTask();
-  persistLesson();
-}
-
 helpBtn.addEventListener("click", function () {
   if (projectApi.showHelp()) {
     return;
@@ -569,9 +811,11 @@ nextBtn.addEventListener("click", function () {
 });
 
 document.getElementById("run-btn").addEventListener("click", runCode);
-document.getElementById("reset-btn").addEventListener("click", resetCode);
 
-codeBox.addEventListener("input", persistLessonSoon);
+codeBox.addEventListener("input", function () {
+  projectApi.guardElement(codeBox, "code");
+  persistLessonSoon();
+});
 
 outputBox.textContent = "Press Run to see output here.";
 

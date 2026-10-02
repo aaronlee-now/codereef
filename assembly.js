@@ -61,187 +61,261 @@ const dialectTip =
   "This is reef assembly — training wheels that feel like real Assembly, " +
   "not a real CPU. Allowed lines: PRINT, MOV, ADD, REPEAT / END. ";
 
-const tasks = [
-  {
-    goal: 'Task 1: Make Assembly say Hello, ocean!',
-    help:
-      dialectTip +
-      "Replace only the word reef with ocean; keep the rest of the line. " +
-      'Find PRINT "Hello, reef!" in your code. ' +
-      'Change it to PRINT "Hello, ocean!" — keep the quotes. Then press Run.',
-    check: function () {
-      return normalizeOut(lastOutput) === "hello, ocean!";
-    },
-  },
-  {
-    goal: "Task 2: Print two lines — Hello, ocean! then I love Assembly!",
-    help:
-      dialectTip +
-      "Keep your old code. Add a new line under it. " +
-      'Keep PRINT "Hello, ocean!" on line 1. ' +
-      'Under it, type PRINT "I love Assembly!" Then press Run.',
-    check: function () {
-      return normalizeOut(lastOutput) === "hello, ocean!\ni love assembly!";
-    },
-  },
-  {
-    goal: 'Task 3: MOV clownfish into a name, then PRINT it.',
-    help:
-      dialectTip +
-      "Keep your old code. Add new lines under it (old PRINT lines are OK). " +
-      'Type MOV fish, "clownfish" on one line. ' +
-      "On the next line type PRINT fish — no quotes around fish. Then press Run.",
-    check: function () {
-      const code = codeBox.value;
-      const hasMov = /MOV\s+(fish|R\d+)\s*,\s*["']clownfish["']/i.test(code);
-      const lines = normalizeOut(lastOutput).split("\n");
-      return hasMov && lines.indexOf("clownfish") !== -1;
-    },
-  },
-  {
-    goal: "Task 4: Use REPEAT to print 1, then 2, then 3.",
-    help:
-      dialectTip +
-      "You can delete the old code and start fresh for this task. Type exactly:\n" +
-      "MOV R1, 1\n" +
-      "REPEAT 3\n" +
-      "PRINT R1\n" +
-      "ADD R1, 1\n" +
-      "END\n" +
-      "Then press Run.",
-    check: function () {
-      const code = codeBox.value.toUpperCase();
-      const usedLoop = /REPEAT\s+\d+/.test(code);
-      return usedLoop && normalizeOut(lastOutput) === "1\n2\n3";
-    },
-  },
-  {
-    goal: "Task 5: PRINT the number 5.",
-    help:
-      dialectTip +
-      "You can delete the old code and start fresh for this task. " +
-      "Type: MOV R1, 5 then PRINT R1 — or PRINT 5 if your Help shows that. " +
-      "Easiest: MOV R1, 5 then PRINT R1. Then press Run.",
-    check: function () {
-      return normalizeOut(lastOutput) === "5";
-    },
-  },
-  {
-    goal: 'Task 6: MOV coral to "reef", then PRINT it.',
-    help:
-      dialectTip +
-      "Keep your old code or start fresh — either is OK. " +
-      'Type MOV coral, "reef" then PRINT coral. Then press Run.',
-    check: function () {
-      const code = codeBox.value;
-      const hasMov = /MOV\s+coral\s*,\s*["']reef["']/i.test(code);
-      return hasMov && normalizeOut(lastOutput).split("\n").indexOf("reef") !== -1;
-    },
-  },
-  {
-    goal: "Task 7: REPEAT to PRINT splash three times.",
-    help:
-      dialectTip +
-      "You can delete the old code and start fresh for this task. Type:\n" +
-      "REPEAT 3\n" +
-      'PRINT "splash"\n' +
-      "END\n" +
-      "Then press Run.",
-    check: function () {
-      const code = codeBox.value.toUpperCase();
-      const usedLoop = /REPEAT\s+\d+/.test(code);
-      return usedLoop && normalizeOut(lastOutput) === "splash\nsplash\nsplash";
-    },
-  },
-];
+function numbered(lines) {
+  const parts = [];
+  for (let n = 0; n < lines.length; n += 1) {
+    parts.push(n + 1 + ". " + lines[n]);
+  }
+  return parts.join(" ");
+}
+
+function L(text, indent) {
+  return { text: text, indent: !!indent };
+}
+
+function codeFrom(lines) {
+  return lines.map(function (line) { return (line.indent ? "  " : "") + line.text; }).join("\n") + "\n";
+}
+
+function explainAsmLine(line) {
+  const t = String(line || "").trim();
+  let m = t.match(/^PRINT\s+"([^"]*)"$/i);
+  if (m) {
+    return 'Type PRINT "' + m[1] + '". PRINT shows words. Type PRINT, a space, a quote ", then ' + m[1] + ', then a quote ".';
+  }
+  m = t.match(/^PRINT\s+([A-Za-z_][A-Za-z0-9_]*)$/i);
+  if (m) {
+    return "Type PRINT " + m[1] + ". No quotes this time, because " + m[1] + " is a name that already remembers something. Type PRINT, a space, then " + m[1] + ".";
+  }
+  m = t.match(/^MOV\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*"([^"]*)"$/i);
+  if (m) {
+    return 'Type MOV ' + m[1] + ', "' + m[2] + '". MOV puts a word into a name. A name here is like a box. Type MOV, a space, ' + m[1] + ', a comma ,, a space, a quote, ' + m[2] + ', then a quote.';
+  }
+  m = t.match(/^MOV\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*(-?\d+)$/i);
+  if (m) {
+    return "Type MOV " + m[1] + ", " + m[2] + ". MOV puts a number into a box. Type MOV, a space, " + m[1] + ", a comma ,, a space, then " + m[2] + ". No quotes around a number.";
+  }
+  m = t.match(/^ADD\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*(-?\d+)$/i);
+  if (m) {
+    return "Type ADD " + m[1] + ", " + m[2] + ". ADD adds a number into the box. Type ADD, a space, " + m[1] + ", a comma ,, a space, then " + m[2] + ".";
+  }
+  m = t.match(/^REPEAT\s+(\d+)$/i);
+  if (m) {
+    return "Type REPEAT " + m[1] + ". REPEAT does the next lines that many times. Type REPEAT, a space, then " + m[1] + ".";
+  }
+  if (/^END$/i.test(t)) {
+    return "Type END. END means the REPEAT is finished. Type the letters E N D.";
+  }
+  return "Type this exactly: " + t;
+}
+
+function helpForLines(fresh, lines, see, note) {
+  const steps = [];
+  if (fresh) steps.push("Start fresh. Click in the code box, highlight the old code, and press Delete.");
+  else steps.push("Keep your old code. Do not erase it.");
+  steps.push(fresh ? "Click in the empty code box." : "Click in the code box at the end of the last line.");
+  if (note) steps.push(note);
+  for (let i = 0; i < lines.length; i += 1) {
+    let where = "";
+    if (!fresh && i === 0) where = "Press the Enter key for a new line. ";
+    else if (i > 0) where = "Press the Enter key. ";
+    if (lines[i].indent) where += "This line is inside REPEAT. Press the space bar 2 times, then type it. ";
+    steps.push(where + explainAsmLine(lines[i].text));
+  }
+  steps.push("Press the Run button." + (see ? " You should see " + see + ". Old lines can stay. That is OK." : ""));
+  return numbered(steps);
+}
+
+function specOk(spec, code, output) {
+  if (spec.contains) {
+    const bits = Array.isArray(spec.contains) ? spec.contains : [spec.contains];
+    for (let b = 0; b < bits.length; b += 1) {
+      if (output.indexOf(String(bits[b]).toLowerCase()) === -1) return false;
+    }
+  }
+  if (spec.line) {
+    const outLines = output.split("\n");
+    const bits = Array.isArray(spec.line) ? spec.line : [spec.line];
+    for (let b = 0; b < bits.length; b += 1) {
+      if (outLines.indexOf(String(bits[b]).toLowerCase()) === -1) return false;
+    }
+  }
+  if (spec.minCount) {
+    const want = String(spec.minCount.line).toLowerCase();
+    const n = output.split("\n").filter(function (item) { return item === want; }).length;
+    if (n < spec.minCount.n) return false;
+  }
+  if (spec.code && !spec.code.test(code)) return false;
+  if (spec.minLines && output.split("\n").filter(Boolean).length < spec.minLines) return false;
+  return true;
+}
+
+function skillOk(spec) {
+  return function () { return specOk(spec, codeBox.value, normalizeOut(lastOutput)); };
+}
+function stepCheck(spec) {
+  return function (ctx) { return specOk(spec, ctx.code || "", normalizeOut(ctx.output || "")); };
+}
+
+const tasks = (function buildAsmTasks() {
+  const list = [];
+  function add(goal, fresh, lines, spec, see, sample, note) {
+    list.push({
+      goal: "Task " + (list.length + 1) + ": " + goal,
+      help: helpForLines(fresh, lines, see, note),
+      check: skillOk(spec),
+      sample: sample || codeFrom(lines),
+      fresh: fresh,
+      lines: lines,
+    });
+  }
+
+  add('Make Assembly say Hello, ocean!', true, [L('PRINT "Hello, ocean!"')], { contains: "hello, ocean!" }, "Hello, ocean!");
+  list[0].help = numbered([
+    "Keep the line you already have. Do not erase the whole line.",
+    "Click in the code box on the word reef.",
+    "Delete the letters r e e f. Type the word ocean in that same spot.",
+    'The line should look like this: PRINT "Hello, ocean!"',
+    'That is the word PRINT, a space, a quote ", then Hello, ocean!, then a quote ".',
+    "Press the Run button. You should see Hello, ocean!",
+  ]);
+  add("Print two lines — Hello, ocean! then I love Assembly!", false, [L('PRINT "I love Assembly!"')], { contains: ["hello, ocean!", "i love assembly!"] }, "I love Assembly!", 'PRINT "Hello, ocean!"\nPRINT "I love Assembly!"\n');
+  add('MOV clownfish into a name, then PRINT it.', false, [L('MOV fish, "clownfish"'), L("PRINT fish")], { code: /MOV\s+fish\s*,\s*["']clownfish["']/i, line: "clownfish" }, "clownfish");
+  add("Use REPEAT to print 1, then 2, then 3.", true, [L("MOV R1, 1"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, "1 then 2 then 3");
+  add("PRINT the number 5.", true, [L("MOV R1, 5"), L("PRINT R1")], { line: "5", code: /MOV\s+R1\s*,\s*5/i }, "5");
+  add('MOV coral to "reef", then PRINT it.', false, [L('MOV coral, "reef"'), L("PRINT coral")], { code: /MOV\s+coral\s*,\s*["']reef["']/i, line: "reef" }, "reef");
+  add("REPEAT to PRINT splash three times.", true, [L("REPEAT 3"), L('PRINT "splash"', true), L("END")], { code: /REPEAT\s+3/i, minCount: { line: "splash", n: 3 } }, "splash three times");
+
+  ["bubble", "wave", "crab", "dolphin", "turtle", "coral", "sand", "shell", "whale", "shark", "starfish", "eel"].forEach(function (word) {
+    add("PRINT the word " + word + ".", false, [L('PRINT "' + word + '"')], { contains: word }, word);
+  });
+  [["pet", "crab"], ["boat", "blue"], ["hero", "Fin"], ["snack", "kelp"], ["home", "reef"], ["friend", "Nemo"], ["color", "teal"], ["toy", "shell"], ["pal", "otter"], ["ride", "wave"], ["team", "pods"], ["gem", "pearl"]].forEach(function (pair) {
+    add('MOV ' + pair[1] + " into " + pair[0] + " and PRINT it.", false, [L('MOV ' + pair[0] + ', "' + pair[1] + '"'), L("PRINT " + pair[0])], { code: new RegExp("MOV\\s+" + pair[0] + "\\s*,\\s*[\"']" + pair[1] + "[\"']", "i"), line: pair[1].toLowerCase() }, pair[1]);
+  });
+  [[2, 3, "5"], [4, 1, "5"], [1, 6, "7"], [3, 3, "6"], [5, 5, "10"], [8, 2, "10"], [6, 2, "8"], [9, 1, "10"], [2, 2, "4"], [7, 2, "9"]].forEach(function (row) {
+    add("ADD " + row[1] + " onto " + row[0] + " and PRINT the box.", true, [L("MOV R1, " + row[0]), L("ADD R1, " + row[1]), L("PRINT R1")], { code: /ADD\s+R1/i, line: row[2] }, row[2]);
+  });
+  ["splash", "bubble", "yay", "hi", "wave", "go"].forEach(function (word) {
+    add('REPEAT to PRINT "' + word + '" three times.', true, [L("REPEAT 3"), L('PRINT "' + word + '"', true), L("END")], { code: /REPEAT\s+3/i, minCount: { line: word, n: 3 } }, word + " three times");
+  });
+  [[1, 3], [2, 3], [0, 4], [4, 3], [5, 2], [8, 3]].forEach(function (row) {
+    const expect = [];
+    for (let n = row[0]; n < row[0] + row[1]; n += 1) expect.push(String(n));
+    add("REPEAT to count " + expect.join(", then ") + ".", true, [L("MOV R1, " + row[0]), L("REPEAT " + row[1]), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { code: new RegExp("REPEAT\\s+" + row[1], "i"), line: expect }, expect.join(" then "));
+  });
+  for (let n = 1; n <= 8; n += 1) {
+    add("Start at " + n + ", ADD 2, and PRINT the box.", true, [L("MOV R1, " + n), L("ADD R1, 2"), L("PRINT R1")], { code: /ADD\s+R1\s*,\s*2/i, line: String(n + 2) }, String(n + 2));
+  }
+  for (let n = 2; n <= 6; n += 1) {
+    add("REPEAT the word pop " + n + " times.", true, [L("REPEAT " + n), L('PRINT "pop"', true), L("END")], { code: new RegExp("REPEAT\\s+" + n, "i"), minCount: { line: "pop", n: n } }, "pop " + n + " times");
+  }
+  add("Save two names and PRINT both.", true, [L('MOV one, "crab"'), L('MOV two, "eel"'), L("PRINT one"), L("PRINT two")], { line: ["crab", "eel"] }, "crab and eel");
+  add("ADD twice, then PRINT.", true, [L("MOV R1, 1"), L("ADD R1, 2"), L("ADD R1, 3"), L("PRINT R1")], { code: /ADD\s+R1\s*,\s*3/i, line: "6" }, "6");
+  add("PRINT a title, then REPEAT hi twice.", true, [L('PRINT "Title"'), L("REPEAT 2"), L('PRINT "hi"', true), L("END")], { code: /REPEAT\s+2/i, contains: "title", minCount: { line: "hi", n: 2 } }, "Title and hi hi");
+  add("Count 1 and 2, then PRINT done.", true, [L("MOV R1, 1"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END"), L('PRINT "done"')], { code: /REPEAT/i, line: ["1", "2"], contains: "done" }, "1, 2, and done");
+  add("Use two boxes, R1 and R2.", true, [L("MOV R1, 4"), L("MOV R2, 6"), L("PRINT R1"), L("PRINT R2")], { line: ["4", "6"] }, "4 and 6");
+  add("ADD 1 three times with REPEAT.", true, [L("MOV R1, 0"), L("REPEAT 3"), L("ADD R1, 1", true), L("PRINT R1", true), L("END")], { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, "1 then 2 then 3");
+
+  const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
+  let pad = 0;
+  while (list.length < 100) {
+    const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
+    pad += 1;
+    add("PRINT the extra word " + word + ".", false, [L('PRINT "' + word + '"')], { contains: word }, word);
+  }
+  return list;
+})();
+
+function buildAsmSteps(prefix, rows) {
+  return rows.map(function (row, idx) {
+    return {
+      goal: prefix + " " + (idx + 1) + ": " + row.goal,
+      help: helpForLines(!!row.fresh, row.lines, row.see, row.note),
+      check: stepCheck(row.spec),
+      fresh: !!row.fresh,
+      lines: row.lines,
+    };
+  });
+}
 
 const finalIdeas = [
   {
     id: "story",
-    title: "Story printer",
-    blurb: "PRINT a tiny ocean story, one line at a time.",
-    plan: ["PRINT a story title.", "Add a second PRINT.", "Add a third ending PRINT."],
-    steps: [
-      {
-        goal: "Project step 1: PRINT a story title.",
-        help: 'You can delete the old code and start fresh for this project. Type PRINT "Ocean Story" Then press Run.',
-        check: function (ctx) {
-          return /PRINT/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 2: Add a second story line.",
-        help: "Keep your old code. Add another PRINT under it. Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-      {
-        goal: "Project step 3: Add a third story line.",
-        help: "Keep your old code. Add one more PRINT for the ending. Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
-        },
-      },
-    ],
+    title: "Ocean story",
+    blurb: "A long story using PRINT, MOV, ADD, and REPEAT.",
+    plan: ["Print a title and two lines.", "Save a hero name.", "Count with ADD and REPEAT."],
+    steps: buildAsmSteps("Project step", [
+      { goal: "PRINT a story title.", fresh: true, lines: [L('PRINT "Ocean Story"')], spec: { contains: "ocean story" }, see: "Ocean Story" },
+      { goal: "Add a story line.", lines: [L('PRINT "A fish swam out."')], spec: { minLines: 2 }, see: "A fish swam out." },
+      { goal: "Add a blue-water line.", lines: [L('PRINT "The water was blue."')], spec: { minLines: 3 }, see: "The water was blue." },
+      { goal: "MOV the hero name Fin.", lines: [L('MOV hero, "Fin"')], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the hero.", lines: [L("PRINT hero")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "PRINT Hello.", lines: [L('PRINT "Hello"')], spec: { line: "hello" }, see: "Hello" },
+      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
+      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "ADD 1 to R1 and PRINT it.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { code: /ADD\s+R1\s*,\s*1/i, line: "4" }, see: "4" },
+      { goal: "PRINT the word big.", lines: [L('PRINT "big"')], spec: { line: "big" }, see: "big" },
+      { goal: "MOV a friend name.", lines: [L('MOV friend, "Bubbles"')], spec: { code: /MOV\s+friend/i }, see: "your old lines" },
+      { goal: "PRINT the friend.", lines: [L("PRINT friend")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "REPEAT to print 1, 2, 3.", lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "PRINT yay.", lines: [L('PRINT "yay"')], spec: { line: "yay" }, see: "yay" },
+      { goal: "REPEAT splash twice.", lines: [L("REPEAT 2"), L('PRINT "splash"', true), L("END")], spec: { minCount: { line: "splash", n: 2 } }, see: "splash twice" },
+      { goal: "PRINT The end.", lines: [L('PRINT "The end"')], spec: { contains: "the end" }, see: "The end" },
+      { goal: "PRINT You did it!", lines: [L('PRINT "You did it!"')], spec: { contains: "you did it" }, see: "You did it!" },
+      { goal: "PRINT a star line.", lines: [L('PRINT "star"')], spec: { line: "star" }, see: "star" },
+    ]),
   },
   {
     id: "names",
     title: "Fish name generator",
-    blurb: "MOV a fish name, then PRINT it.",
-    plan: ["MOV a name.", "PRINT the name.", "PRINT a hello line."],
-    steps: [
-      {
-        goal: "Project step 1: MOV a name.",
-        help: 'You can delete the old code and start fresh for this project. Type MOV name, "Bubbles" Then press Run.',
-        check: function (ctx) {
-          return /MOV\s+\w+\s*,\s*["']/i.test(ctx.code);
-        },
-      },
-      {
-        goal: "Project step 2: PRINT the name.",
-        help: "Keep your old code. Add PRINT name Then press Run.",
-        check: function (ctx) {
-          return /PRINT\s+\w+/i.test(ctx.code) && normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 3: PRINT a hello line.",
-        help: 'Keep your old code. Add PRINT "Hello!" Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    blurb: "Store two fish names and count them.",
+    plan: ["Print a title.", "MOV two names.", "ADD and REPEAT."],
+    steps: buildAsmSteps("Project step", [
+      { goal: "PRINT a title.", fresh: true, lines: [L('PRINT "Fish Names"')], spec: { contains: "fish names" }, see: "Fish Names" },
+      { goal: "MOV Bubbles into name.", lines: [L('MOV name, "Bubbles"')], spec: { code: /MOV\s+name/i }, see: "the title" },
+      { goal: "PRINT the name.", lines: [L("PRINT name")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "PRINT Hello.", lines: [L('PRINT "Hello"')], spec: { line: "hello" }, see: "Hello" },
+      { goal: "MOV Coral into friend.", lines: [L('MOV friend, "Coral"')], spec: { code: /MOV\s+friend/i }, see: "your old lines" },
+      { goal: "PRINT the friend.", lines: [L("PRINT friend")], spec: { line: "coral" }, see: "Coral" },
+      { goal: "PRINT Meet.", lines: [L('PRINT "Meet"')], spec: { line: "meet" }, see: "Meet" },
+      { goal: "MOV 2 into R1.", lines: [L("MOV R1, 2")], spec: { code: /MOV\s+R1\s*,\s*2/i }, see: "your old lines" },
+      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "2" }, see: "2" },
+      { goal: "ADD 1 and PRINT.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "PRINT many.", lines: [L('PRINT "many"')], spec: { line: "many" }, see: "many" },
+      { goal: "PRINT one.", lines: [L('PRINT "one"')], spec: { line: "one" }, see: "one" },
+      { goal: "REPEAT hi twice.", lines: [L("REPEAT 2"), L('PRINT "hi"', true), L("END")], spec: { minCount: { line: "hi", n: 2 } }, see: "hi twice" },
+      { goal: "PRINT both names again.", lines: [L("PRINT name"), L("PRINT friend")], spec: { line: "coral" }, see: "Coral" },
+      { goal: "PRINT splash.", lines: [L('PRINT "splash"')], spec: { line: "splash" }, see: "splash" },
+      { goal: "REPEAT go twice.", lines: [L("REPEAT 2"), L('PRINT "go"', true), L("END")], spec: { minCount: { line: "go", n: 2 } }, see: "go twice" },
+      { goal: "PRINT All named!", lines: [L('PRINT "All named!"')], spec: { contains: "all named" }, see: "All named!" },
+      { goal: "PRINT Bye fish!", lines: [L('PRINT "Bye fish!"')], spec: { contains: "bye fish" }, see: "Bye fish!" },
+    ]),
   },
   {
     id: "quiz",
     title: "Mini quiz",
-    blurb: "Ask a question and PRINT an answer.",
-    plan: ["PRINT a question.", "MOV an answer.", "PRINT the answer."],
-    steps: [
-      {
-        goal: "Project step 1: PRINT a question.",
-        help: 'You can delete the old code and start fresh for this project. Type PRINT "What color is the ocean?" Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Project step 2: MOV an answer.",
-        help: 'Keep your old code. Add MOV answer, "blue" Then press Run.',
-        check: function (ctx) {
-          return /MOV\s+\w+\s*,/i.test(ctx.code);
-        },
-      },
-      {
-        goal: "Project step 3: PRINT the answer.",
-        help: "Keep your old code. Add PRINT answer Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    blurb: "Ask a question and keep a score in a box.",
+    plan: ["Print a question.", "MOV the answer.", "ADD the score."],
+    steps: buildAsmSteps("Project step", [
+      { goal: "PRINT Quiz Time.", fresh: true, lines: [L('PRINT "Quiz Time"')], spec: { contains: "quiz time" }, see: "Quiz Time" },
+      { goal: "PRINT a question.", lines: [L('PRINT "How many arms?"')], spec: { contains: "?" }, see: "the question" },
+      { goal: "MOV answer 5.", lines: [L('MOV answer, "5"')], spec: { code: /MOV\s+answer/i }, see: "your old lines" },
+      { goal: "PRINT the answer.", lines: [L("PRINT answer")], spec: { line: "5" }, see: "5" },
+      { goal: "PRINT The answer is.", lines: [L('PRINT "The answer is"')], spec: { contains: "the answer is" }, see: "The answer is" },
+      { goal: "MOV 10 into R1.", lines: [L("MOV R1, 10")], spec: { code: /MOV\s+R1\s*,\s*10/i }, see: "your old lines" },
+      { goal: "PRINT the score.", lines: [L("PRINT R1")], spec: { line: "10" }, see: "10" },
+      { goal: "ADD nothing? Take a new box and show 8.", lines: [L("MOV R2, 8"), L("PRINT R2")], spec: { line: "8" }, see: "8" },
+      { goal: "PRINT pass.", lines: [L('PRINT "pass"')], spec: { line: "pass" }, see: "pass" },
+      { goal: "PRINT try.", lines: [L('PRINT "try"')], spec: { line: "try" }, see: "try" },
+      { goal: "MOV 1 into R3.", lines: [L("MOV R3, 1")], spec: { code: /MOV\s+R3\s*,\s*1/i }, see: "your old lines" },
+      { goal: "PRINT R3.", lines: [L("PRINT R3")], spec: { line: "1" }, see: "1" },
+      { goal: "REPEAT 1 and 2.", lines: [L("MOV R1, 1"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], spec: { line: ["1", "2"] }, see: "1 and 2" },
+      { goal: "PRINT five arms.", lines: [L('PRINT "five arms"')], spec: { contains: "five arms" }, see: "five arms" },
+      { goal: "PRINT lives in the sea.", lines: [L('PRINT "lives in the sea"')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
+      { goal: "PRINT quiz done.", lines: [L('PRINT "quiz done"')], spec: { contains: "quiz done" }, see: "quiz done" },
+      { goal: "REPEAT yay twice.", lines: [L("REPEAT 2"), L('PRINT "yay"', true), L("END")], spec: { minCount: { line: "yay", n: 2 } }, see: "yay twice" },
+      { goal: "PRINT You finished the quiz!", lines: [L('PRINT "You finished the quiz!"')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+    ]),
   },
 ];
 
@@ -249,90 +323,62 @@ const advancedIdeas = [
   {
     id: "adventure",
     title: "Ocean adventure",
-    blurb: "Title, MOV hero, and REPEAT counting.",
-    plan: ["PRINT a title.", "MOV a hero and PRINT it.", "REPEAT to print 1, 2, 3."],
-    steps: [
-      {
-        goal: "Advanced step 1: PRINT an adventure title.",
-        help: 'You can delete the old code and start fresh for this advanced project. Type PRINT "Ocean Adventure" Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Advanced step 2: MOV a hero and PRINT it.",
-        help: 'Keep your old code. Add MOV hero, "Fin" and PRINT hero Then press Run.',
-        check: function (ctx) {
-          return /MOV\s+\w+\s*,/i.test(ctx.code) && /PRINT\s+\w+/i.test(ctx.code);
-        },
-      },
-      {
-        goal: "Advanced step 3: REPEAT to print 1, 2, 3.",
-        help: "Keep your title if you want. Use MOV/REPEAT/ADD/END to print 1, 2, 3. Then press Run.",
-        check: function (ctx) {
-          const lines = normalizeOut(ctx.output).split("\n");
-          return /REPEAT\s+\d+/i.test(ctx.code) && lines.indexOf("1") !== -1 && lines.indexOf("3") !== -1;
-        },
-      },
-    ],
+    blurb: "A hero box, a counting REPEAT, and a win line.",
+    plan: ["Name the hero.", "Count with REPEAT.", "Print You win!"],
+    steps: buildAsmSteps("Advanced step", [
+      { goal: "PRINT Ocean Adventure.", fresh: true, lines: [L('PRINT "Ocean Adventure"')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
+      { goal: "MOV hero Fin.", lines: [L('MOV hero, "Fin"')], spec: { code: /MOV\s+hero/i }, see: "the title" },
+      { goal: "PRINT the hero.", lines: [L("PRINT hero")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "PRINT Go.", lines: [L('PRINT "Go"')], spec: { line: "go" }, see: "Go" },
+      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
+      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "REPEAT to print 1, 2, 3.", lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "PRINT strong.", lines: [L('PRINT "strong"')], spec: { line: "strong" }, see: "strong" },
+      { goal: "PRINT rest.", lines: [L('PRINT "rest"')], spec: { line: "rest" }, see: "rest" },
+      { goal: "MOV pal Bubbles.", lines: [L('MOV pal, "Bubbles"')], spec: { code: /MOV\s+pal/i }, see: "your old lines" },
+      { goal: "PRINT the pal.", lines: [L("PRINT pal")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "PRINT You win!", lines: [L('PRINT "You win!"')], spec: { contains: "you win" }, see: "You win!" },
+    ]),
   },
   {
     id: "scorequiz",
     title: "Score quiz",
-    blurb: "Question, answer, and score.",
-    plan: ["PRINT a question.", "MOV answer and score.", "PRINT both."],
-    steps: [
-      {
-        goal: "Advanced step 1: PRINT a quiz question.",
-        help: 'You can delete the old code and start fresh for this advanced project. Type PRINT "How many legs?" Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Advanced step 2: MOV answer and score.",
-        help: 'Keep your old code. Add MOV answer, "8" and MOV score, "10" Then press Run.',
-        check: function (ctx) {
-          return (ctx.code.match(/MOV\s+/gi) || []).length >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 3: PRINT answer and score.",
-        help: "Keep your old code. Add PRINT answer and PRINT score Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 2;
-        },
-      },
-    ],
+    blurb: "A question, a score box, and a clap.",
+    plan: ["Ask and answer.", "ADD the score.", "Clap at the end."],
+    steps: buildAsmSteps("Advanced step", [
+      { goal: "PRINT Hard Quiz.", fresh: true, lines: [L('PRINT "Hard Quiz"')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
+      { goal: "PRINT a math question.", lines: [L('PRINT "What is 2 + 3?"')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
+      { goal: "MOV answer 5.", lines: [L('MOV answer, "5"')], spec: { code: /MOV\s+answer/i }, see: "your old lines" },
+      { goal: "PRINT the answer.", lines: [L("PRINT answer")], spec: { line: "5" }, see: "5" },
+      { goal: "MOV 10 into R1.", lines: [L("MOV R1, 10")], spec: { code: /MOV\s+R1\s*,\s*10/i }, see: "your old lines" },
+      { goal: "PRINT the points.", lines: [L("PRINT R1")], spec: { line: "10" }, see: "10" },
+      { goal: "Show 9 in R2.", lines: [L("MOV R2, 9"), L("PRINT R2")], spec: { line: "9" }, see: "9" },
+      { goal: "PRINT super.", lines: [L('PRINT "super"')], spec: { line: "super" }, see: "super" },
+      { goal: "PRINT ok.", lines: [L('PRINT "ok"')], spec: { line: "ok" }, see: "ok" },
+      { goal: "PRINT clap.", lines: [L('PRINT "clap"')], spec: { line: "clap" }, see: "clap" },
+      { goal: "REPEAT clap twice.", lines: [L("REPEAT 2"), L('PRINT "clap"', true), L("END")], spec: { minCount: { line: "clap", n: 2 } }, see: "clap again" },
+      { goal: "PRINT Quiz star!", lines: [L('PRINT "Quiz star!"')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+    ]),
   },
   {
     id: "catalog",
     title: "Creature catalog",
-    blurb: "List sea creatures with PRINT.",
-    plan: ["PRINT a title.", "PRINT two creatures.", "PRINT one more."],
-    steps: [
-      {
-        goal: "Advanced step 1: PRINT a catalog title.",
-        help: 'You can delete the old code and start fresh for this advanced project. Type PRINT "Sea Creatures" Then press Run.',
-        check: function (ctx) {
-          return normalizeOut(ctx.output).length > 0;
-        },
-      },
-      {
-        goal: "Advanced step 2: PRINT two creature names.",
-        help: "Keep your old code. Add two more PRINT lines. Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 3;
-        },
-      },
-      {
-        goal: "Advanced step 3: PRINT one more creature.",
-        help: "Keep your old code. Add another PRINT. Then press Run.",
-        check: function (ctx) {
-          return normalizeOut(ctx.output).split("\n").filter(Boolean).length >= 4;
-        },
-      },
-    ],
+    blurb: "Three animals and a counting REPEAT.",
+    plan: ["Print three animals.", "Save a name.", "Finish the catalog."],
+    steps: buildAsmSteps("Advanced step", [
+      { goal: "PRINT Sea Catalog.", fresh: true, lines: [L('PRINT "Sea Catalog"')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
+      { goal: "PRINT crab.", lines: [L('PRINT "crab"')], spec: { line: "crab" }, see: "crab" },
+      { goal: "PRINT eel.", lines: [L('PRINT "eel"')], spec: { line: "eel" }, see: "eel" },
+      { goal: "PRINT whale.", lines: [L('PRINT "whale"')], spec: { line: "whale" }, see: "whale" },
+      { goal: "MOV first crab.", lines: [L('MOV first, "crab"')], spec: { code: /MOV\s+first/i }, see: "your old lines" },
+      { goal: "PRINT first.", lines: [L("PRINT first")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
+      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
+      { goal: "PRINT the count.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "REPEAT swim twice.", lines: [L("REPEAT 2"), L('PRINT "swim"', true), L("END")], spec: { minCount: { line: "swim", n: 2 } }, see: "swim twice" },
+      { goal: "PRINT full tank.", lines: [L('PRINT "full tank"')], spec: { contains: "full tank" }, see: "full tank" },
+      { goal: "ADD 1 and PRINT.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "4" }, see: "4" },
+      { goal: "PRINT catalog done.", lines: [L('PRINT "catalog done"')], spec: { contains: "catalog done" }, see: "catalog done" },
+    ]),
   },
 ];
 
@@ -364,6 +410,9 @@ const projectApi = CodeReefProject.attach({
     outputBox.textContent = "Press Run to see output here.";
     outputBox.classList.remove("is-error");
     persistLesson();
+  },
+  getParts: function () {
+    return { code: codeBox.value };
   },
 });
 
@@ -641,27 +690,6 @@ function runCode() {
   }
 }
 
-function resetCode() {
-  if (typeof CodeReefProgress !== "undefined") {
-    CodeReefProgress.clear(PATH_KEY);
-  }
-  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
-    codeBox.value = projectStarter;
-    lastOutput = "";
-    outputBox.textContent = "Press Run to see output here.";
-    outputBox.classList.remove("is-error");
-    setTip("Code reset for your project. Press Run when ready.");
-    persistLesson();
-    return;
-  }
-  codeBox.value = starterCode;
-  lastOutput = "";
-  outputBox.textContent = "Press Run to see output here.";
-  outputBox.classList.remove("is-error");
-  showTask();
-  persistLesson();
-}
-
 helpBtn.addEventListener("click", function () {
   if (projectApi.showHelp()) {
     return;
@@ -683,9 +711,11 @@ nextBtn.addEventListener("click", function () {
 });
 
 document.getElementById("run-btn").addEventListener("click", runCode);
-document.getElementById("reset-btn").addEventListener("click", resetCode);
 
-codeBox.addEventListener("input", persistLessonSoon);
+codeBox.addEventListener("input", function () {
+  projectApi.guardElement(codeBox, "code");
+  persistLessonSoon();
+});
 
 outputBox.textContent = "Press Run to see output here.";
 

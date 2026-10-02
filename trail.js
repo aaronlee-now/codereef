@@ -1,14 +1,15 @@
 // Coral trail — after every 3 tasks, swim up and earn coins.
-// Each coding path has its own reef colors; every stop gives coins.
-// Very rarely (~4%), a stop also unlocks a free shop fish you do not own yet.
+// Each coding path has its own reef colors.
+// Every stop: +5 Sand. Sometimes +1 Coral (25%), rarely +1 Pearl (8%),
+// very rarely +1 Treasure (2%). Very rarely (~2%) a stop also gives a free fish.
+// The same fish can be found again. Duplicates are OK.
 
-var TRAIL_RARE_FISH_CHANCE = 0.04;
-var TRAIL_RARE_BONUS_COINS = 5;
+var TRAIL_RARE_FISH_CHANCE = 0.02;
 
 var TRAIL_THEMES = {
   blocks: {
     title: "Block Coral Trail",
-    subtitle: "You finished 3 block tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 block tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--blocks",
     prizes: [
       { id: "block-coin", name: "Block Coin", shape: "coin" },
@@ -18,7 +19,7 @@ var TRAIL_THEMES = {
   },
   htmlcss: {
     title: "Paintbrush Reef Trail",
-    subtitle: "You finished 3 HTML/CSS tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 HTML/CSS tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--htmlcss",
     prizes: [
       { id: "css-coin", name: "Style Coin", shape: "coin" },
@@ -28,7 +29,7 @@ var TRAIL_THEMES = {
   },
   python: {
     title: "Sea Grass Trail",
-    subtitle: "You finished 3 Python tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 Python tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--python",
     prizes: [
       { id: "py-coin", name: "Python Coin", shape: "coin" },
@@ -38,7 +39,7 @@ var TRAIL_THEMES = {
   },
   javascript: {
     title: "Golden Coral Trail",
-    subtitle: "You finished 3 JavaScript tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 JavaScript tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--javascript",
     prizes: [
       { id: "js-coin", name: "Spark Coin", shape: "coin" },
@@ -48,7 +49,7 @@ var TRAIL_THEMES = {
   },
   go: {
     title: "Gopher Ocean Trail",
-    subtitle: "You finished 3 Go tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 Go tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--go",
     prizes: [
       { id: "go-coin", name: "Ocean Coin", shape: "coin" },
@@ -58,7 +59,7 @@ var TRAIL_THEMES = {
   },
   java: {
     title: "Amber Coral Trail",
-    subtitle: "You finished 3 Java tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 Java tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--java",
     prizes: [
       { id: "java-coin", name: "Amber Coin", shape: "coin" },
@@ -68,7 +69,7 @@ var TRAIL_THEMES = {
   },
   cpp: {
     title: "Deep Purple Trail",
-    subtitle: "You finished 3 C++ tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 C++ tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--cpp",
     prizes: [
       { id: "cpp-coin", name: "Deep Coin", shape: "coin" },
@@ -78,7 +79,7 @@ var TRAIL_THEMES = {
   },
   assembly: {
     title: "Rocky Chip Reef",
-    subtitle: "You finished 3 Assembly tasks! Swim up to earn coins!",
+    subtitle: "You finished 3 Assembly tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
     className: "trail--assembly",
     prizes: [
       { id: "asm-coin", name: "Chip Coin", shape: "coin" },
@@ -94,7 +95,13 @@ function shouldShowCoralTrail(taskIndex) {
 
 function trailStorageKey(trailId) {
   var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-  var kid = user && user.kidName ? String(user.kidName).toLowerCase() : "guest";
+  var kid = "guest";
+  if (user && user.kidName) {
+    kid =
+      typeof normalizeName === "function"
+        ? normalizeName(user.kidName)
+        : String(user.kidName).trim().toLowerCase();
+  }
   return "codereef_trail_" + kid + "_" + trailId;
 }
 
@@ -136,8 +143,6 @@ function openCoralTrail(trailId, options) {
   var batchNumber = progress.batchesDone + 1;
   var spotIndex = 0;
   var onComplete = options && options.onComplete ? options.onComplete : function () {};
-  var coinsEach =
-    typeof COINS_PER_PRIZE === "number" ? COINS_PER_PRIZE : 5;
 
   // Remove any old overlay first.
   var old = document.getElementById("coral-trail");
@@ -159,9 +164,7 @@ function openCoralTrail(trailId, options) {
       i +
       '">' +
       '<div class="trail-spot__pad"></div>' +
-      '<p class="trail-spot__label">+' +
-      coinsEach +
-      " coins</p>" +
+      '<p class="trail-spot__label">+5 Sand</p>' +
       "</div>";
   }
 
@@ -183,7 +186,7 @@ function openCoralTrail(trailId, options) {
     "</div>" +
     '<div class="trail-diver" id="trail-diver" aria-hidden="true"></div>' +
     "</div>" +
-    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> to earn coins at the next stop.</p>' +
+    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> You always get +5 Sand. Rarer coins show up sometimes.</p>' +
     '<div class="trail-bag" id="trail-bag"></div>' +
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
@@ -215,9 +218,7 @@ function openCoralTrail(trailId, options) {
         prizeShapeHtml(saved.shape) +
         "<span>" +
         saved.name +
-        " <strong>+" +
-        coinsEach +
-        "</strong></span></li>";
+        "</span></li>";
     }
     html += "</ul>";
     bagEl.innerHTML = html;
@@ -242,21 +243,23 @@ function openCoralTrail(trailId, options) {
   }
 
   function tryRareFishBonus() {
-    // ~4% chance — very rare. Always rolls after coins are given.
+    // ~2% — very rare. Same fish can be found again.
     if (Math.random() >= TRAIL_RARE_FISH_CHANCE) {
       return null;
     }
-    if (typeof pickRandomUnownedFish !== "function" || typeof grantFish !== "function") {
-      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+    if (typeof pickRandomFish !== "function" || typeof grantFish !== "function") {
+      return null;
     }
-    var pick = pickRandomUnownedFish();
+    var pick = pickRandomFish();
     if (!pick) {
-      // Already own every shop fish — extra coins instead.
-      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+      return null;
     }
     var granted = grantFish(pick.id);
     if (!granted || !granted.ok) {
-      return { kind: "bonus", bonusCoins: TRAIL_RARE_BONUS_COINS };
+      if (granted && granted.reason === "full") {
+        return { kind: "full" };
+      }
+      return null;
     }
     return { kind: "fish", fish: granted.fish };
   }
@@ -267,65 +270,67 @@ function openCoralTrail(trailId, options) {
       return p.id === prize.id + "-b" + batchNumber;
     });
     var rare = null;
-    var totalCoins = coinsEach;
+    var earnedText = "+5 Sand";
 
     if (!already) {
+      var drop =
+        typeof rollTrailCoins === "function"
+          ? rollTrailCoins()
+          : { sand: 5 };
+      earnedText =
+        typeof formatEarnedCoins === "function"
+          ? formatEarnedCoins(drop)
+          : "+5 Sand";
+
       progress.prizes.push({
         id: prize.id + "-b" + batchNumber,
-        name: prize.name,
-        shape: prize.shape,
+        name: earnedText,
+        shape: "coin",
       });
       saveTrailProgress(trailId, progress);
 
-      // Every stop always gives coins for the Fish Shop.
-      if (typeof addCoins === "function") {
-        addCoins(coinsEach);
+      if (typeof addCoinDrop === "function") {
+        addCoinDrop(drop);
       }
 
       rare = tryRareFishBonus();
-      if (rare && rare.kind === "bonus") {
-        totalCoins += rare.bonusCoins;
-        if (typeof addCoins === "function") {
-          addCoins(rare.bonusCoins);
-        }
-      }
 
       if (rare && rare.kind === "fish") {
         if (typeof showRareFishToast === "function") {
-          showRareFishToast(rare.fish.name);
+          showRareFishToast(rare.fish.name, earnedText);
         } else if (typeof showCoinToast === "function") {
-          showCoinToast(coinsEach);
+          showCoinToast(earnedText);
         }
       } else if (typeof showCoinToast === "function") {
-        showCoinToast(totalCoins);
+        showCoinToast(earnedText);
       }
     }
     if (spotEls[index]) {
       spotEls[index].classList.add("is-earned");
+      var label = spotEls[index].querySelector(".trail-spot__label");
+      if (label && !already) {
+        label.textContent = earnedText;
+      }
     }
     renderBag();
 
     if (rare && rare.kind === "fish") {
       msgEl.innerHTML =
-        "You earned <strong>+" +
-        coinsEach +
-        " coins</strong> — and <strong>Rare! You found a " +
+        "You earned <strong>" +
+        earnedText +
+        "</strong> — and <strong>Rare! You found a " +
         rare.fish.name +
         "!</strong> Keep swimming!";
-    } else if (rare && rare.kind === "bonus") {
+    } else if (rare && rare.kind === "full") {
       msgEl.innerHTML =
-        "You earned <strong>+" +
-        coinsEach +
-        " coins</strong> plus a rare <strong>+" +
-        rare.bonusCoins +
-        " bonus coins</strong> (you already have every fish)! Keep swimming!";
+        "You earned <strong>" +
+        earnedText +
+        "</strong>! Your aquarium is full (1,000 fish). Keep swimming!";
     } else {
       msgEl.innerHTML =
-        "You earned <strong>+" +
-        coinsEach +
-        " coins</strong> (" +
-        prize.name +
-        ")! Keep swimming!";
+        "You earned <strong>" +
+        earnedText +
+        "</strong>! Keep swimming!";
     }
   }
 

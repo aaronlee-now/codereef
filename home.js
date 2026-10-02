@@ -24,3 +24,10 @@ if (!user) {
     screenEl.setAttribute("aria-label", "Start exploring");
   }
 }
+
+var logoutBtn = document.getElementById("logout-btn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", function () {
+    logOut();
+  });
+}

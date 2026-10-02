@@ -104,212 +104,333 @@ function applyPreview(html, css) {
     "</body></html>";
 }
 
-const tasks = [
-  {
-    goal: "Task 1: Change the big title to Hello, ocean!",
-    help:
-      "Replace only the word reef with ocean; keep the rest. " +
-      "Tap the HTML tab. Look for the line that starts with <h1>. " +
-      "It says Hello, reef! Change reef to ocean so it says Hello, ocean! " +
-      "Keep the <h1> and </h1> tags. Then press Show.",
-    check: function () {
-      return /<h1>\s*Hello,\s*ocean!\s*<\/h1>/i.test(htmlCode.value);
-    },
-  },
-  {
-    goal: "Task 2: The fun text is orange (#e8590c). Change it to blue.",
-    help:
-      "Replace only the color inside .fun; keep the rest of your CSS. " +
-      "Tap the CSS tab. Find .fun { ... }. Inside it you will see color: #e8590c; " +
-      "Change that line to color: blue; then press Show.",
-    check: function () {
+function numbered(lines) {
+  const parts = [];
+  for (let n = 0; n < lines.length; n += 1) {
+    parts.push(n + 1 + ". " + lines[n]);
+  }
+  return parts.join(" ");
+}
+
+function htmlHelp(fresh, tagLine, what) {
+  return numbered([
+    fresh
+      ? "Start fresh in the HTML box. Tap the HTML tab. Highlight the old HTML and press Delete. You can leave the CSS alone."
+      : "Tap the HTML tab. Keep your old HTML. Do not erase it.",
+    "Click in the HTML box at the end of the last line. Press the Enter key.",
+    "Type this exactly: " + tagLine,
+    what,
+    "Press the Show button.",
+  ]);
+}
+
+function cssHelp(fresh, line, what) {
+  return numbered([
+    fresh
+      ? "Tap the CSS tab. You can keep the old CSS and add this, or change the one line I name."
+      : "Tap the CSS tab. Keep your old CSS. Do not erase the other lines.",
+    "Click in the CSS box where I say. Press Enter if you need a new line.",
+    "Type this: " + line,
+    what,
+    "Press the Show button.",
+  ]);
+}
+
+const tasks = (function buildHtmlTasks() {
+  const list = [];
+  function add(goal, help, check) {
+    list.push({
+      goal: "Task " + (list.length + 1) + ": " + goal,
+      help: help,
+      check: check,
+    });
+  }
+
+  add(
+    "Change the big title to Hello, ocean!",
+    numbered([
+      "Tap the HTML tab.",
+      "Keep the line. Do not erase the whole title.",
+      "Click on the word reef inside the <h1> line.",
+      "Delete r e e f. Type ocean in that spot.",
+      "The line should look like this: <h1>Hello, ocean!</h1>",
+      "<h1> starts a big title. </h1> ends it. The slash / means end.",
+      "Press the Show button.",
+    ]),
+    function () { return /<h1>\s*Hello,\s*ocean!\s*<\/h1>/i.test(htmlCode.value); }
+  );
+  add(
+    "Change the fun text color to blue.",
+    cssHelp(
+      false,
+      "color: blue;",
+      "Find .fun { and the line color. A class is a name you can reuse, written with a dot. Change the color to the word blue. Keep the colon : and the semicolon ; ."
+    ),
+    function () {
       const css = cssCode.value.toLowerCase();
-      return (
-        css.indexOf(".fun") !== -1 &&
-        (css.indexOf("color: blue") !== -1 ||
-          css.indexOf("color:blue") !== -1 ||
-          css.indexOf("#00f") !== -1 ||
-          css.indexOf("#0000ff") !== -1 ||
-          css.indexOf("#339af0") !== -1)
-      );
-    },
-  },
-  {
-    goal: "Task 3: Add a new paragraph about your favorite fish.",
-    help:
-      "Keep your old HTML. Add a new line under the other <p>…</p> lines. " +
-      "Type something like <p>I love clownfish.</p> " +
-      "You need <p>, your words, then </p>. Press Show when done.",
-    check: function () {
-      const matches = htmlCode.value.match(/<p[\s>]/gi);
-      return matches && matches.length >= 3;
-    },
-  },
-  {
-    goal: "Task 4: Change the page background to light yellow (#fff3bf).",
-    help:
-      "Replace only the background color in body; keep the rest. " +
-      "Tap the CSS tab. Near the top, find body { ... }. " +
-      "Look for background: #dff6ff; Change it to background: #fff3bf; Then press Show.",
-    check: function () {
+      return css.indexOf(".fun") !== -1 && /color\s*:\s*(blue|#00f|#0000ff|#339af0)/.test(css);
+    }
+  );
+  add(
+    "Add a new paragraph about a fish.",
+    htmlHelp(false, "<p>I love clownfish.</p>", "A paragraph is a sentence block. Type <p> then your words, then </p>."),
+    function () { return (htmlCode.value.match(/<p[\s>]/gi) || []).length >= 3; }
+  );
+  add(
+    "Change the page background to light yellow.",
+    cssHelp(false, "background: #fff3bf;", "Find body { . background is the page color behind the words. #fff3bf is a light yellow code. Keep the colon and the semicolon."),
+    function () {
       const css = cssCode.value.toLowerCase().replace(/\s+/g, "");
-      return (
-        css.indexOf("background:#fff3bf") !== -1 ||
-        css.indexOf("background:lightyellow") !== -1 ||
-        css.indexOf("background:#fffee0") !== -1 ||
-        css.indexOf("background:#ffffe0") !== -1
-      );
-    },
-  },
-  {
-    goal: "Task 5: Make the big title green.",
-    help:
-      "Keep your old CSS. Tap the CSS tab. Find h1 { ... }. " +
-      "Change color: #0b7285; to color: green; (or color: #2f9e44;). Then press Show.",
-    check: function () {
+      return css.indexOf("background:#fff3bf") !== -1 || css.indexOf("background:lightyellow") !== -1 || css.indexOf("background:#ffffe0") !== -1;
+    }
+  );
+  add(
+    "Make the big title green.",
+    cssHelp(false, "color: green;", "Find h1 { . Change the color line to color: green; Green is the color word. Keep the colon : and semicolon ; ."),
+    function () {
       const css = cssCode.value.toLowerCase();
-      return (
-        css.indexOf("h1") !== -1 &&
-        (css.indexOf("color: green") !== -1 ||
-          css.indexOf("color:green") !== -1 ||
-          css.indexOf("#2f9e44") !== -1 ||
-          css.indexOf("#40c057") !== -1)
-      );
-    },
-  },
-  {
-    goal: "Task 6: Make .fun text bigger (font-size: 28px).",
-    help:
-      "Keep your old CSS. Tap the CSS tab. Find .fun { ... }. " +
-      "Change font-size: 20px; to font-size: 28px; Then press Show.",
-    check: function () {
-      const css = cssCode.value.toLowerCase().replace(/\s+/g, "");
-      return css.indexOf(".fun") !== -1 && css.indexOf("font-size:28px") !== -1;
-    },
-  },
-  {
-    goal: "Task 7: Add a new heading that says Coral friends.",
-    help:
-      "Keep your old HTML. Tap the HTML tab. Under your other lines, add: " +
-      "<h2>Coral friends</h2> Then press Show.",
-    check: function () {
-      return /<h2>\s*Coral friends\s*<\/h2>/i.test(htmlCode.value);
-    },
-  },
-];
+      return css.indexOf("h1") !== -1 && /color\s*:\s*(green|#2f9e44|#40c057)/.test(css);
+    }
+  );
+  add(
+    "Make the .fun text bigger.",
+    cssHelp(false, "font-size: 28px;", "Find .fun { . font-size means how big the letters are. 28px means 28 pixels, which are tiny screen dots. Type font-size: 28px;"),
+    function () {
+      return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("font-size:28px") !== -1;
+    }
+  );
+  add(
+    "Add a heading that says Coral friends.",
+    htmlHelp(false, "<h2>Coral friends</h2>", "h2 is a middle-size heading. Type <h2> then the words, then </h2>."),
+    function () { return /<h2>\s*Coral friends\s*<\/h2>/i.test(htmlCode.value); }
+  );
+
+  const sentences = [
+    "I see a crab.", "The eel is long.", "Whales are big.", "Sand feels soft.",
+    "Shells are pretty.", "I like waves.", "Sharks swim fast.", "Stars live on rocks.",
+    "Otters hold hands.", "Kelp is a plant.", "Pearls grow in shells.", "Tide comes in.",
+  ];
+  sentences.forEach(function (sentence) {
+    add(
+      "Add a paragraph that says " + sentence,
+      htmlHelp(false, "<p>" + sentence + "</p>", "<p> starts a paragraph. </p> ends it. The slash / means this tag is finished."),
+      function () { return htmlCode.value.toLowerCase().indexOf(sentence.toLowerCase()) !== -1; }
+    );
+  });
+
+  ["Reef map", "Fish club", "Tide pool", "Coral city", "Sea songs", "Boat day"].forEach(function (title) {
+    add(
+      "Add a middle heading that says " + title + ".",
+      htmlHelp(false, "<h2>" + title + "</h2>", "h2 is a heading smaller than h1. Type <h2> then the words, then </h2>."),
+      function () { return htmlCode.value.toLowerCase().indexOf("<h2>" + title.toLowerCase()) !== -1 || new RegExp("<h2>\\s*" + title + "\\s*</h2>", "i").test(htmlCode.value); }
+    );
+  });
+  ["Welcome", "Friends", "Today"].forEach(function (title) {
+    add(
+      "Add a small heading that says " + title + ".",
+      htmlHelp(false, "<h3>" + title + "</h3>", "h3 is a small heading. Type <h3> then the words, then </h3>."),
+      function () { return new RegExp("<h3>\\s*" + title + "\\s*</h3>", "i").test(htmlCode.value); }
+    );
+  });
+  ["Swim", "Clap", "Go", "Look"].forEach(function (label) {
+    add(
+      "Add a button that says " + label + ".",
+      htmlHelp(false, "<button>" + label + "</button>", "A button is something you could press. Type <button> then the word, then </button>."),
+      function () { return new RegExp("<button>\\s*" + label + "\\s*</button>", "i").test(htmlCode.value); }
+    );
+  });
+  ["crab", "eel", "whale"].forEach(function (animal) {
+    add(
+      "Add a list item for " + animal + ".",
+      htmlHelp(false, "<li>" + animal + "</li>", "li means one item in a list. Type <li> then the word, then </li>."),
+      function () { return new RegExp("<li>\\s*" + animal + "\\s*</li>", "i").test(htmlCode.value); }
+    );
+  });
+  add(
+    "Add a list that holds items.",
+    htmlHelp(false, "<ul></ul>", "ul means a list. You can put <li> items inside later. Type <ul></ul>."),
+    function () { return /<ul[\s>]/i.test(htmlCode.value); }
+  );
+  ["Home", "Shop", "Play"].forEach(function (name) {
+    add(
+      "Add a div named in the words " + name + ".",
+      htmlHelp(false, "<div>" + name + "</div>", "div is a box that groups things. Type <div> then the word, then </div>."),
+      function () { return new RegExp("<div>\\s*" + name + "\\s*</div>", "i").test(htmlCode.value); }
+    );
+  });
+  ["big", "fun", "soft"].forEach(function (word) {
+    add(
+      "Make the word " + word + " strong.",
+      htmlHelp(false, "<strong>" + word + "</strong>", "strong makes words look important, usually bold. Type <strong> then the word, then </strong>."),
+      function () { return new RegExp("<strong>\\s*" + word + "\\s*</strong>", "i").test(htmlCode.value); }
+    );
+  });
+  ["hello", "reef", "fish"].forEach(function (word) {
+    add(
+      "Add a link that says " + word + ".",
+      htmlHelp(false, '<a href="#">' + word + "</a>", "a is a link. href is where it goes. # means stay on this page. Type <a href=\"#\"> then the word, then </a>."),
+      function () { return new RegExp("<a[^>]*>\\s*" + word + "\\s*</a>", "i").test(htmlCode.value); }
+    );
+  });
+  ["card", "note", "tag"].forEach(function (name) {
+    add(
+      "Add a paragraph with class " + name + ".",
+      htmlHelp(false, '<p class="' + name + '">Hi</p>', "class is a nickname for CSS. Type <p class=\"" + name + "\"> then Hi, then </p>. Keep the quotes around " + name + "."),
+      function () { return new RegExp("<p[^>]*class\\s*=\\s*[\"']" + name + "[\"']", "i").test(htmlCode.value); }
+    );
+  });
+
+  const colors = ["tomato", "purple", "teal", "orange", "navy", "pink"];
+  colors.forEach(function (color) {
+    add(
+      "Set the h1 color to " + color + ".",
+      cssHelp(false, "color: " + color + ";", "In the h1 { block, type color: " + color + "; The colon : comes before the color. The semicolon ; ends the line."),
+      function () { return new RegExp("h1[\\s\\S]*color\\s*:\\s*" + color, "i").test(cssCode.value) || new RegExp("color\\s*:\\s*" + color, "i").test(cssCode.value); }
+    );
+  });
+  ["16px", "18px", "24px", "32px", "40px"].forEach(function (size) {
+    add(
+      "Set a font size to " + size + ".",
+      cssHelp(false, "font-size: " + size + ";", "font-size is how big the letters are. px means pixels, tiny dots on the screen. Type font-size: " + size + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("font-size:" + size) !== -1; }
+    );
+  });
+  [["#dff6ff", "light blue"], ["#fff3bf", "light yellow"], ["#d3f9d8", "light green"], ["#ffe3e3", "light red"]].forEach(function (pair) {
+    add(
+      "Set the page background to " + pair[1] + ".",
+      cssHelp(false, "background: " + pair[0] + ";", "In body { , background paints behind the words. Type background: " + pair[0] + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("background:" + pair[0]) !== -1; }
+    );
+  });
+  ["8px", "12px", "20px"].forEach(function (space) {
+    add(
+      "Add margin " + space + " around something.",
+      cssHelp(false, "margin: " + space + ";", "margin is empty space outside a box. Type margin: " + space + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("margin:" + space) !== -1; }
+    );
+  });
+  ["8px", "16px"].forEach(function (space) {
+    add(
+      "Add padding " + space + " inside a box.",
+      cssHelp(false, "padding: " + space + ";", "padding is empty space inside a box, between the edge and the words. Type padding: " + space + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("padding:" + space) !== -1; }
+    );
+  });
+  ["center", "left"].forEach(function (align) {
+    add(
+      "Align text to the " + align + ".",
+      cssHelp(false, "text-align: " + align + ";", "text-align moves words to the " + align + ". Type text-align: " + align + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("text-align:" + align) !== -1; }
+    );
+  });
+  ["200px", "320px"].forEach(function (width) {
+    add(
+      "Set a width to " + width + ".",
+      cssHelp(false, "width: " + width + ";", "width is how wide a box is. Type width: " + width + ";"),
+      function () { return cssCode.value.toLowerCase().replace(/\s+/g, "").indexOf("width:" + width) !== -1; }
+    );
+  });
+  add(
+    "Add a border.",
+    cssHelp(false, "border: 2px solid navy;", "border is a line around a box. 2px is the thickness. solid means a plain line. navy is the color. Type border: 2px solid navy;"),
+    function () { return /border\s*:\s*2px\s+solid/i.test(cssCode.value); }
+  );
+
+  const extra = ["cove", "pier", "gull", "mist", "dune", "foam"];
+  let pad = 0;
+  while (list.length < 100) {
+    const word = extra[pad % extra.length] + (pad >= extra.length ? String(pad) : "");
+    pad += 1;
+    add(
+      "Add one more paragraph that says " + word + ".",
+      htmlHelp(false, "<p>" + word + "</p>", "Type <p> then " + word + " then </p>."),
+      function () { return htmlCode.value.toLowerCase().indexOf(word.toLowerCase()) !== -1; }
+    );
+  }
+  return list;
+})();
+
+function htmlStep(goal, help, check) {
+  return { goal: goal, help: help, check: check };
+}
 
 const finalIdeas = [
   {
     id: "profile",
     title: "Mini profile card",
-    blurb: "A title, your name, and a fun fact.",
-    plan: [
-      "Make an <h1> title for your profile.",
-      "Add a paragraph with your name.",
-      "Add a fun fact paragraph.",
-    ],
+    blurb: "A long profile page with headings, a list, and colors.",
+    plan: ["Build the words in HTML.", "Add a list and a button.", "Paint it with CSS."],
     steps: [
-      {
-        goal: "Project step 1: Make a profile title.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          "Tap HTML. Put <h1>My Profile</h1> (or any title). Then press Show.",
-        check: function (ctx) {
-          return /<h1>[\s\S]*<\/h1>/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Project step 2: Add a name paragraph.",
-        help:
-          "Keep your old HTML. Add <p>My name is Sam.</p> under the title. Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 1;
-        },
-      },
-      {
-        goal: "Project step 3: Add a fun fact paragraph.",
-        help:
-          "Keep your old HTML. Add another <p>…</p> fun fact. Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2;
-        },
-      },
+      htmlStep("Project step 1: Make a profile title.", htmlHelp(true, "<h1>My Profile</h1>", "h1 is the biggest title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Project step 2: Add your name.", htmlHelp(false, "<p>My name is Sam.</p>", "p is a paragraph."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 1; }),
+      htmlStep("Project step 3: Add a fun fact.", htmlHelp(false, "<p>I like crabs.</p>", "Add another paragraph."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2; }),
+      htmlStep("Project step 4: Add a middle heading.", htmlHelp(false, "<h2>Favorites</h2>", "h2 is a middle heading."), function (ctx) { return /<h2>/i.test(ctx.html); }),
+      htmlStep("Project step 5: Add a button.", htmlHelp(false, "<button>Say hi</button>", "button is a pressable word."), function (ctx) { return /<button>/i.test(ctx.html); }),
+      htmlStep("Project step 6: Start a list.", htmlHelp(false, "<ul>", "ul starts a list. You will add items next."), function (ctx) { return /<ul/i.test(ctx.html); }),
+      htmlStep("Project step 7: Add a crab item.", htmlHelp(false, "<li>crab</li>", "li is one list item."), function (ctx) { return /<li>/i.test(ctx.html); }),
+      htmlStep("Project step 8: Add an eel item.", htmlHelp(false, "<li>eel</li>", "Add another li."), function (ctx) { return (ctx.html.match(/<li[\s>]/gi) || []).length >= 2; }),
+      htmlStep("Project step 9: Close the list.", htmlHelp(false, "</ul>", "</ul> ends the list. The slash / means end."), function (ctx) { return /<\/ul>/i.test(ctx.html); }),
+      htmlStep("Project step 10: Give a paragraph a class.", htmlHelp(false, '<p class="fun">Coding is fun.</p>', "class=\"fun\" is a nickname for CSS."), function (ctx) { return /class\s*=\s*["']fun["']/i.test(ctx.html); }),
+      htmlStep("Project step 11: Color the title.", cssHelp(false, "color: teal;", "In h1 { type color: teal;"), function (ctx) { return /h1[\s\S]*color\s*:/i.test(ctx.css) || /color\s*:\s*teal/i.test(ctx.css); }),
+      htmlStep("Project step 12: Make .fun bigger.", cssHelp(false, "font-size: 22px;", "Add .fun { font-size: 22px; } if you need a new block."), function (ctx) { return /font-size\s*:\s*22px/i.test(ctx.css); }),
+      htmlStep("Project step 13: Paint the background.", cssHelp(false, "background: #dff6ff;", "In body { set background."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 14: Center the title.", cssHelp(false, "text-align: center;", "text-align: center; puts words in the middle."), function (ctx) { return /text-align\s*:\s*center/i.test(ctx.css); }),
+      htmlStep("Project step 15: Add margin.", cssHelp(false, "margin: 12px;", "margin is space outside."), function (ctx) { return /margin\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 16: Add padding.", cssHelp(false, "padding: 8px;", "padding is space inside."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 17: Set a width.", cssHelp(false, "width: 280px;", "width is how wide."), function (ctx) { return /width\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 18: Add a border.", cssHelp(false, "border: 2px solid navy;", "border draws a line around a box."), function (ctx) { return /border\s*:/i.test(ctx.css); }),
     ],
   },
   {
     id: "poster",
     title: "Colorful poster",
-    blurb: "A big title and a bright background.",
-    plan: [
-      "Write a poster title in HTML.",
-      "Add a short poster sentence.",
-      "Change the background color in CSS.",
-    ],
+    blurb: "A poster with a title, sentences, and bright CSS.",
+    plan: ["Write the poster words.", "Add a list.", "Color the page."],
     steps: [
-      {
-        goal: "Project step 1: Make a poster title.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          "Tap HTML. Type <h1>Ocean Poster</h1> Then press Show.",
-        check: function (ctx) {
-          return /<h1>[\s\S]*<\/h1>/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Project step 2: Add a poster sentence.",
-        help:
-          "Keep your old HTML. Add <p>Swim into coding!</p> Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 1;
-        },
-      },
-      {
-        goal: "Project step 3: Change the background color.",
-        help:
-          "Keep your HTML. Tap CSS. In body, set background to a fun color like #ffe8cc or lightyellow. Then press Show.",
-        check: function (ctx) {
-          const css = String(ctx.css || "").toLowerCase().replace(/\s+/g, "");
-          return /background:/.test(css);
-        },
-      },
+      htmlStep("Project step 1: Poster title.", htmlHelp(true, "<h1>Ocean Poster</h1>", "h1 is the big title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Project step 2: A poster sentence.", htmlHelp(false, "<p>Swim into coding!</p>", "p is a sentence."), function (ctx) { return /<p/i.test(ctx.html); }),
+      htmlStep("Project step 3: Another sentence.", htmlHelp(false, "<p>Bring a friend.</p>", "Add one more p."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2; }),
+      htmlStep("Project step 4: Small heading.", htmlHelp(false, "<h3>Today</h3>", "h3 is a small heading."), function (ctx) { return /<h3>/i.test(ctx.html); }),
+      htmlStep("Project step 5: A button.", htmlHelp(false, "<button>Join</button>", "button is a word you can press."), function (ctx) { return /<button>/i.test(ctx.html); }),
+      htmlStep("Project step 6: A strong word.", htmlHelp(false, "<strong>Now</strong>", "strong makes a word important."), function (ctx) { return /<strong>/i.test(ctx.html); }),
+      htmlStep("Project step 7: A link.", htmlHelp(false, '<a href="#">reef</a>', "a is a link. href=\"#\" stays on this page."), function (ctx) { return /<a[\s>]/i.test(ctx.html); }),
+      htmlStep("Project step 8: A div box.", htmlHelp(false, "<div>Party</div>", "div is a box."), function (ctx) { return /<div>/i.test(ctx.html); }),
+      htmlStep("Project step 9: A class.", htmlHelp(false, '<p class="note">Free snacks.</p>', "class=\"note\" names this paragraph."), function (ctx) { return /class\s*=/i.test(ctx.html); }),
+      htmlStep("Project step 10: Background.", cssHelp(false, "background: #fff3bf;", "Paint body background."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 11: Title color.", cssHelp(false, "color: tomato;", "Color the h1."), function (ctx) { return /color\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 12: Big letters.", cssHelp(false, "font-size: 36px;", "Make letters bigger."), function (ctx) { return /font-size\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 13: Center words.", cssHelp(false, "text-align: center;", "Center the words."), function (ctx) { return /text-align\s*:\s*center/i.test(ctx.css); }),
+      htmlStep("Project step 14: Margin.", cssHelp(false, "margin: 16px;", "Space outside."), function (ctx) { return /margin\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 15: Padding.", cssHelp(false, "padding: 12px;", "Space inside."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 16: Width.", cssHelp(false, "width: 320px;", "How wide."), function (ctx) { return /width\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 17: Border.", cssHelp(false, "border: 2px solid teal;", "A line around the poster."), function (ctx) { return /border\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 18: One more sentence.", htmlHelp(false, "<p>See you at the reef.</p>", "Add a last paragraph."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 3; }),
     ],
   },
   {
     id: "invite",
     title: "Party invite",
-    blurb: "Invite friends to a reef party.",
-    plan: [
-      "Make an invite title.",
-      "Add when/where text.",
-      "Make the title a fun color in CSS.",
-    ],
+    blurb: "Invite friends with headings, a list, and colors.",
+    plan: ["Write the invite.", "List the snacks.", "Style the page."],
     steps: [
-      {
-        goal: "Project step 1: Make an invite title.",
-        help:
-          "You can delete the old code and start fresh for this project. " +
-          "Tap HTML. Type <h1>Reef Party!</h1> Then press Show.",
-        check: function (ctx) {
-          return /<h1>[\s\S]*<\/h1>/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Project step 2: Add party details.",
-        help:
-          "Keep your old HTML. Add <p>Saturday at the coral reef.</p> Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 1;
-        },
-      },
-      {
-        goal: "Project step 3: Color the title.",
-        help:
-          "Keep your HTML. Tap CSS. In h1 { }, set color: tomato; (or any color). Then press Show.",
-        check: function (ctx) {
-          const css = String(ctx.css || "").toLowerCase();
-          return /h1\s*\{[\s\S]*color\s*:/.test(css) || /h1[\s\S]*color\s*:/.test(css);
-        },
-      },
+      htmlStep("Project step 1: Invite title.", htmlHelp(true, "<h1>Reef Party!</h1>", "Big title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Project step 2: When and where.", htmlHelp(false, "<p>Saturday at the coral reef.</p>", "A paragraph."), function (ctx) { return /<p/i.test(ctx.html); }),
+      htmlStep("Project step 3: Who is invited.", htmlHelp(false, "<p>All fish are invited.</p>", "Another paragraph."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2; }),
+      htmlStep("Project step 4: Snacks heading.", htmlHelp(false, "<h2>Snacks</h2>", "Middle heading."), function (ctx) { return /<h2>/i.test(ctx.html); }),
+      htmlStep("Project step 5: List start.", htmlHelp(false, "<ul>", "Start a list."), function (ctx) { return /<ul/i.test(ctx.html); }),
+      htmlStep("Project step 6: Kelp item.", htmlHelp(false, "<li>kelp</li>", "One snack."), function (ctx) { return /<li>/i.test(ctx.html); }),
+      htmlStep("Project step 7: Pearls item.", htmlHelp(false, "<li>pearls</li>", "Another snack."), function (ctx) { return (ctx.html.match(/<li/gi) || []).length >= 2; }),
+      htmlStep("Project step 8: End the list.", htmlHelp(false, "</ul>", "End the list."), function (ctx) { return /<\/ul>/i.test(ctx.html); }),
+      htmlStep("Project step 9: A button.", htmlHelp(false, "<button>I will come</button>", "A button."), function (ctx) { return /<button>/i.test(ctx.html); }),
+      htmlStep("Project step 10: Title color.", cssHelp(false, "color: purple;", "Color the h1."), function (ctx) { return /color\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 11: Background.", cssHelp(false, "background: #ffe3e3;", "Paint the page."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 12: Font size.", cssHelp(false, "font-size: 28px;", "Bigger letters."), function (ctx) { return /font-size\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 13: Center.", cssHelp(false, "text-align: center;", "Center the words."), function (ctx) { return /text-align\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 14: Margin.", cssHelp(false, "margin: 10px;", "Outside space."), function (ctx) { return /margin\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 15: Padding.", cssHelp(false, "padding: 10px;", "Inside space."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 16: A class paragraph.", htmlHelp(false, '<p class="fun">Bring a shell.</p>', "class fun."), function (ctx) { return /class\s*=/i.test(ctx.html); }),
+      htmlStep("Project step 17: Width.", cssHelp(false, "width: 260px;", "How wide."), function (ctx) { return /width\s*:/i.test(ctx.css); }),
+      htmlStep("Project step 18: Border.", cssHelp(false, "border: 2px solid purple;", "A line around the invite."), function (ctx) { return /border\s*:/i.test(ctx.css); }),
     ],
   },
 ];
@@ -318,114 +439,61 @@ const advancedIdeas = [
   {
     id: "cardstyle",
     title: "Styled profile",
-    blurb: "Profile HTML plus class styling.",
-    plan: [
-      "Build a title and two paragraphs.",
-      "Add a class on one paragraph.",
-      "Style that class with a color and bigger text.",
-    ],
+    blurb: "HTML plus class colors, size, and layout.",
+    plan: ["Build the card.", "Name a class.", "Style the class."],
     steps: [
-      {
-        goal: "Advanced step 1: Title + two paragraphs.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          "In HTML make <h1>…</h1> and two <p> lines. Then press Show.",
-        check: function (ctx) {
-          return /<h1>/i.test(ctx.html) && (ctx.html.match(/<p[\s>]/gi) || []).length >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 2: Add a class to a paragraph.",
-        help:
-          'Keep your old HTML. Change one paragraph to <p class="fun">…</p> Then press Show.',
-        check: function (ctx) {
-          return /<p[^>]*class\s*=\s*["'][^"']+["']/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Advanced step 3: Style the class in CSS.",
-        help:
-          "Keep your HTML. Tap CSS. Add .fun { color: blue; font-size: 22px; } Then press Show.",
-        check: function (ctx) {
-          const css = String(ctx.css || "").toLowerCase();
-          return /\.\w+\s*\{/.test(css) && /color\s*:/.test(css);
-        },
-      },
+      htmlStep("Advanced step 1: Title.", htmlHelp(true, "<h1>My Card</h1>", "Big title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Advanced step 2: Two paragraphs.", htmlHelp(false, "<p>Hello</p>", "Add a paragraph. Add a second <p> too if you only have one."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 1; }),
+      htmlStep("Advanced step 3: A class.", htmlHelp(false, '<p class="fun">Reef kid</p>', "class fun."), function (ctx) { return /class\s*=\s*["']fun["']/i.test(ctx.html); }),
+      htmlStep("Advanced step 4: Color .fun.", cssHelp(false, ".fun { color: blue; }", "A dot before fun means the class. color: blue; inside the braces { }."), function (ctx) { return /\.fun[\s\S]*color\s*:/i.test(ctx.css) || /color\s*:\s*blue/i.test(ctx.css); }),
+      htmlStep("Advanced step 5: Bigger .fun.", cssHelp(false, "font-size: 24px;", "Inside .fun, set font-size."), function (ctx) { return /font-size\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 6: Background.", cssHelp(false, "background: #d3f9d8;", "Page background."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 7: A heading.", htmlHelp(false, "<h2>About me</h2>", "Middle heading."), function (ctx) { return /<h2>/i.test(ctx.html); }),
+      htmlStep("Advanced step 8: A button.", htmlHelp(false, "<button>Wave</button>", "A button."), function (ctx) { return /<button>/i.test(ctx.html); }),
+      htmlStep("Advanced step 9: Center.", cssHelp(false, "text-align: center;", "Center words."), function (ctx) { return /text-align\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 10: Padding.", cssHelp(false, "padding: 16px;", "Inside space."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 11: Margin.", cssHelp(false, "margin: 8px;", "Outside space."), function (ctx) { return /margin\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 12: Border.", cssHelp(false, "border: 2px solid teal;", "A line around the card."), function (ctx) { return /border\s*:/i.test(ctx.css); }),
     ],
   },
   {
     id: "neonposter",
     title: "Neon poster",
-    blurb: "Bold title, sentence, and bright page colors.",
-    plan: [
-      "Make a bold poster title.",
-      "Add two sentences.",
-      "Set background and title color.",
-    ],
+    blurb: "Bright colors, size, and a short list.",
+    plan: ["Neon title.", "Two sentences.", "Bright CSS."],
     steps: [
-      {
-        goal: "Advanced step 1: Make a neon title.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          "Type <h1>Neon Reef</h1> Then press Show.",
-        check: function (ctx) {
-          return /<h1>/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Advanced step 2: Add two sentences.",
-        help:
-          "Keep your old HTML. Add two <p> lines. Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 3: Bright CSS colors.",
-        help:
-          "Keep your HTML. In CSS set body background and h1 color to bright values. Then press Show.",
-        check: function (ctx) {
-          const css = String(ctx.css || "").toLowerCase();
-          return /background\s*:/.test(css) && /color\s*:/.test(css);
-        },
-      },
+      htmlStep("Advanced step 1: Neon title.", htmlHelp(true, "<h1>Neon Reef</h1>", "Big title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Advanced step 2: First sentence.", htmlHelp(false, "<p>Glow on.</p>", "A paragraph."), function (ctx) { return /<p/i.test(ctx.html); }),
+      htmlStep("Advanced step 3: Second sentence.", htmlHelp(false, "<p>Stay bright.</p>", "Another paragraph."), function (ctx) { return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2; }),
+      htmlStep("Advanced step 4: Background.", cssHelp(false, "background: #111;", "A dark page. #111 is almost black."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 5: Title color.", cssHelp(false, "color: pink;", "A bright title."), function (ctx) { return /color\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 6: Huge letters.", cssHelp(false, "font-size: 40px;", "Very big letters."), function (ctx) { return /font-size\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 7: Center.", cssHelp(false, "text-align: center;", "Middle of the page."), function (ctx) { return /text-align\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 8: A button.", htmlHelp(false, "<button>Glow</button>", "A button."), function (ctx) { return /<button>/i.test(ctx.html); }),
+      htmlStep("Advanced step 9: Padding.", cssHelp(false, "padding: 20px;", "Inside space."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 10: A div.", htmlHelp(false, "<div>Night swim</div>", "A box."), function (ctx) { return /<div>/i.test(ctx.html); }),
+      htmlStep("Advanced step 11: Width.", cssHelp(false, "width: 300px;", "How wide."), function (ctx) { return /width\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 12: Border.", cssHelp(false, "border: 2px solid pink;", "A pink line."), function (ctx) { return /border\s*:/i.test(ctx.css); }),
     ],
   },
   {
     id: "zoo",
     title: "Sea zoo list",
-    blurb: "A title and three animal paragraphs.",
-    plan: [
-      "Make a zoo title.",
-      "Add two animal paragraphs.",
-      "Add a third animal paragraph.",
-    ],
+    blurb: "A title and animal list with simple layout CSS.",
+    plan: ["Name the zoo.", "List three animals.", "Style the list page."],
     steps: [
-      {
-        goal: "Advanced step 1: Make a zoo title.",
-        help:
-          "You can delete the old code and start fresh for this advanced project. " +
-          "Type <h1>Sea Zoo</h1> Then press Show.",
-        check: function (ctx) {
-          return /<h1>/i.test(ctx.html);
-        },
-      },
-      {
-        goal: "Advanced step 2: Add two animals.",
-        help:
-          "Keep your old HTML. Add two <p> animal lines. Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 2;
-        },
-      },
-      {
-        goal: "Advanced step 3: Add a third animal.",
-        help:
-          "Keep your old HTML. Add one more <p> animal. Then press Show.",
-        check: function (ctx) {
-          return (ctx.html.match(/<p[\s>]/gi) || []).length >= 3;
-        },
-      },
+      htmlStep("Advanced step 1: Zoo title.", htmlHelp(true, "<h1>Sea Zoo</h1>", "Big title."), function (ctx) { return /<h1>/i.test(ctx.html); }),
+      htmlStep("Advanced step 2: Start the list.", htmlHelp(false, "<ul>", "ul starts the list."), function (ctx) { return /<ul/i.test(ctx.html); }),
+      htmlStep("Advanced step 3: Crab.", htmlHelp(false, "<li>crab</li>", "First animal."), function (ctx) { return /<li>/i.test(ctx.html); }),
+      htmlStep("Advanced step 4: Eel.", htmlHelp(false, "<li>eel</li>", "Second animal."), function (ctx) { return (ctx.html.match(/<li/gi) || []).length >= 2; }),
+      htmlStep("Advanced step 5: Whale.", htmlHelp(false, "<li>whale</li>", "Third animal."), function (ctx) { return (ctx.html.match(/<li/gi) || []).length >= 3; }),
+      htmlStep("Advanced step 6: End the list.", htmlHelp(false, "</ul>", "Close the list."), function (ctx) { return /<\/ul>/i.test(ctx.html); }),
+      htmlStep("Advanced step 7: A note.", htmlHelp(false, "<p>Please do not tap the glass.</p>", "A paragraph under the list."), function (ctx) { return /<p/i.test(ctx.html); }),
+      htmlStep("Advanced step 8: Background.", cssHelp(false, "background: #dff6ff;", "Light blue page."), function (ctx) { return /background\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 9: Title color.", cssHelp(false, "color: navy;", "Dark blue title."), function (ctx) { return /color\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 10: Font size.", cssHelp(false, "font-size: 20px;", "Letter size."), function (ctx) { return /font-size\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 11: Margin.", cssHelp(false, "margin: 14px;", "Outside space."), function (ctx) { return /margin\s*:/i.test(ctx.css); }),
+      htmlStep("Advanced step 12: Padding.", cssHelp(false, "padding: 10px;", "Inside space."), function (ctx) { return /padding\s*:/i.test(ctx.css); }),
     ],
   },
 ];
@@ -453,6 +521,9 @@ const projectApi = CodeReefProject.attach({
     cssCode.value = projectCss;
     applyPreview(projectHtml, projectCss);
     persistLesson();
+  },
+  getParts: function () {
+    return { html: htmlCode.value, css: cssCode.value };
   },
 });
 
@@ -552,25 +623,6 @@ function showPreview() {
   checkTask();
 }
 
-function resetCode() {
-  if (typeof CodeReefProgress !== "undefined") {
-    CodeReefProgress.clear(PATH_KEY);
-  }
-  if (projectApi.isHandlingTasks() && projectApi.getPhase() === "building") {
-    htmlCode.value = projectHtml;
-    cssCode.value = projectCss;
-    applyPreview(projectHtml, projectCss);
-    setTip("Code reset for your project. Press Show when ready.");
-    persistLesson();
-    return;
-  }
-  htmlCode.value = starterHtml;
-  cssCode.value = starterCss;
-  applyPreview(htmlCode.value, cssCode.value);
-  showTask();
-  persistLesson();
-}
-
 document.querySelectorAll(".web-tab").forEach(function (tab) {
   tab.addEventListener("click", function () {
     const name = tab.getAttribute("data-tab");
@@ -608,10 +660,15 @@ nextBtn.addEventListener("click", function () {
 });
 
 document.getElementById("run-btn").addEventListener("click", showPreview);
-document.getElementById("reset-btn").addEventListener("click", resetCode);
 
-htmlCode.addEventListener("input", persistLessonSoon);
-cssCode.addEventListener("input", persistLessonSoon);
+htmlCode.addEventListener("input", function () {
+  projectApi.guardElement(htmlCode, "html");
+  persistLessonSoon();
+});
+cssCode.addEventListener("input", function () {
+  projectApi.guardElement(cssCode, "css");
+  persistLessonSoon();
+});
 
 (function bootLesson() {
   var saved =

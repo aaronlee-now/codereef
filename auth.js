@@ -30,15 +30,17 @@ function getCurrentUser() {
   return JSON.parse(raw);
 }
 
-function normalizeName(name) {
-  return name.trim().replace(/\s+/g, " ").toLowerCase();
+// End the session only. Coins, fish, lessons, and projects stay saved under this kid's name.
+function logOut() {
+  if (window.CodeReefProgress && typeof CodeReefProgress.flush === "function") {
+    CodeReefProgress.flush();
+  }
+  localStorage.removeItem("codereef_current_user");
+  window.location.href = "index.html";
 }
 
-function findUserByEmail(email) {
-  const needle = email.trim().toLowerCase();
-  return getUsers().find(function (user) {
-    return user.parentEmail.toLowerCase() === needle;
-  });
+function normalizeName(name) {
+  return name.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
 function findUserByKidName(kidName) {
@@ -48,13 +50,12 @@ function findUserByKidName(kidName) {
   });
 }
 
-// Tries to email the parent (works with Gmail addresses).
-// Uses FormSubmit — the parent may need to confirm the first email once.
-function notifyParentOfLogin(user) {
-  const subject = "CodeReef login";
-  const text =
-    user.kidName +
-    " just logged into CodeReef. If that was not your diver, change the password.";
+// Emails the parent (Gmail works). FormSubmit may ask them to tap a link the first time.
+// More than one kid can share the same parent email. The address does not have to be unique.
+function notifyParent(user, subject, text) {
+  if (!user || !user.parentEmail) {
+    return Promise.reject(new Error("missing email"));
+  }
 
   return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(user.parentEmail), {
     method: "POST",
@@ -66,6 +67,50 @@ function notifyParentOfLogin(user) {
       name: "CodeReef",
       _subject: subject,
       message: text,
+      _captcha: "false",
     }),
+  }).then(function (response) {
+    return response.text().then(function (raw) {
+      var data = {};
+      try {
+        data = JSON.parse(raw);
+      } catch (error) {
+        data = {};
+      }
+      if (!response.ok || String(data.success) !== "true") {
+        throw new Error("email failed");
+      }
+      return data;
+    });
   });
+}
+
+function notifyParentOfSignup(user) {
+  return notifyParent(
+    user,
+    "CodeReef signup",
+    user.kidName +
+      " just signed up for CodeReef. Several kids can share this same parent email."
+  );
+}
+
+function notifyParentOfLogin(user) {
+  return notifyParent(
+    user,
+    "CodeReef login",
+    user.kidName +
+      " just logged into CodeReef. If that was not your diver, change the password."
+  );
+}
+
+function notifyParentOfLanguageComplete(user, languageName) {
+  var language = languageName || "a coding path";
+  return notifyParent(
+    user,
+    "CodeReef: " + language + " complete",
+    user.kidName +
+      " finished the " +
+      language +
+      " path on CodeReef (skills, final project, and advanced project)."
+  );
 }
