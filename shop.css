@@ -226,6 +226,248 @@
   color: var(--sand);
 }
 
+.shop-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.shop-card__btn--sell {
+  background: #e6a817;
+  border-color: #c4890c;
+  color: #062430;
+  white-space: normal;
+  max-width: 16rem;
+}
+
+.shop-card__btn--sell:hover,
+.shop-card__btn--sell:focus-visible {
+  background: #ffd166;
+  border-color: #e6a817;
+}
+
+.shop-sure {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+  padding: 1rem;
+  background: rgba(6, 36, 48, 0.72);
+}
+
+.shop-sure[hidden] {
+  display: none;
+}
+
+.shop-sure__box {
+  width: min(28rem, 100%);
+  margin: auto;
+  flex: 0 0 auto;
+  padding: 1.25rem 1.1rem 1.1rem;
+  border-radius: 1.25rem;
+  background: #0d4a5c;
+  border: 3px solid #ffd166;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 20, 30, 0.4);
+}
+
+.shop-sure__text {
+  margin: 0 0 1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  color: #f4fffc;
+}
+
+.shop-sure__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.shop-sure__yes,
+.shop-sure__no {
+  min-width: 7.5rem;
+  min-height: 2.8rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.shop-sure__yes {
+  border: 2px solid #c4890c;
+  background: #ffd166;
+  color: #062430;
+}
+
+.shop-sure__no {
+  border: 2px solid rgba(244, 255, 252, 0.7);
+  background: transparent;
+  color: #f4fffc;
+}
+
+.shop-replace {
+  position: fixed;
+  inset: 0;
+  z-index: 3900;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+  padding: 1rem;
+  background: rgba(6, 36, 48, 0.72);
+}
+
+.shop-replace[hidden] {
+  display: none;
+}
+
+.shop-replace__box {
+  display: flex;
+  flex-direction: column;
+  width: min(28rem, 100%);
+  max-height: none;
+  margin: auto;
+  flex: 0 0 auto;
+  padding: 1.1rem;
+  border-radius: 1.25rem;
+  background: #0d4a5c;
+  border: 3px solid #ffd166;
+  box-shadow: 0 12px 32px rgba(0, 20, 30, 0.4);
+}
+
+.shop-replace__title {
+  margin: 0 0 0.4rem;
+  font-family: "Baloo 2", "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.45rem;
+  text-align: center;
+  color: #ffd166;
+}
+
+.shop-replace__text {
+  margin: 0 0 0.75rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  text-align: center;
+  color: #f4fffc;
+}
+
+.shop-replace__want {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #1a6a7c 0%, #0a3a48 100%);
+}
+
+.shop-replace__want-name {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #ffd166;
+}
+
+.shop-replace__list {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: min(46vh, 20rem);
+  margin: 0 0 0.75rem;
+}
+
+.shop-replace__fish {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border-radius: 1rem;
+  border: 2px solid rgba(244, 255, 252, 0.35);
+  background: rgba(6, 36, 48, 0.45);
+  color: #f4fffc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+
+.shop-replace__fish:hover,
+.shop-replace__fish:focus-visible {
+  border-color: #ffd166;
+  outline: none;
+}
+
+.shop-replace__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.shop-replace__name {
+  font-size: 1.05rem;
+}
+
+.shop-replace__have {
+  font-size: 0.92rem;
+  color: #d7fff4;
+}
+
+.shop-replace__back {
+  font-size: 0.95rem;
+  color: #ffd166;
+}
+
+.shop-replace__preview .reef-fish,
+.shop-replace__pic .reef-fish {
+  width: 4.8rem;
+  height: 2.7rem;
+}
+
+.shop-replace__need {
+  margin: 0 0 0.6rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+  color: #ffd166;
+}
+
+.shop-replace__need:empty {
+  display: none;
+}
+
+.shop-replace__skip {
+  width: 100%;
+  min-height: 3rem;
+  border-radius: 999px;
+  border: 2px solid #f4fffc;
+  background: transparent;
+  color: #f4fffc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.shop-replace__skip:hover,
+.shop-replace__skip:focus-visible {
+  background: rgba(244, 255, 252, 0.12);
+  outline: none;
+}
+
 .shop-msg {
   min-height: 1.5rem;
   margin: 1rem 0 0;
@@ -1237,4 +1479,539 @@ body > .menu-fish-layer {
   gap: 0.5rem;
   justify-content: center;
   margin-top: 0.75rem;
+}
+
+/* Shop categories, decorations, and fish outfits */
+.shop-page {
+  width: min(52rem, calc(100% - 2rem));
+}
+
+.shop-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+@media (min-width: 560px) {
+  .shop-tabs {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.shop-tab {
+  min-height: 3.4rem;
+  padding: 0.45rem 0.4rem;
+  border-radius: 1rem;
+  border: 2px solid rgba(255, 209, 102, 0.7);
+  background: rgba(6, 36, 48, 0.45);
+  color: #f4fffc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  cursor: pointer;
+}
+
+.shop-tab.is-on {
+  background: #ffd166;
+  border-color: #ffd166;
+  color: #062430;
+}
+
+.shop-tab:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.shop-card__ask {
+  margin: 0.15rem 0 0;
+  font-weight: 800;
+  color: var(--foam);
+}
+
+.shop-card__picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.shop-card__pick {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 2px solid #ffd166;
+  background: #062430;
+  color: #ffd166;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.shop-card__pick:hover,
+.shop-card__pick:focus-visible {
+  background: #ffd166;
+  color: #062430;
+  outline: none;
+}
+
+.shop-outfit-demo {
+  position: relative;
+  width: 7.5rem;
+  height: 4.2rem;
+}
+
+.shop-outfit-demo__body {
+  position: absolute;
+  left: 10%;
+  top: 30%;
+  width: 74%;
+  height: 46%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #8ecae6, #1d6f8a);
+}
+
+.reef-outfit {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reef-outfit--crown {
+  left: 6%;
+  top: -2%;
+  width: 28%;
+  height: 32%;
+  background: linear-gradient(#ffe08a, #e6a817);
+  clip-path: polygon(0 100%, 0 42%, 18% 68%, 34% 12%, 50% 68%, 66% 8%, 82% 68%, 100% 38%, 100% 100%);
+}
+
+.reef-outfit--bow {
+  left: 0;
+  top: 6%;
+  width: 36%;
+  height: 32%;
+}
+
+.reef-outfit--bow::before,
+.reef-outfit--bow::after {
+  content: "";
+  position: absolute;
+  top: 12%;
+  width: 48%;
+  height: 76%;
+  background: #ff6b9a;
+}
+
+.reef-outfit--bow::before {
+  left: 0;
+  border-radius: 60% 40% 50% 50%;
+  transform: rotate(-18deg);
+}
+
+.reef-outfit--bow::after {
+  right: 0;
+  border-radius: 40% 60% 50% 50%;
+  transform: rotate(18deg);
+}
+
+.reef-outfit--scarf {
+  left: 20%;
+  top: 46%;
+  width: 40%;
+  height: 20%;
+  border-radius: 999px;
+  background: repeating-linear-gradient(90deg, #ff6b6b 0 6px, #fff 6px 10px, #4dabf7 10px 16px);
+  transform: rotate(-8deg);
+}
+
+.reef-outfit--star {
+  left: 42%;
+  top: 16%;
+  width: 24%;
+  height: 40%;
+  background: #ffd166;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 100%, 50% 72%, 21% 100%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.reef-outfit--sunglasses {
+  left: 2%;
+  top: 32%;
+  width: 34%;
+  height: 20%;
+  background:
+    radial-gradient(circle at 28% 50%, #222 0 42%, transparent 44%),
+    radial-gradient(circle at 74% 50%, #222 0 42%, transparent 44%),
+    linear-gradient(#222, #222) center / 36% 14% no-repeat;
+}
+
+.reef-outfit--party {
+  left: 10%;
+  top: -16%;
+  width: 22%;
+  height: 42%;
+  background: conic-gradient(#ff6b6b, #ffd166, #74c0fc, #ff6b6b);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.reef-outfit--flower {
+  left: 0;
+  top: 2%;
+  width: 26%;
+  height: 40%;
+  background:
+    radial-gradient(circle at 50% 50%, #ffd166 0 16%, transparent 18%),
+    radial-gradient(circle at 50% 18%, #ff8fab 0 22%, transparent 24%),
+    radial-gradient(circle at 82% 42%, #ff8fab 0 22%, transparent 24%),
+    radial-gradient(circle at 70% 80%, #ff8fab 0 22%, transparent 24%),
+    radial-gradient(circle at 30% 80%, #ff8fab 0 22%, transparent 24%),
+    radial-gradient(circle at 16% 42%, #ff8fab 0 22%, transparent 24%);
+}
+
+.reef-outfit--necklace {
+  left: 16%;
+  top: 55%;
+  width: 38%;
+  height: 30%;
+  border: 3px solid #f8f4e8;
+  border-top: none;
+  border-radius: 0 0 50% 50%;
+  background: radial-gradient(circle at 50% 92%, #fff 0 5px, #dbeafe 6px, transparent 8px);
+}
+
+.reef-outfit--captain {
+  left: 4%;
+  top: -4%;
+  width: 38%;
+  height: 32%;
+  background:
+    linear-gradient(#f8fafc, #f8fafc) 42% 28% / 18% 18% no-repeat,
+    linear-gradient(#1d4e89, #1d4e89) 18% 0 / 64% 52% no-repeat,
+    linear-gradient(#f4d35e, #e6a817) 0 52% / 100% 24% no-repeat;
+  border-radius: 0.35rem 0.35rem 0.1rem 0.1rem;
+}
+
+.reef-outfit--snorkel {
+  left: 0;
+  top: 16%;
+  width: 32%;
+  height: 58%;
+}
+
+.reef-outfit--snorkel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 38%;
+  width: 72%;
+  height: 28%;
+  border-radius: 0.45rem;
+  background: #4dabf7;
+  border: 2px solid #1864ab;
+}
+
+.reef-outfit--snorkel::after {
+  content: "";
+  position: absolute;
+  left: 52%;
+  top: 0;
+  width: 16%;
+  height: 72%;
+  border-radius: 0.4rem;
+  background: #ffd43b;
+  border: 2px solid #e67700;
+}
+
+.reef-outfit--bowtie {
+  left: 18%;
+  top: 48%;
+  width: 30%;
+  height: 22%;
+  background: #e03131;
+  clip-path: polygon(0 8%, 40% 50%, 0 92%, 50% 50%, 100% 8%, 60% 50%, 100% 92%, 50% 50%);
+}
+
+.reef-outfit--halo {
+  left: 2%;
+  top: -14%;
+  width: 36%;
+  height: 24%;
+  border: 3px solid #ffe066;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ffd166;
+}
+
+.reef-outfit--backpack {
+  left: 58%;
+  top: 22%;
+  width: 22%;
+  height: 42%;
+  border-radius: 0.35rem;
+  background: linear-gradient(#ff922b, #e8590c);
+}
+
+.reef-outfit--backpack::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: -22%;
+  width: 64%;
+  height: 30%;
+  border: 3px solid #e8590c;
+  border-bottom: none;
+  border-radius: 0.45rem 0.45rem 0 0;
+}
+
+.reef-outfit--heart {
+  left: 40%;
+  top: 34%;
+  width: 14%;
+  height: 14%;
+  background: #ff6b81;
+  transform: rotate(45deg);
+}
+
+.reef-outfit--heart::before,
+.reef-outfit--heart::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ff6b81;
+  border-radius: 50%;
+}
+
+.reef-outfit--heart::before {
+  left: -50%;
+}
+
+.reef-outfit--heart::after {
+  top: -50%;
+}
+
+.decor-shape {
+  position: relative;
+  display: block;
+  width: 4rem;
+  height: 3rem;
+}
+
+.decor-shape--leaf-big,
+.decor-shape--leaf-little,
+.decor-shape--leaf-gold {
+  height: 2.3rem;
+  border-radius: 0 78% 18% 80%;
+  transform: rotate(-16deg);
+}
+
+.decor-shape--leaf-big {
+  width: 5rem;
+  background: linear-gradient(135deg, #86efac, #166534);
+}
+
+.decor-shape--leaf-little {
+  width: 3.4rem;
+  background: linear-gradient(135deg, #bbf7d0, #15803d);
+}
+
+.decor-shape--leaf-gold {
+  width: 4.6rem;
+  background: linear-gradient(135deg, #fde68a, #ca8a04);
+}
+
+.decor-shape--leaf-big::after,
+.decor-shape--leaf-little::after,
+.decor-shape--leaf-gold::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 48%;
+  width: 62%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.decor-shape--lily,
+.decor-shape--lily-pink,
+.decor-shape--lily-spot {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #86efac, #166534 70%);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+.decor-shape--lily-pink {
+  background:
+    radial-gradient(circle at 50% 42%, #fbcfe8 0 14%, transparent 15%),
+    radial-gradient(circle at 35% 35%, #86efac, #166534 70%);
+}
+
+.decor-shape--lily-spot {
+  background:
+    radial-gradient(circle at 30% 40%, #fef08a 0 8%, transparent 9%),
+    radial-gradient(circle at 62% 58%, #fef08a 0 7%, transparent 8%),
+    radial-gradient(circle at 48% 28%, #fef08a 0 6%, transparent 7%),
+    radial-gradient(circle at 35% 35%, #4ade80, #14532d 70%);
+}
+
+.decor-shape--rock {
+  width: 3.5rem;
+  height: 2.6rem;
+  border-radius: 46% 54% 48% 42%;
+  background: radial-gradient(circle at 32% 30%, #d7c6b4, #7a6252 58%, #3f332c);
+}
+
+.decor-shape--pebbles {
+  background:
+    radial-gradient(circle at 22% 62%, #d6d3d1 0 28%, transparent 29%),
+    radial-gradient(circle at 55% 70%, #a8a29e 0 24%, transparent 25%),
+    radial-gradient(circle at 78% 58%, #e7e5e4 0 20%, transparent 21%);
+}
+
+.decor-shape--shell {
+  width: 3.2rem;
+  height: 2.4rem;
+  border-radius: 50% 50% 42% 42%;
+  background:
+    radial-gradient(circle at 50% 88%, #fff8ee 0 16%, transparent 17%),
+    repeating-linear-gradient(90deg, #f6d7a8 0 0.35rem, #e39a62 0.35rem 0.5rem);
+}
+
+.decor-shape--sand-dollar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background:
+    linear-gradient(#b45309, #b45309) center / 2px 58% no-repeat,
+    linear-gradient(#b45309, #b45309) center / 58% 2px no-repeat,
+    radial-gradient(circle at 50% 50%, #fef3c7, #f5d0a0);
+  box-shadow: inset 0 0 0 3px #fde68a;
+}
+
+.decor-shape--starfish {
+  width: 3.2rem;
+  height: 3.2rem;
+  background: radial-gradient(circle at 50% 50%, #ffe08a, #f4a261 42%, #e07a3a);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 100%, 50% 72%, 21% 100%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.decor-shape--coral {
+  width: 3.4rem;
+  height: 3.4rem;
+  background:
+    linear-gradient(#fda4af, #e11d48) 8% 100% / 22% 70% no-repeat,
+    linear-gradient(#fb7185, #be123c) 40% 100% / 24% 92% no-repeat,
+    linear-gradient(#fecdd3, #f43f5e) 72% 100% / 20% 60% no-repeat;
+  border-radius: 1rem;
+}
+
+.shop-decor-preview--kelp .shop-decor-preview__leaf {
+  height: 3.2rem;
+  background: linear-gradient(180deg, #4ade80, #14532d);
+}
+
+.decor-shape--cave {
+  width: 4rem;
+  height: 3rem;
+  border-radius: 50% 50% 18% 18%;
+  background:
+    radial-gradient(ellipse at 50% 72%, #0f172a 0 28%, transparent 30%),
+    linear-gradient(180deg, #94a3b8, #475569);
+}
+
+.decor-shape--chest {
+  width: 3.6rem;
+  height: 2.5rem;
+  margin-top: 0.4rem;
+  border-radius: 0.3rem;
+  background:
+    linear-gradient(#facc15, #facc15) center 42% / 18% 18% no-repeat,
+    linear-gradient(#fde68a, #fde68a) center / 78% 14% no-repeat,
+    linear-gradient(180deg, #d97706, #78350f);
+  box-shadow: inset 0 0.65rem 0 #b45309;
+}
+
+.decor-shape--bubbles {
+  background:
+    radial-gradient(circle at 28% 32%, rgba(255, 255, 255, 0.95) 0 18%, rgba(125, 211, 252, 0.35) 19%, transparent 28%),
+    radial-gradient(circle at 68% 24%, rgba(255, 255, 255, 0.9) 0 14%, transparent 22%),
+    radial-gradient(circle at 58% 68%, rgba(255, 255, 255, 0.95) 0 20%, rgba(125, 211, 252, 0.3) 21%, transparent 30%),
+    radial-gradient(circle at 24% 74%, rgba(255, 255, 255, 0.85) 0 10%, transparent 16%);
+}
+
+.decor-shape--castle {
+  width: 3.8rem;
+  height: 2.8rem;
+  background: linear-gradient(#fde68a, #d97706) center bottom / 34% 78% no-repeat;
+}
+
+.decor-shape--castle::before,
+.decor-shape--castle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 28%;
+  background: linear-gradient(#fef3c7, #d97706);
+  border-radius: 0.15rem 0.15rem 0 0;
+}
+
+.decor-shape--castle::before {
+  left: 0;
+  height: 62%;
+}
+
+.decor-shape--castle::after {
+  right: 0;
+  height: 50%;
+}
+
+.decor-shape--fan {
+  width: 3.8rem;
+  height: 2.3rem;
+  border-radius: 3rem 3rem 0.2rem 0.2rem;
+  background: repeating-linear-gradient(90deg, #fb7185 0 0.35rem, #fda4af 0.35rem 0.6rem);
+}
+
+.decor-shape--anemone {
+  background:
+    radial-gradient(circle at 22% 72%, #f9a8d4 0 20%, transparent 21%),
+    radial-gradient(circle at 50% 38%, #f472b6 0 22%, transparent 23%),
+    radial-gradient(circle at 78% 68%, #fb7185 0 18%, transparent 19%),
+    radial-gradient(circle at 50% 86%, #9d174d 0 18%, transparent 19%);
+}
+
+.decor-shape--driftwood {
+  width: 4.4rem;
+  height: 1rem;
+  margin-top: 1.2rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #92400e, #d6a36a 40%, #78350f);
+  transform: rotate(-8deg);
+}
+
+.aquarium-decor--rest {
+  z-index: 2;
+}
+
+.aquarium-swimmer--rest {
+  animation-play-state: paused;
+  z-index: 4;
+}
+
+.aquarium-swimmer--rest .reef-fish__wiggle {
+  animation-play-state: paused;
+}
+
+.aquarium-swimmer--rest::after {
+  content: "z";
+  position: absolute;
+  top: -0.35rem;
+  left: 70%;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
 }

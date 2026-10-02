@@ -1,6 +1,6 @@
 // Coral trail — after every 3 tasks, swim up and earn coins.
 // Each coding path has its own reef colors.
-// Every stop: +5 Sand. Sometimes +1 Coral (25%), rarely +1 Pearl (8%),
+// Every stop: +1 Sand. Sometimes +1 Coral (25%), rarely +1 Pearl (8%),
 // very rarely +1 Treasure (2%). Very rarely (~2%) a stop also gives a free fish.
 // The same fish can be found again. Duplicates are OK.
 
@@ -9,7 +9,7 @@ var TRAIL_RARE_FISH_CHANCE = 0.02;
 var TRAIL_THEMES = {
   blocks: {
     title: "Block Coral Trail",
-    subtitle: "You finished 3 block tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 block tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--blocks",
     prizes: [
       { id: "block-coin", name: "Block Coin", shape: "coin" },
@@ -19,7 +19,7 @@ var TRAIL_THEMES = {
   },
   htmlcss: {
     title: "Paintbrush Reef Trail",
-    subtitle: "You finished 3 HTML/CSS tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 HTML/CSS tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--htmlcss",
     prizes: [
       { id: "css-coin", name: "Style Coin", shape: "coin" },
@@ -29,7 +29,7 @@ var TRAIL_THEMES = {
   },
   python: {
     title: "Sea Grass Trail",
-    subtitle: "You finished 3 Python tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 Python tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--python",
     prizes: [
       { id: "py-coin", name: "Python Coin", shape: "coin" },
@@ -39,7 +39,7 @@ var TRAIL_THEMES = {
   },
   javascript: {
     title: "Golden Coral Trail",
-    subtitle: "You finished 3 JavaScript tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 JavaScript tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--javascript",
     prizes: [
       { id: "js-coin", name: "Spark Coin", shape: "coin" },
@@ -49,7 +49,7 @@ var TRAIL_THEMES = {
   },
   go: {
     title: "Gopher Ocean Trail",
-    subtitle: "You finished 3 Go tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 Go tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--go",
     prizes: [
       { id: "go-coin", name: "Ocean Coin", shape: "coin" },
@@ -59,7 +59,7 @@ var TRAIL_THEMES = {
   },
   java: {
     title: "Amber Coral Trail",
-    subtitle: "You finished 3 Java tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 Java tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--java",
     prizes: [
       { id: "java-coin", name: "Amber Coin", shape: "coin" },
@@ -69,7 +69,7 @@ var TRAIL_THEMES = {
   },
   cpp: {
     title: "Deep Purple Trail",
-    subtitle: "You finished 3 C++ tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 C++ tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--cpp",
     prizes: [
       { id: "cpp-coin", name: "Deep Coin", shape: "coin" },
@@ -79,7 +79,7 @@ var TRAIL_THEMES = {
   },
   assembly: {
     title: "Rocky Chip Reef",
-    subtitle: "You finished 3 Assembly tasks! Every stop gives +5 Sand. Sometimes +1 Coral, rarely +1 Pearl, very rarely +1 Treasure. Very rarely you may also find a free fish!",
+    subtitle: "You finished 3 Assembly tasks! Swim up the trail. Very rarely you may also find a free fish!",
     className: "trail--assembly",
     prizes: [
       { id: "asm-coin", name: "Chip Coin", shape: "coin" },
@@ -125,11 +125,6 @@ function saveTrailProgress(trailId, progress) {
   localStorage.setItem(trailStorageKey(trailId), JSON.stringify(progress));
 }
 
-function prizeShapeHtml(shape) {
-  // Simple CSS shapes — no emoji spam.
-  return '<span class="trail-prize__art trail-prize__art--' + shape + '" aria-hidden="true"></span>';
-}
-
 function openCoralTrail(trailId, options) {
   var theme = TRAIL_THEMES[trailId];
   if (!theme) {
@@ -164,7 +159,6 @@ function openCoralTrail(trailId, options) {
       i +
       '">' +
       '<div class="trail-spot__pad"></div>' +
-      '<p class="trail-spot__label">+5 Sand</p>' +
       "</div>";
   }
 
@@ -186,8 +180,7 @@ function openCoralTrail(trailId, options) {
     "</div>" +
     '<div class="trail-diver" id="trail-diver" aria-hidden="true"></div>' +
     "</div>" +
-    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> You always get +5 Sand. Rarer coins show up sometimes.</p>' +
-    '<div class="trail-bag" id="trail-bag"></div>' +
+    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong></p>' +
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
     '<button type="button" class="trail-btn trail-btn--continue" id="trail-continue" hidden>Continue</button>' +
@@ -198,32 +191,10 @@ function openCoralTrail(trailId, options) {
   document.body.appendChild(overlay);
 
   var msgEl = document.getElementById("trail-msg");
-  var bagEl = document.getElementById("trail-bag");
   var swimBtn = document.getElementById("trail-swim");
   var continueBtn = document.getElementById("trail-continue");
   var diver = document.getElementById("trail-diver");
   var spotEls = overlay.querySelectorAll(".trail-spot");
-
-  function renderBag() {
-    if (progress.prizes.length === 0) {
-      bagEl.innerHTML =
-        '<p class="trail-bag__empty">No coins yet — swim up to earn some!</p>';
-      return;
-    }
-    var html = '<p class="trail-bag__title">Coins you earned</p><ul class="trail-bag__list">';
-    var p;
-    for (p = 0; p < progress.prizes.length; p += 1) {
-      var saved = progress.prizes[p];
-      html +=
-        "<li class=\"trail-prize\">" +
-        prizeShapeHtml(saved.shape) +
-        "<span>" +
-        saved.name +
-        "</span></li>";
-    }
-    html += "</ul>";
-    bagEl.innerHTML = html;
-  }
 
   function setDiverSpot(index) {
     // Spots go bottom → top visually (first coin stop at bottom).
@@ -237,8 +208,6 @@ function openCoralTrail(trailId, options) {
     swimBtn.hidden = true;
     continueBtn.hidden = false;
     continueBtn.removeAttribute("hidden");
-    msgEl.innerHTML =
-      "You swam the whole trail and earned coins! Tap <strong>Continue</strong> when ready.";
     progress.batchesDone = batchNumber;
     saveTrailProgress(trailId, progress);
   }
@@ -271,17 +240,17 @@ function openCoralTrail(trailId, options) {
       return p.id === prize.id + "-b" + batchNumber;
     });
     var rare = null;
-    var earnedText = "+5 Sand";
+    var earnedText = "1 Sand";
 
     if (!already) {
       var drop =
         typeof rollTrailCoins === "function"
           ? rollTrailCoins()
-          : { sand: 5 };
+          : { sand: 1 };
       earnedText =
         typeof formatEarnedCoins === "function"
           ? formatEarnedCoins(drop)
-          : "+5 Sand";
+          : "1 Sand";
 
       progress.prizes.push({
         id: prize.id + "-b" + batchNumber,
@@ -296,24 +265,18 @@ function openCoralTrail(trailId, options) {
 
       rare = tryRareFishBonus();
 
-      if (rare && rare.kind === "fish") {
-        if (typeof showRareFishToast === "function") {
-          showRareFishToast(rare.fish.name, earnedText);
-        } else if (typeof showCoinToast === "function") {
-          showCoinToast(earnedText);
-        }
-      } else if (typeof showCoinToast === "function") {
-        showCoinToast(earnedText);
+      if (rare && rare.kind === "fish" && typeof showRareFishToast === "function") {
+        showRareFishToast(rare.fish.name);
       }
     }
     if (spotEls[index]) {
       spotEls[index].classList.add("is-earned");
-      var label = spotEls[index].querySelector(".trail-spot__label");
-      if (label && !already) {
-        label.textContent = earnedText;
-      }
     }
-    renderBag();
+
+    var moreStops = index < theme.prizes.length - 1;
+    var nextBit = moreStops
+      ? " Keep swimming!"
+      : " Tap <strong>Continue</strong> when you are ready.";
 
     if (rare && rare.kind === "fish") {
       msgEl.innerHTML =
@@ -321,22 +284,24 @@ function openCoralTrail(trailId, options) {
         earnedText +
         "</strong> — and <strong>Rare! You found a " +
         rare.fish.name +
-        "!</strong> Keep swimming!";
+        "!</strong>" +
+        nextBit;
     } else if (rare && rare.kind === "full") {
       msgEl.innerHTML =
         "You earned <strong>" +
         earnedText +
-        "</strong>! Your aquarium is full (1,000 fish). Keep swimming!";
+        "</strong>! Your aquarium is full (45 fish)." +
+        nextBit;
     } else {
       msgEl.innerHTML =
         "You earned <strong>" +
         earnedText +
-        "</strong>! Keep swimming!";
+        "</strong>!" +
+        nextBit;
     }
   }
 
   setDiverSpot(0);
-  renderBag();
 
   // Highlight starting pad.
   if (spotEls[0]) {

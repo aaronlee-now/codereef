@@ -1,11 +1,11 @@
 // Reef wallet — four coin types and fish for each kid (saved in this browser).
 // Sand is common. Coral is uncommon. Pearl is rare. Treasure is very rare.
 
-var MAX_FISH = 1000;
+var MAX_FISH = 45;
 var MAX_FISH_ON_SCREEN = 24;
 
 // Every trail stop. Rare coins are extra luck, not a sure thing.
-var TRAIL_SAND_COINS = 5;
+var TRAIL_SAND_COINS = 1;
 var TRAIL_CORAL_CHANCE = 0.25;
 var TRAIL_PEARL_CHANCE = 0.08;
 var TRAIL_TREASURE_CHANCE = 0.02;
@@ -269,14 +269,191 @@ var FISH_FOR_SALE = [
     kind: "fish",
     rarity: 31,
   },
+  {
+    id: "chromis",
+    name: "Blue Chromis",
+    cost: { sand: 4 },
+    image: "assets/fish/chromis.svg?v=more1",
+    kind: "fish",
+    rarity: 32,
+  },
+  {
+    id: "humbug",
+    name: "Humbug Dascyllus",
+    cost: { sand: 5, coral: 1 },
+    image: "assets/fish/humbug.svg?v=more1",
+    kind: "fish",
+    rarity: 33,
+  },
+  {
+    id: "gramma",
+    name: "Royal Gramma",
+    cost: { sand: 6, coral: 2 },
+    image: "assets/fish/gramma.svg?v=more1",
+    kind: "fish",
+    rarity: 34,
+  },
+  {
+    id: "firefish",
+    name: "Firefish",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/firefish.svg?v=more1",
+    kind: "fish",
+    rarity: 35,
+  },
+  {
+    id: "cleaner",
+    name: "Cleaner Wrasse",
+    cost: { sand: 7, coral: 3 },
+    image: "assets/fish/cleaner-wrasse.svg?v=more1",
+    kind: "fish",
+    rarity: 36,
+  },
+  {
+    id: "anthias",
+    name: "Lyretail Anthias",
+    cost: { sand: 9, coral: 3 },
+    image: "assets/fish/anthias.svg?v=more1",
+    kind: "fish",
+    rarity: 37,
+  },
+  {
+    id: "banggai",
+    name: "Banggai Cardinalfish",
+    cost: { sand: 6, coral: 4 },
+    image: "assets/fish/banggai.svg?v=more1",
+    kind: "fish",
+    rarity: 38,
+  },
+  {
+    id: "foxface",
+    name: "Foxface",
+    cost: { sand: 10, coral: 3, pearl: 1 },
+    image: "assets/fish/foxface.svg?v=more1",
+    kind: "fish",
+    rarity: 39,
+  },
+  {
+    id: "copperband",
+    name: "Copperband Butterflyfish",
+    cost: { coral: 5, pearl: 1 },
+    image: "assets/fish/copperband.svg?v=more1",
+    kind: "fish",
+    rarity: 40,
+  },
+  {
+    id: "powder",
+    name: "Powder Blue Tang",
+    cost: { sand: 8, coral: 4, pearl: 2 },
+    image: "assets/fish/powder-blue-tang.svg?v=more1",
+    kind: "fish",
+    rarity: 41,
+  },
+  {
+    id: "flame",
+    name: "Flame Angelfish",
+    cost: { sand: 4, coral: 3, pearl: 2 },
+    image: "assets/fish/flame-angel.svg?v=more1",
+    kind: "fish",
+    rarity: 42,
+  },
+  {
+    id: "sailfin",
+    name: "Sailfin Tang",
+    cost: { coral: 6, pearl: 2 },
+    image: "assets/fish/sailfin-tang.svg?v=more1",
+    kind: "fish",
+    rarity: 43,
+  },
+  {
+    id: "french",
+    name: "French Angelfish",
+    cost: { pearl: 3, treasure: 1 },
+    image: "assets/fish/french-angel.svg?v=more1",
+    kind: "fish",
+    rarity: 44,
+  },
+  {
+    id: "emperor",
+    name: "Emperor Angelfish",
+    cost: { pearl: 4, treasure: 2 },
+    image: "assets/fish/emperor-angel.svg?v=more1",
+    kind: "fish",
+    rarity: 45,
+  },
+  {
+    id: "picasso",
+    name: "Picasso Triggerfish",
+    cost: { coral: 2, pearl: 4, treasure: 2 },
+    image: "assets/fish/picasso-trigger.svg?v=more1",
+    kind: "fish",
+    rarity: 46,
+  },
+  {
+    id: "unicorn",
+    name: "Unicorn Tang",
+    cost: { pearl: 5, treasure: 3 },
+    image: "assets/fish/unicorn-tang.svg?v=more1",
+    kind: "fish",
+    rarity: 47,
+  },
+  {
+    id: "hawk",
+    name: "Longnose Hawkfish",
+    cost: { sand: 8, coral: 5, pearl: 1 },
+    image: "assets/fish/hawkfish.svg?v=more1",
+    kind: "fish",
+    rarity: 48,
+  },
+  {
+    id: "porcupine",
+    name: "Porcupinefish",
+    cost: { pearl: 2, treasure: 1 },
+    image: "assets/fish/porcupine.svg?v=more1",
+    kind: "fish",
+    rarity: 49,
+  },
 ];
 
 var DECOR_FOR_SALE = [
-  {
-    id: "seaweed",
-    name: "Seaweed Patch",
-    cost: { sand: 8 },
-  },
+  { id: "leaf-big", name: "Big Green Leaf", cost: { sand: 3 }, rest: true },
+  { id: "leaf-little", name: "Little Leaf", cost: { sand: 2 }, rest: true },
+  { id: "leaf-gold", name: "Golden Leaf", cost: { sand: 4 }, rest: true },
+  { id: "lily", name: "Lily Pad", cost: { sand: 4 }, rest: true },
+  { id: "lily-pink", name: "Pink Lily Pad", cost: { sand: 5 }, rest: true },
+  { id: "lily-spot", name: "Spotted Lily Pad", cost: { sand: 3, coral: 1 }, rest: true },
+  { id: "rock", name: "Round Rock", cost: { sand: 3 } },
+  { id: "pebbles", name: "Pebble Pile", cost: { sand: 2 } },
+  { id: "shell", name: "Spiral Shell", cost: { sand: 4 } },
+  { id: "sand-dollar", name: "Sand Dollar", cost: { sand: 4 } },
+  { id: "starfish", name: "Starfish", cost: { sand: 5 } },
+  { id: "coral", name: "Soft Coral", cost: { sand: 6 } },
+  { id: "seaweed", name: "Seaweed Patch", cost: { sand: 8 }, once: true },
+  { id: "kelp", name: "Tall Kelp", cost: { sand: 5 } },
+  { id: "cave", name: "Small Cave", cost: { sand: 4, coral: 1 } },
+  { id: "chest", name: "Treasure Chest", cost: { coral: 2, pearl: 1 } },
+  { id: "bubbles", name: "Bubble Cluster", cost: { sand: 2 } },
+  { id: "castle", name: "Sand Castle", cost: { sand: 6 } },
+  { id: "fan", name: "Fan Coral", cost: { sand: 3, coral: 1 } },
+  { id: "anemone", name: "Friendly Anemone", cost: { sand: 5, coral: 1 } },
+  { id: "driftwood", name: "Driftwood", cost: { sand: 4 } },
+];
+
+var OUTFITS_FOR_SALE = [
+  { id: "crown", name: "Tiny Crown", cost: { sand: 6, coral: 1 } },
+  { id: "bow", name: "Pretty Bow", cost: { sand: 4 } },
+  { id: "scarf", name: "Striped Scarf", cost: { sand: 5 } },
+  { id: "star", name: "Shiny Star", cost: { sand: 3 } },
+  { id: "sunglasses", name: "Sunglasses", cost: { sand: 4, coral: 1 } },
+  { id: "party", name: "Party Hat", cost: { sand: 5 } },
+  { id: "flower", name: "Flower", cost: { sand: 3 } },
+  { id: "necklace", name: "Pearl Necklace", cost: { coral: 2, pearl: 1 } },
+  { id: "captain", name: "Captain Hat", cost: { sand: 6, coral: 1 } },
+  { id: "snorkel", name: "Snorkel", cost: { sand: 4 } },
+  { id: "bowtie", name: "Bow Tie", cost: { sand: 4 } },
+  { id: "halo", name: "Tiny Halo", cost: { sand: 2, coral: 1 } },
+  { id: "backpack", name: "Tiny Backpack", cost: { sand: 5 } },
+  { id: "heart", name: "Heart Pin", cost: { sand: 3 } },
 ];
 
 function walletKidKey() {
@@ -296,7 +473,7 @@ function emptyCoins() {
 }
 
 function emptyWallet() {
-  return { coins: emptyCoins(), fishCounts: {}, decor: [] };
+  return { coins: emptyCoins(), fishCounts: {}, decor: [], outfits: [] };
 }
 
 function coinAmount(value) {
@@ -383,15 +560,47 @@ function walletFromSaved(data) {
       coins: coins,
       fishCounts: fishCounts,
       decor: Array.isArray(data.decor) ? data.decor : [],
+      outfits: cleanOutfits(data.outfits),
     },
     migrated: migrated,
   };
 }
 
+var ANDREW_MANTA_FLAG = "codereef_grant_manta_andrew";
+
+function signedInKidName() {
+  var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+  if (!user || !user.kidName) {
+    return "";
+  }
+  if (typeof normalizeName === "function") {
+    return normalizeName(user.kidName);
+  }
+  return String(user.kidName).trim().toLowerCase();
+}
+
+// One free Manta Ray for the kid named andrew, once.
+// If he already has one, we do not add another. Selling it does not bring it back.
+function grantAndrewMantaOnce(wallet) {
+  if (signedInKidName() !== "andrew") {
+    return wallet;
+  }
+  if (localStorage.getItem(ANDREW_MANTA_FLAG)) {
+    return wallet;
+  }
+  var have = wallet.fishCounts.manta || 0;
+  if (have < 1) {
+    wallet.fishCounts.manta = 1;
+    saveWallet(wallet);
+  }
+  localStorage.setItem(ANDREW_MANTA_FLAG, "1");
+  return wallet;
+}
+
 function getWallet() {
   var raw = localStorage.getItem(walletKidKey());
   if (!raw) {
-    return emptyWallet();
+    return grantAndrewMantaOnce(emptyWallet());
   }
   try {
     var data = JSON.parse(raw);
@@ -399,7 +608,7 @@ function getWallet() {
     if (loaded.migrated) {
       saveWallet(loaded.wallet);
     }
-    return loaded.wallet;
+    return grantAndrewMantaOnce(loaded.wallet);
   } catch (err) {
     return emptyWallet();
   }
@@ -432,11 +641,11 @@ function formatEarnedCoins(drop) {
     var id = COIN_ORDER[i];
     var amount = drop && drop[id] ? drop[id] : 0;
     if (amount > 0) {
-      parts.push("+" + amount + " " + COIN_NAMES[id]);
+      parts.push(amount + " " + COIN_NAMES[id]);
     }
   }
   if (parts.length === 0) {
-    return "+0 Sand";
+    return "0 Sand";
   }
   return parts.join(", ");
 }
@@ -590,6 +799,128 @@ function buyFish(fishId) {
   return { ok: true, fish: fish, count: wallet.fishCounts[fishId] };
 }
 
+// Half of each buy coin, rounded down. A sale always gives at least 1 Sand.
+function sellPriceFor(fish) {
+  var refund = {};
+  var any = false;
+  var i;
+  var cost = fish && fish.cost ? fish.cost : {};
+  for (i = 0; i < COIN_ORDER.length; i += 1) {
+    var id = COIN_ORDER[i];
+    var half = Math.floor((cost[id] || 0) / 2);
+    if (half > 0) {
+      refund[id] = half;
+      any = true;
+    }
+  }
+  if (!any) {
+    refund.sand = 1;
+  }
+  return refund;
+}
+
+function sellFish(fishId) {
+  var fish = findFish(fishId);
+  if (!fish) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  var owned = wallet.fishCounts[fishId] || 0;
+  if (owned < 1) {
+    return { ok: false, reason: "none" };
+  }
+  var refund = sellPriceFor(fish);
+  var i;
+  for (i = 0; i < COIN_ORDER.length; i += 1) {
+    var id = COIN_ORDER[i];
+    var amount = refund[id] || 0;
+    if (amount > 0) {
+      wallet.coins[id] = (wallet.coins[id] || 0) + amount;
+    }
+  }
+  owned -= 1;
+  if (owned > 0) {
+    wallet.fishCounts[fishId] = owned;
+  } else {
+    delete wallet.fishCounts[fishId];
+  }
+  dropOneOutfit(wallet, fishId);
+  saveWallet(wallet);
+  return {
+    ok: true,
+    fish: fish,
+    count: owned,
+    priceText: formatCoinCost(refund),
+  };
+}
+
+function addCoinCost(coins, cost) {
+  var i;
+  for (i = 0; i < COIN_ORDER.length; i += 1) {
+    var id = COIN_ORDER[i];
+    var amount = cost && cost[id] ? cost[id] : 0;
+    if (amount > 0) {
+      coins[id] = (coins[id] || 0) + amount;
+    }
+  }
+}
+
+// Full tank: give back the old fish's full buy price, then pay for the new one.
+// If the refund is not enough, the wallet stays the same.
+function replaceFish(giveUpId, newFishId) {
+  var giveUp = findFish(giveUpId);
+  var incoming = findFish(newFishId);
+  if (!giveUp || !incoming) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  var owned = wallet.fishCounts[giveUpId] || 0;
+  if (owned < 1) {
+    return { ok: false, reason: "none" };
+  }
+  if (totalFishIn(wallet) < MAX_FISH) {
+    return { ok: false, reason: "notfull" };
+  }
+
+  var refund = giveUp.cost || {};
+  var price = incoming.cost || {};
+  var previewCoins = {
+    sand: wallet.coins.sand || 0,
+    coral: wallet.coins.coral || 0,
+    pearl: wallet.coins.pearl || 0,
+    treasure: wallet.coins.treasure || 0,
+  };
+  addCoinCost(previewCoins, refund);
+  var preview = { coins: previewCoins };
+  if (!hasCoins(preview, price)) {
+    return {
+      ok: false,
+      reason: "coins",
+      need: coinsShortText(preview, price),
+    };
+  }
+
+  addCoinCost(wallet.coins, refund);
+  takeCoins(wallet, price);
+  owned -= 1;
+  if (owned > 0) {
+    wallet.fishCounts[giveUpId] = owned;
+  } else {
+    delete wallet.fishCounts[giveUpId];
+  }
+  dropOneOutfit(wallet, giveUpId);
+  wallet.fishCounts[newFishId] = (wallet.fishCounts[newFishId] || 0) + 1;
+  saveWallet(wallet);
+  return {
+    ok: true,
+    fish: incoming,
+    gaveUp: giveUp,
+    count: wallet.fishCounts[newFishId],
+    refundText: formatCoinCost(refund),
+    priceText: formatCoinCost(price),
+  };
+}
+
 // Free fish (trail rare prize) — does not spend coins. Copies of the same fish are OK.
 function grantFish(fishId) {
   var fish = findFish(fishId);
@@ -613,27 +944,81 @@ function pickRandomFish() {
   return FISH_FOR_SALE[index];
 }
 
-function ownDecor(decorId) {
-  var wallet = getWallet();
-  return wallet.decor.indexOf(decorId) !== -1;
+function cleanOutfits(list) {
+  var out = [];
+  var i;
+  if (!Array.isArray(list)) {
+    return out;
+  }
+  for (i = 0; i < list.length; i += 1) {
+    var row = list[i];
+    if (row && typeof row.fishId === "string" && typeof row.outfitId === "string") {
+      out.push({ fishId: row.fishId, outfitId: row.outfitId });
+    }
+  }
+  return out;
 }
 
-function buyDecor(decorId) {
-  var item = null;
+function decorCount(decorId) {
+  var wallet = getWallet();
+  var list = wallet.decor || [];
+  var n = 0;
+  var i;
+  for (i = 0; i < list.length; i += 1) {
+    if (list[i] === decorId) {
+      n += 1;
+    }
+  }
+  return n;
+}
+
+function findDecor(decorId) {
   var i;
   for (i = 0; i < DECOR_FOR_SALE.length; i += 1) {
     if (DECOR_FOR_SALE[i].id === decorId) {
-      item = DECOR_FOR_SALE[i];
-      break;
+      return DECOR_FOR_SALE[i];
     }
   }
+  return null;
+}
+
+function decorCap(item) {
+  if (!item) {
+    return 1;
+  }
+  if (item.once) {
+    return 1;
+  }
+  if (item.max) {
+    return item.max;
+  }
+  return 6;
+}
+
+function ownDecor(decorId) {
+  return decorCount(decorId) > 0;
+}
+
+function buyDecor(decorId) {
+  var item = findDecor(decorId);
   if (!item) {
     return { ok: false, reason: "missing" };
   }
-  if (ownDecor(decorId)) {
-    return { ok: false, reason: "owned" };
-  }
   var wallet = getWallet();
+  if (!Array.isArray(wallet.decor)) {
+    wallet.decor = [];
+  }
+  var have = 0;
+  var i;
+  for (i = 0; i < wallet.decor.length; i += 1) {
+    if (wallet.decor[i] === decorId) {
+      have += 1;
+    }
+  }
+  var cap = decorCap(item);
+  if (have >= cap) {
+    return { ok: false, reason: item.once ? "owned" : "max", cap: cap };
+  }
   var cost = item.cost || {};
   if (!hasCoins(wallet, cost)) {
     return { ok: false, reason: "coins", need: coinsShortText(wallet, cost) };
@@ -641,10 +1026,146 @@ function buyDecor(decorId) {
   takeCoins(wallet, cost);
   wallet.decor.push(decorId);
   saveWallet(wallet);
-  return { ok: true, decor: item };
+  return { ok: true, decor: item, count: have + 1 };
 }
 
-// Fish to draw. Stops at MAX_FISH_ON_SCREEN so 1,000 copies do not freeze the page.
+function getDecorCopies() {
+  var copies = [];
+  var i;
+  var c;
+  var n;
+  for (i = 0; i < DECOR_FOR_SALE.length; i += 1) {
+    var item = DECOR_FOR_SALE[i];
+    n = decorCount(item.id);
+    for (c = 0; c < n; c += 1) {
+      copies.push(item);
+    }
+  }
+  return copies;
+}
+
+function weedShapeHtml(extraClass) {
+  return (
+    '<span class="shop-decor-preview' +
+    (extraClass ? " " + extraClass : "") +
+    '" aria-hidden="true">' +
+    '<span class="shop-decor-preview__leaf"></span>' +
+    '<span class="shop-decor-preview__leaf"></span>' +
+    '<span class="shop-decor-preview__leaf"></span>' +
+    "</span>"
+  );
+}
+
+function decorShapeHtml(decorId) {
+  if (decorId === "seaweed") {
+    return weedShapeHtml("");
+  }
+  if (decorId === "kelp") {
+    return weedShapeHtml("shop-decor-preview--kelp");
+  }
+  return '<span class="decor-shape decor-shape--' + decorId + '" aria-hidden="true"></span>';
+}
+
+function findOutfit(outfitId) {
+  var i;
+  if (typeof OUTFITS_FOR_SALE === "undefined") {
+    return null;
+  }
+  for (i = 0; i < OUTFITS_FOR_SALE.length; i += 1) {
+    if (OUTFITS_FOR_SALE[i].id === outfitId) {
+      return OUTFITS_FOR_SALE[i];
+    }
+  }
+  return null;
+}
+
+function outfitCount(outfitId) {
+  var wallet = getWallet();
+  var worn = wallet.outfits || [];
+  var n = 0;
+  var i;
+  for (i = 0; i < worn.length; i += 1) {
+    if (worn[i] && worn[i].outfitId === outfitId) {
+      n += 1;
+    }
+  }
+  return n;
+}
+
+function dropOneOutfit(wallet, fishId) {
+  var worn = wallet.outfits || [];
+  var i;
+  for (i = worn.length - 1; i >= 0; i -= 1) {
+    if (worn[i] && worn[i].fishId === fishId) {
+      worn.splice(i, 1);
+      wallet.outfits = worn;
+      return;
+    }
+  }
+}
+
+function buyOutfit(outfitId, fishId) {
+  var outfit = findOutfit(outfitId);
+  var fish = findFish(fishId);
+  if (!outfit || !fish) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  if (totalFishIn(wallet) < 1) {
+    return { ok: false, reason: "nofish" };
+  }
+  var owned = wallet.fishCounts[fishId] || 0;
+  if (owned < 1) {
+    return { ok: false, reason: "none" };
+  }
+  var cost = outfit.cost || {};
+  if (!hasCoins(wallet, cost)) {
+    return { ok: false, reason: "coins", need: coinsShortText(wallet, cost) };
+  }
+  if (!Array.isArray(wallet.outfits)) {
+    wallet.outfits = [];
+  }
+  var onFish = [];
+  var i;
+  for (i = 0; i < wallet.outfits.length; i += 1) {
+    if (wallet.outfits[i] && wallet.outfits[i].fishId === fishId) {
+      onFish.push(i);
+    }
+  }
+  takeCoins(wallet, cost);
+  if (onFish.length < owned) {
+    wallet.outfits.push({ fishId: fishId, outfitId: outfitId });
+  } else {
+    wallet.outfits[onFish[0]] = { fishId: fishId, outfitId: outfitId };
+  }
+  saveWallet(wallet);
+  return {
+    ok: true,
+    outfit: outfit,
+    fish: fish,
+    count: outfitCount(outfitId),
+  };
+}
+
+function nextWornOutfit(fishId, cursor) {
+  var worn = getWallet().outfits || [];
+  var want = cursor[fishId] || 0;
+  var seen = 0;
+  var i;
+  for (i = 0; i < worn.length; i += 1) {
+    if (worn[i] && worn[i].fishId === fishId) {
+      if (seen === want) {
+        cursor[fishId] = want + 1;
+        return worn[i].outfitId;
+      }
+      seen += 1;
+    }
+  }
+  cursor[fishId] = want + 1;
+  return "";
+}
+
+// Fish to draw. Stops at MAX_FISH_ON_SCREEN so a full tank does not freeze the page.
 function getSwimmingFishList() {
   var wallet = getWallet();
   var buckets = [];
@@ -680,8 +1201,13 @@ function getOwnedFishList() {
 }
 
 // HTML for a swimming fish. The picture is the whole fish.
-function reefFishMarkup(fish) {
+function reefFishMarkup(fish, outfitId) {
   var kind = fish.kind || "fish";
+  var outfit = "";
+  if (outfitId) {
+    outfit =
+      '<span class="reef-outfit reef-outfit--' + outfitId + '" aria-hidden="true"></span>';
+  }
   return (
     '<span class="reef-fish reef-fish--' +
     kind +
@@ -690,6 +1216,7 @@ function reefFishMarkup(fish) {
     '<img class="reef-fish__img" src="' +
     fish.image +
     '" alt="" />' +
+    outfit +
     "</span></span>"
   );
 }

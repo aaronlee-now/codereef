@@ -1,6 +1,6 @@
 // Aquarium — owned fish glide one way (always facing forward).
 // Fish race: rarer fish are faster, and they steer around obstacles.
-// Each race builds a new, longer course with different obstacles.
+// Each race builds a new course with about 14 to 16 obstacles.
 
 if (!getCurrentUser()) {
   window.location.href = "login.html";
@@ -22,7 +22,8 @@ var raceFrame = 0;
 var raceOn = false;
 var raceToken = 0;
 var tipTimer = 0;
-var RACE_LIMIT = 8;
+var RACE_LIMIT = 10;
+var COURSE_TANKS = 4.2;
 var lastLineup = null;
 var pickRows = [];
 var lastCourseKey = "";
@@ -39,9 +40,9 @@ function seaweedHtml() {
   );
 }
 
-function fishFaceHtml(fish) {
+function fishFaceHtml(fish, outfitId) {
   if (typeof reefFishMarkup === "function") {
-    return reefFishMarkup(fish);
+    return reefFishMarkup(fish, outfitId);
   }
   return (
     '<span class="reef-fish"><img class="reef-fish__img" src="' +
@@ -97,14 +98,14 @@ function bindFishClick(swimmer, name) {
   });
 }
 
-function placeFish(fish, index) {
+function placeFish(fish, index, outfitId) {
   var swimmer = document.createElement("div");
   // Even = swim right (face right). Odd = swim left (face left). Never reverse.
   var goRight = index % 2 === 0;
   swimmer.className =
     "aquarium-swimmer" + (goRight ? " aquarium-swimmer--right" : " aquarium-swimmer--left");
   swimmer.setAttribute("aria-label", fish.name);
-  swimmer.innerHTML = '<div class="aquarium-swimmer__face">' + fishFaceHtml(fish) + "</div>";
+  swimmer.innerHTML = '<div class="aquarium-swimmer__face">' + fishFaceHtml(fish, outfitId) + "</div>";
 
   var heavy = isHeavyFish(fish);
   var topPct = 10 + (index % 5) * 14;
@@ -144,6 +145,7 @@ function stopRaceLoop() {
     window.cancelAnimationFrame(raceFrame);
     raceFrame = 0;
   }
+  stopDecorRest();
 }
 
 function setRaceMsg(text, win) {
@@ -200,9 +202,7 @@ function renderAquarium() {
 
   clearTankMovers();
 
-  if (ownDecor("seaweed")) {
-    tankEl.insertAdjacentHTML("beforeend", seaweedHtml());
-  }
+  placeBoughtDecor();
 
   var total = typeof totalFishCount === "function" ? totalFishCount() : 0;
   var fishList =
@@ -232,10 +232,16 @@ function renderAquarium() {
     return;
   }
 
+  var outfitCursor = {};
   var i;
   for (i = 0; i < fishList.length; i += 1) {
-    placeFish(fishList[i], i);
+    var worn = "";
+    if (typeof nextWornOutfit === "function") {
+      worn = nextWornOutfit(fishList[i].id, outfitCursor);
+    }
+    placeFish(fishList[i], i, worn);
   }
+  startDecorRest();
 }
 
 // Higher rarity is a faster racer. Uses fish.rarity from the shop list.
@@ -330,7 +336,7 @@ function addPick(index) {
     return;
   }
   if (pickedTotal() >= RACE_LIMIT) {
-    setRaceMsg("You already picked 8!");
+    setRaceMsg("You already picked " + RACE_LIMIT + "!");
     return;
   }
   row.picked += 1;
@@ -481,18 +487,6 @@ function shuffleLanes(count) {
 
 var OBSTACLE_KINDS = ["rock", "coral", "weed", "castle", "bubbles", "starfish", "shell"];
 
-function shuffleList(items) {
-  var list = items.slice();
-  var i;
-  for (i = list.length - 1; i > 0; i -= 1) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var swap = list[i];
-    list[i] = list[j];
-    list[j] = swap;
-  }
-  return list;
-}
-
 function clampNum(n, lo, hi) {
   if (n < lo) {
     return lo;
@@ -529,42 +523,52 @@ function obstacleMarkup(kind) {
 }
 
 function planObstacles() {
-  var deck = shuffleList(OBSTACLE_KINDS).concat(shuffleList(OBSTACLE_KINDS));
-  var count = 8 + Math.floor(Math.random() * 2);
+  var count = 14 + Math.floor(Math.random() * 3);
   var spots = [];
   var i;
-  var pick = 0;
   var lastKind = "";
+  var edge = 0.06;
+  var end = 0.94;
+  var slot = (end - edge) / count;
   for (i = 0; i < count; i += 1) {
-    var kind = deck[pick];
-    pick += 1;
-    if (kind === lastKind) {
-      kind = deck[pick];
-      pick += 1;
+    var kind = OBSTACLE_KINDS[Math.floor(Math.random() * OBSTACLE_KINDS.length)];
+    var guard = 0;
+    while (kind === lastKind && guard < 8) {
+      kind = OBSTACLE_KINDS[Math.floor(Math.random() * OBSTACLE_KINDS.length)];
+      guard += 1;
     }
     lastKind = kind;
-    var along = (i + 1) / (count + 1);
-    along += (Math.random() - 0.5) * 0.045;
+    var along = edge + slot * i + slot * (0.35 + Math.random() * 0.3);
     var band = 0.08 + Math.random() * 0.76;
     spots.push({
       kind: kind,
-      along: clampNum(along, 0.07, 0.93),
+      along: clampNum(along, edge, end),
       band: clampNum(band, 0.05, 0.88),
     });
   }
   spots.sort(function (a, b) {
     return a.along - b.along;
   });
+  var minGap = slot * 0.72;
   for (i = 1; i < spots.length; i += 1) {
-    if (spots[i].along - spots[i - 1].along < 0.07) {
-      spots[i].along = clampNum(spots[i - 1].along + 0.07, 0.07, 0.93);
+    if (spots[i].along - spots[i - 1].along < minGap) {
+      spots[i].along = spots[i - 1].along + minGap;
     }
-    if (Math.abs(spots[i].band - spots[i - 1].band) < 0.22) {
+    if (Math.abs(spots[i].band - spots[i - 1].band) < 0.24) {
       if (spots[i].band < 0.5) {
-        spots[i].band = clampNum(spots[i].band + 0.3, 0.05, 0.88);
+        spots[i].band = clampNum(spots[i].band + 0.34, 0.05, 0.88);
       } else {
-        spots[i].band = clampNum(spots[i].band - 0.3, 0.05, 0.88);
+        spots[i].band = clampNum(spots[i].band - 0.34, 0.05, 0.88);
       }
+    }
+  }
+  var last = spots[spots.length - 1].along;
+  if (last > end) {
+    var first = spots[0].along;
+    var span = last - first;
+    var fit = (end - edge) / span;
+    for (i = 0; i < spots.length; i += 1) {
+      spots[i].along = edge + (spots[i].along - first) * fit;
     }
   }
   return spots;
@@ -755,12 +759,17 @@ function startRace(lineup) {
   var lanes = shuffleLanes(lineup.length);
   var racers = [];
   var i;
+  var raceOutfitCursor = {};
   for (i = 0; i < lineup.length; i += 1) {
     var fish = lineup[i];
     var swimmer = document.createElement("div");
     swimmer.className = "aquarium-swimmer aquarium-swimmer--right aquarium-swimmer--race";
     swimmer.setAttribute("aria-label", fish.name);
-    swimmer.innerHTML = '<div class="aquarium-swimmer__face">' + fishFaceHtml(fish) + "</div>";
+    var raceWorn = "";
+    if (typeof nextWornOutfit === "function") {
+      raceWorn = nextWornOutfit(fish.id, raceOutfitCursor);
+    }
+    swimmer.innerHTML = '<div class="aquarium-swimmer__face">' + fishFaceHtml(fish, raceWorn) + "</div>";
     var scale = 0.94 + (i % 3) * 0.03;
     swimmer.style.setProperty("--fish-scale", String(scale));
     swimmer.style.setProperty("--stroke", isHeavyFish(fish) ? "2.4s" : "1.05s");
@@ -794,7 +803,7 @@ function startRace(lineup) {
     }
     var tankW = tankEl.clientWidth;
     var tankH = tankEl.clientHeight;
-    var courseW = Math.round(tankW * 3.6);
+    var courseW = Math.round(tankW * COURSE_TANKS);
     world.style.width = courseW + "px";
     var sand = tankEl.querySelector(".aquarium-tank__sand");
     var sandH = sand ? sand.offsetHeight : 40;
@@ -978,4 +987,113 @@ if (pickerStartBtn) {
 }
 if (pickerBackBtn) {
   pickerBackBtn.addEventListener("click", renderAquarium);
+}
+
+
+// --- Decorations and resting fish. Does not change the race. ---
+var decorRestTimer = 0;
+
+function placeBoughtDecor() {
+  var copies = typeof getDecorCopies === "function" ? getDecorCopies() : [];
+  if (copies.length === 0) {
+    if (typeof ownDecor === "function" && ownDecor("seaweed")) {
+      tankEl.insertAdjacentHTML("beforeend", seaweedHtml());
+    }
+    return;
+  }
+  var restN = 0;
+  var floorN = 0;
+  var i;
+  var restLeft = [12, 36, 60, 78, 24, 50];
+  var restTop = [16, 30, 46, 22, 58, 40];
+  for (i = 0; i < copies.length; i += 1) {
+    var item = copies[i];
+    var node = document.createElement("div");
+    node.className = "aquarium-decor";
+    node.setAttribute("aria-hidden", "true");
+    if (typeof decorShapeHtml === "function") {
+      node.innerHTML = decorShapeHtml(item.id);
+    } else {
+      node.innerHTML = seaweedHtml();
+    }
+    if (item.rest) {
+      node.classList.add("aquarium-decor--rest");
+      var spot = restN % 6;
+      var row = Math.floor(restN / 6);
+      node.style.left = restLeft[spot] + row * 4 + "%";
+      node.style.top = restTop[spot] + row * 3 + "%";
+      node.style.bottom = "auto";
+      restN += 1;
+    } else {
+      var col = floorN % 8;
+      var layer = Math.floor(floorN / 8);
+      node.style.left = 4 + col * 11 + (layer % 2) * 3 + "%";
+      node.style.bottom = 1.7 + (layer % 4) * 0.4 + "rem";
+      floorN += 1;
+    }
+    tankEl.appendChild(node);
+  }
+}
+
+function stopDecorRest() {
+  if (decorRestTimer) {
+    window.clearInterval(decorRestTimer);
+    decorRestTimer = 0;
+  }
+}
+
+function startDecorRest() {
+  stopDecorRest();
+  if (!tankEl || !tankEl.querySelector(".aquarium-decor--rest")) {
+    return;
+  }
+  decorRestTimer = window.setInterval(checkFishRest, 400);
+}
+
+function beginFishRest(swimmer, leaf) {
+  swimmer.classList.add("aquarium-swimmer--rest");
+  leaf._restBusy = true;
+  window.setTimeout(function () {
+    if (swimmer.isConnected) {
+      swimmer.classList.remove("aquarium-swimmer--rest");
+      swimmer._restCool = Date.now() + 2200;
+    }
+    leaf._restBusy = false;
+  }, 1500);
+}
+
+function checkFishRest() {
+  if (raceOn || !tankEl) {
+    return;
+  }
+  var rests = tankEl.querySelectorAll(".aquarium-decor--rest");
+  var fish = tankEl.querySelectorAll(".aquarium-swimmer:not(.aquarium-swimmer--race)");
+  var now = Date.now();
+  var f;
+  var r;
+  for (f = 0; f < fish.length; f += 1) {
+    var swimmer = fish[f];
+    if (swimmer.classList.contains("aquarium-swimmer--rest")) {
+      continue;
+    }
+    if (swimmer._restCool && now < swimmer._restCool) {
+      continue;
+    }
+    var box = swimmer.getBoundingClientRect();
+    var fx = box.left + box.width * 0.5;
+    var fy = box.top + box.height * 0.55;
+    for (r = 0; r < rests.length; r += 1) {
+      var leaf = rests[r];
+      if (leaf._restBusy) {
+        continue;
+      }
+      var lb = leaf.getBoundingClientRect();
+      var lx = lb.left + lb.width * 0.5;
+      var ly = lb.top + lb.height * 0.35;
+      if (Math.abs(fx - lx) < 52 && Math.abs(fy - ly) < 46) {
+        beginFishRest(swimmer, leaf);
+        break;
+      }
+    }
+  }
 }

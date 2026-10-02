@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css?v=shop3" />
-    <link rel="stylesheet" href="shop.css?v=resume1" />
+    <link rel="stylesheet" href="shop.css?v=more1" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="home.html?v=swim1">← Back home</a>
@@ -20,7 +20,7 @@
       <header class="auth__header">
         <p class="auth__brand">CodeReef</p>
         <h1 class="auth__title">Fish Shop</h1>
-        <p class="auth__hint">Rarer fish need rarer coins. You can buy the same fish more than once!</p>
+        <p class="auth__hint">Rarer fish need rarer coins. You can buy the same fish more than once! Tap All, Fish, Decorations, or Outfits.</p>
       </header>
 
       <a class="shop-resume" id="shop-resume" href="explore.html">Resume tasks</a>
@@ -28,6 +28,13 @@
       <div class="shop-coin-bar" aria-live="polite">
         <span class="shop-coin-bar__icon" aria-hidden="true"></span>
         <span id="shop-coins">0 Sand, 0 Coral, 0 Pearl, 0 Treasure</span>
+      </div>
+
+      <div class="shop-tabs" id="shop-tabs" role="tablist" aria-label="Shop categories">
+        <button class="shop-tab is-on" type="button" role="tab" aria-selected="true" data-shop-tab="all">All</button>
+        <button class="shop-tab" type="button" role="tab" aria-selected="false" data-shop-tab="fish">Fish</button>
+        <button class="shop-tab" type="button" role="tab" aria-selected="false" data-shop-tab="decor">Decorations</button>
+        <button class="shop-tab" type="button" role="tab" aria-selected="false" data-shop-tab="outfit">Outfits</button>
       </div>
 
       <div class="shop-grid" id="shop-grid" role="list"></div>
@@ -39,9 +46,40 @@
       </nav>
     </main>
 
+    <div class="shop-replace" id="shop-replace" hidden>
+      <div
+        class="shop-replace__box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shop-replace-title"
+      >
+        <h2 class="shop-replace__title" id="shop-replace-title">Aquarium is full</h2>
+        <p class="shop-replace__text" id="shop-replace-text"></p>
+        <div class="shop-replace__want" id="shop-replace-want"></div>
+        <div class="shop-replace__list" id="shop-replace-list"></div>
+        <p class="shop-replace__need" id="shop-replace-need"></p>
+        <button class="shop-replace__skip" type="button" id="shop-replace-no">Don't buy</button>
+      </div>
+    </div>
+
+    <div class="shop-sure" id="shop-sure" hidden>
+      <div
+        class="shop-sure__box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shop-sure-text"
+      >
+        <p class="shop-sure__text" id="shop-sure-text"></p>
+        <div class="shop-sure__actions">
+          <button class="shop-sure__yes" type="button" id="shop-sure-yes">Yes, sell</button>
+          <button class="shop-sure__no" type="button" id="shop-sure-no">No</button>
+        </div>
+      </div>
+    </div>
+
     <script src="auth.js?v=shop3"></script>
     <script src="progress.js?v=save1"></script>
-    <script src="reef-wallet.js?v=nofins"></script>
-    <script src="shop.js?v=resume1"></script>
+    <script src="reef-wallet.js?v=manta1"></script>
+    <script src="shop.js?v=more1"></script>
   </body>
 </html>

@@ -50,6 +50,15 @@ function findUserByKidName(kidName) {
   });
 }
 
+// FormSubmit's ajax JSON puts these words in the email as plain text.
+// It cannot set a real From address, so the name and subject say CodeReef.
+// _replyto is only a Reply-To address. We do not invent one.
+var CODEREEF_LOGO_URL = "https://aaronlee-now.github.io/codereef/assets/codereef-front-cover.png";
+
+function parentEmailText(lines) {
+  return lines.join("\n\n") + "\n\nCodeReef logo:\n" + CODEREEF_LOGO_URL;
+}
+
 // Emails the parent (Gmail works). FormSubmit may ask them to tap a link the first time.
 // More than one kid can share the same parent email. The address does not have to be unique.
 function notifyParent(user, subject, text) {
@@ -66,6 +75,7 @@ function notifyParent(user, subject, text) {
     body: JSON.stringify({
       name: "CodeReef",
       _subject: subject,
+      _template: "box",
       message: text,
       _captcha: "false",
     }),
@@ -86,31 +96,51 @@ function notifyParent(user, subject, text) {
 }
 
 function notifyParentOfSignup(user) {
+  var kid = user.kidName;
   return notifyParent(
     user,
-    "CodeReef signup",
-    user.kidName +
-      " just signed up for CodeReef. Several kids can share this same parent email."
+    "CodeReef: " + kid + " signed up",
+    parentEmailText([
+      "This message is from CodeReef.",
+      "CodeReef is a coding website for kids. Your child practices coding there. This email is a note for you, the parent.",
+      kid + " just signed up for CodeReef.",
+      "That means a new kid account was created, and this email address was saved as the parent contact. Several kids can share this same parent email. You do not need to do anything. You do not need to reply.",
+    ])
   );
 }
 
 function notifyParentOfLogin(user) {
+  var kid = user.kidName;
   return notifyParent(
     user,
-    "CodeReef login",
-    user.kidName +
-      " just logged into CodeReef. If that was not your diver, change the password."
+    "CodeReef: " + kid + " signed in",
+    parentEmailText([
+      "This message is from CodeReef.",
+      "CodeReef is a coding website for kids. Your child practices coding there. This email is a note for you, the parent.",
+      kid + " just signed in to CodeReef.",
+      "Signing in means " +
+        kid +
+        " opened CodeReef with their name and password. They can practice coding on the site. You do not need to do anything. You do not need to reply.",
+    ])
   );
 }
 
 function notifyParentOfLanguageComplete(user, languageName) {
+  var kid = user.kidName;
   var language = languageName || "a coding path";
   return notifyParent(
     user,
-    "CodeReef: " + language + " complete",
-    user.kidName +
-      " finished the " +
-      language +
-      " path on CodeReef (skills, final project, and advanced project)."
+    "CodeReef: " + kid + " finished " + language,
+    parentEmailText([
+      "This message is from CodeReef.",
+      "CodeReef is a coding website for kids. Your child practices coding there. This email is a note for you, the parent.",
+      kid + " finished " + language + " on CodeReef.",
+      "That means " +
+        kid +
+        " finished the skill tasks and the projects for " +
+        language +
+        ". They practiced on CodeReef until that whole language was done.",
+      "You can feel proud of them. A kind word from you will mean a lot. They can keep exploring and try another language on CodeReef when they are ready. You do not need to reply.",
+    ])
   );
 }
