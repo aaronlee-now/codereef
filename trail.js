@@ -191,6 +191,7 @@ function openCoralTrail(trailId, options) {
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
     '<button type="button" class="trail-btn trail-btn--continue" id="trail-continue" hidden>Continue</button>' +
+    '<a class="trail-btn trail-btn--shop" id="trail-shop" href="shop.html?v=swim1">Fish Shop</a>' +
     "</div>" +
     "</div>";
 

@@ -458,6 +458,23 @@
   display: none !important;
 }
 
+.trail-btn--shop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.7rem 1.4rem;
+  background: #e07a5f;
+  color: #fff8f4;
+  font-size: 1.15rem;
+  text-decoration: none;
+}
+
+.trail-btn--shop:hover,
+.trail-btn--shop:focus-visible {
+  background: #c45d45;
+}
+
 .trail-btn:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 2px;

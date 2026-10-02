@@ -7,6 +7,21 @@ if (!getCurrentUser()) {
 var gridEl = document.getElementById("shop-grid");
 var coinsEl = document.getElementById("shop-coins");
 var msgEl = document.getElementById("shop-msg");
+var resumeEl = document.getElementById("shop-resume");
+
+function lessonToResume() {
+  if (typeof CodeReefProgress !== "undefined" && CodeReefProgress.getLastPath) {
+    var last = CodeReefProgress.getLastPath();
+    if (last && last.href) {
+      return last.href;
+    }
+  }
+  return "explore.html";
+}
+
+if (resumeEl) {
+  resumeEl.href = lessonToResume();
+}
 
 function fishPreviewHtml(fish) {
   if (typeof reefFishMarkup === "function") {

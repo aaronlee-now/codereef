@@ -60,6 +60,30 @@
   animation: rise-in 700ms ease-out both;
 }
 
+.shop-resume {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 16rem);
+  margin: 0 auto 1.1rem;
+  min-height: 3.25rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  background: #2f9e44;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.shop-resume:hover,
+.shop-resume:focus-visible {
+  background: #237a34;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 .shop-coin-bar {
   display: flex;
   align-items: center;
