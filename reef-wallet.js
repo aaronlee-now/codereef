@@ -567,6 +567,7 @@ function walletFromSaved(data) {
 }
 
 var ANDREW_MANTA_FLAG = "codereef_grant_manta_andrew";
+var ANDREW_MANTA_REMOVED_FLAG = "codereef_grant_manta_andrew_removed";
 
 function signedInKidName() {
   var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
@@ -579,28 +580,36 @@ function signedInKidName() {
   return String(user.kidName).trim().toLowerCase();
 }
 
-// One free Manta Ray for the kid named andrew, once.
-// If he already has one, we do not add another. Selling it does not bring it back.
-function grantAndrewMantaOnce(wallet) {
+// If Andrew already got the free Manta Ray, take that one fish back once.
+// A Manta Ray he buys later stays. Coins, other fish, outfits, and decorations stay.
+function takeBackAndrewMantaOnce(wallet) {
   if (signedInKidName() !== "andrew") {
     return wallet;
   }
-  if (localStorage.getItem(ANDREW_MANTA_FLAG)) {
+  if (!localStorage.getItem(ANDREW_MANTA_FLAG)) {
+    return wallet;
+  }
+  if (localStorage.getItem(ANDREW_MANTA_REMOVED_FLAG)) {
     return wallet;
   }
   var have = wallet.fishCounts.manta || 0;
-  if (have < 1) {
-    wallet.fishCounts.manta = 1;
+  if (have > 0) {
+    have -= 1;
+    if (have > 0) {
+      wallet.fishCounts.manta = have;
+    } else {
+      delete wallet.fishCounts.manta;
+    }
     saveWallet(wallet);
   }
-  localStorage.setItem(ANDREW_MANTA_FLAG, "1");
+  localStorage.setItem(ANDREW_MANTA_REMOVED_FLAG, "1");
   return wallet;
 }
 
 function getWallet() {
   var raw = localStorage.getItem(walletKidKey());
   if (!raw) {
-    return grantAndrewMantaOnce(emptyWallet());
+    return takeBackAndrewMantaOnce(emptyWallet());
   }
   try {
     var data = JSON.parse(raw);
@@ -608,7 +617,7 @@ function getWallet() {
     if (loaded.migrated) {
       saveWallet(loaded.wallet);
     }
-    return grantAndrewMantaOnce(loaded.wallet);
+    return takeBackAndrewMantaOnce(loaded.wallet);
   } catch (err) {
     return emptyWallet();
   }
