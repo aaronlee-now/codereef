@@ -1,5 +1,6 @@
 // Aquarium — owned fish glide one way (always facing forward).
 // Fish race: rarer fish are faster, and they steer around obstacles.
+// Each race builds a new, longer course with different obstacles.
 
 if (!getCurrentUser()) {
   window.location.href = "login.html";
@@ -24,6 +25,8 @@ var tipTimer = 0;
 var RACE_LIMIT = 8;
 var lastLineup = null;
 var pickRows = [];
+var lastCourseKey = "";
+var lastKindKey = "";
 
 function seaweedHtml() {
   return (
@@ -125,12 +128,13 @@ function placeFish(fish, index) {
 
 function clearTankMovers() {
   var kids = tankEl.querySelectorAll(
-    ".aquarium-swimmer, .aquarium-empty, .aquarium-decor, .aquarium-obstacle, .aquarium-finish"
+    ".aquarium-swimmer, .aquarium-empty, .aquarium-decor, .aquarium-obstacle, .aquarium-finish, .aquarium-race-world"
   );
   var k;
   for (k = 0; k < kids.length; k += 1) {
     kids[k].remove();
   }
+  tankEl.classList.remove("aquarium-tank--racing");
 }
 
 function stopRaceLoop() {
@@ -475,40 +479,152 @@ function shuffleLanes(count) {
   return lanes;
 }
 
-function addRaceCourse() {
-  var spots = [
-    { kind: "rock", left: 18, top: 46 },
-    { kind: "coral", left: 42, top: 12 },
-    { kind: "weed", left: 64, top: 34 },
-  ];
+var OBSTACLE_KINDS = ["rock", "coral", "weed", "castle", "bubbles", "starfish", "shell"];
+
+function shuffleList(items) {
+  var list = items.slice();
+  var i;
+  for (i = list.length - 1; i > 0; i -= 1) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var swap = list[i];
+    list[i] = list[j];
+    list[j] = swap;
+  }
+  return list;
+}
+
+function clampNum(n, lo, hi) {
+  if (n < lo) {
+    return lo;
+  }
+  if (n > hi) {
+    return hi;
+  }
+  return n;
+}
+
+function obstacleMarkup(kind) {
+  if (kind === "coral") {
+    return "<i></i><i></i><i></i>";
+  }
+  if (kind === "weed") {
+    return (
+      '<span class="shop-decor-preview">' +
+      '<span class="shop-decor-preview__leaf"></span>' +
+      '<span class="shop-decor-preview__leaf"></span>' +
+      '<span class="shop-decor-preview__leaf"></span>' +
+      "</span>"
+    );
+  }
+  if (kind === "castle") {
+    return '<span class="aquarium-castle"><b></b><b></b><b></b><i></i></span>';
+  }
+  if (kind === "bubbles") {
+    return "<i></i><i></i><i></i><i></i>";
+  }
+  if (kind === "starfish" || kind === "shell") {
+    return "<span></span>";
+  }
+  return "";
+}
+
+function planObstacles() {
+  var deck = shuffleList(OBSTACLE_KINDS).concat(shuffleList(OBSTACLE_KINDS));
+  var count = 8 + Math.floor(Math.random() * 2);
+  var spots = [];
+  var i;
+  var pick = 0;
+  var lastKind = "";
+  for (i = 0; i < count; i += 1) {
+    var kind = deck[pick];
+    pick += 1;
+    if (kind === lastKind) {
+      kind = deck[pick];
+      pick += 1;
+    }
+    lastKind = kind;
+    var along = (i + 1) / (count + 1);
+    along += (Math.random() - 0.5) * 0.045;
+    var band = 0.08 + Math.random() * 0.76;
+    spots.push({
+      kind: kind,
+      along: clampNum(along, 0.07, 0.93),
+      band: clampNum(band, 0.05, 0.88),
+    });
+  }
+  spots.sort(function (a, b) {
+    return a.along - b.along;
+  });
+  for (i = 1; i < spots.length; i += 1) {
+    if (spots[i].along - spots[i - 1].along < 0.07) {
+      spots[i].along = clampNum(spots[i - 1].along + 0.07, 0.07, 0.93);
+    }
+    if (Math.abs(spots[i].band - spots[i - 1].band) < 0.22) {
+      if (spots[i].band < 0.5) {
+        spots[i].band = clampNum(spots[i].band + 0.3, 0.05, 0.88);
+      } else {
+        spots[i].band = clampNum(spots[i].band - 0.3, 0.05, 0.88);
+      }
+    }
+  }
+  return spots;
+}
+
+function courseKey(spots) {
+  var parts = [];
   var i;
   for (i = 0; i < spots.length; i += 1) {
     var spot = spots[i];
-    var top = spot.top + Math.floor(Math.random() * 9) - 4;
-    var inner = "";
-    if (spot.kind === "coral") {
-      inner = "<i></i><i></i><i></i>";
-    } else if (spot.kind === "weed") {
-      inner =
-        '<span class="shop-decor-preview">' +
-        '<span class="shop-decor-preview__leaf"></span>' +
-        '<span class="shop-decor-preview__leaf"></span>' +
-        '<span class="shop-decor-preview__leaf"></span>' +
-        "</span>";
-    }
+    parts.push(spot.kind + ":" + Math.round(spot.along * 20) + ":" + Math.round(spot.band * 10));
+  }
+  return parts.join("|");
+}
+
+function kindKey(spots) {
+  var names = [];
+  var i;
+  for (i = 0; i < spots.length; i += 1) {
+    names.push(spots[i].kind);
+  }
+  names.sort();
+  return names.join(",");
+}
+
+function pickCourseSpots() {
+  var spots = planObstacles();
+  var key = courseKey(spots);
+  var kinds = kindKey(spots);
+  var tries = 0;
+  while (tries < 12 && (key === lastCourseKey || kinds === lastKindKey)) {
+    spots = planObstacles();
+    key = courseKey(spots);
+    kinds = kindKey(spots);
+    tries += 1;
+  }
+  lastCourseKey = key;
+  lastKindKey = kinds;
+  return spots;
+}
+
+function addRaceCourse(world) {
+  var spots = pickCourseSpots();
+  world.setAttribute("data-course", lastCourseKey);
+  var i;
+  for (i = 0; i < spots.length; i += 1) {
+    var spot = spots[i];
     var node = document.createElement("div");
     node.className = "aquarium-obstacle aquarium-obstacle--" + spot.kind;
-    node.style.left = spot.left + "%";
-    node.style.top = top + "%";
+    node.setAttribute("data-along", String(spot.along));
+    node.setAttribute("data-band", String(spot.band));
     node.setAttribute("aria-hidden", "true");
-    node.innerHTML = inner;
-    tankEl.appendChild(node);
+    node.innerHTML = obstacleMarkup(spot.kind);
+    world.appendChild(node);
   }
   var finish = document.createElement("div");
   finish.className = "aquarium-finish";
   finish.setAttribute("aria-hidden", "true");
   finish.innerHTML = "<span>Finish</span>";
-  tankEl.appendChild(finish);
+  world.appendChild(finish);
 }
 
 function measureObstacles() {
@@ -574,23 +690,30 @@ function layoutRaceObstacles(tankH, sandH, finishX, leadX) {
   var nodes = tankEl.querySelectorAll(".aquarium-obstacle");
   var waterTop = 8;
   var waterBot = tankH - sandH - 8;
-  var tops = [0.76, 0.02, 0.4];
-  var lastX = finishX - 52;
+  var lastX = finishX - 64;
   var span = lastX - leadX;
-  if (span < 36) {
-    span = 36;
+  if (span < 80) {
+    span = 80;
   }
   var i;
   for (i = 0; i < nodes.length; i += 1) {
+    var along = parseFloat(nodes[i].getAttribute("data-along"));
+    var band = parseFloat(nodes[i].getAttribute("data-band"));
+    if (isNaN(along)) {
+      along = (i + 1) / (nodes.length + 1);
+    }
+    if (isNaN(band)) {
+      band = 0.4;
+    }
     var nodeH = nodes[i].offsetHeight || 70;
     var room = waterBot - waterTop - nodeH;
     if (room < 0) {
       room = 0;
     }
-    var y = waterTop + room * tops[i % tops.length];
-    var x = leadX + span * (i / Math.max(1, nodes.length - 1));
-    nodes[i].style.left = x + "px";
-    nodes[i].style.top = y + "px";
+    var y = waterTop + room * band;
+    var x = leadX + span * along;
+    nodes[i].style.left = Math.round(x) + "px";
+    nodes[i].style.top = Math.round(y) + "px";
   }
 }
 
@@ -612,7 +735,20 @@ function startRace(lineup) {
   if (tip) {
     tip.hidden = true;
   }
-  addRaceCourse();
+  var world = document.createElement("div");
+  world.className = "aquarium-race-world";
+  world.style.visibility = "hidden";
+  world.style.position = "absolute";
+  world.style.top = "0";
+  world.style.left = "0";
+  world.style.height = "100%";
+  var worldSand = document.createElement("div");
+  worldSand.className = "aquarium-race-world__sand";
+  worldSand.setAttribute("aria-hidden", "true");
+  world.appendChild(worldSand);
+  tankEl.appendChild(world);
+  tankEl.classList.add("aquarium-tank--racing");
+  addRaceCourse(world);
   showRacingButtons();
   setRaceMsg("Watch them dodge the reef!");
 
@@ -630,7 +766,7 @@ function startRace(lineup) {
     swimmer.style.setProperty("--stroke", isHeavyFish(fish) ? "2.4s" : "1.05s");
     swimmer.style.setProperty("--stroke-delay", -(i * 0.37) + "s");
     bindFishClick(swimmer, fish.name);
-    tankEl.appendChild(swimmer);
+    world.appendChild(swimmer);
     racers.push({
       el: swimmer,
       fish: fish,
@@ -658,10 +794,12 @@ function startRace(lineup) {
     }
     var tankW = tankEl.clientWidth;
     var tankH = tankEl.clientHeight;
+    var courseW = Math.round(tankW * 3.6);
+    world.style.width = courseW + "px";
     var sand = tankEl.querySelector(".aquarium-tank__sand");
     var sandH = sand ? sand.offsetHeight : 40;
-    var finish = tankEl.querySelector(".aquarium-finish");
-    var finishX = finish ? finish.offsetLeft : tankW - 16;
+    var finish = world.querySelector(".aquarium-finish");
+    var finishX = finish ? finish.offsetLeft : courseW - 16;
     var widest = 1;
     var fastest = 1;
     var n;
@@ -677,7 +815,7 @@ function startRace(lineup) {
       }
     }
     var distance = Math.max(120, finishX - 8);
-    var speedScale = distance / 4.8 / fastest;
+    var speedScale = distance / 24 / fastest;
     for (n = 0; n < racers.length; n += 1) {
       racers[n].speed *= speedScale;
     }
@@ -689,6 +827,7 @@ function startRace(lineup) {
       leadX = maxLead;
     }
     layoutRaceObstacles(tankH, sandH, finishX, leadX);
+    world.style.visibility = "visible";
     var obstacles = measureObstacles();
     for (n = 0; n < racers.length; n += 1) {
       var racer = racers[n];
@@ -709,6 +848,7 @@ function startRace(lineup) {
     var last = 0;
     var elapsed = 0;
     var winner = null;
+    var cameraX = 0;
     raceOn = true;
 
     function frame(now) {
@@ -739,7 +879,7 @@ function startRace(lineup) {
           if (fishR.y > fishR.maxY) {
             fishR.y = fishR.maxY;
           }
-          var park = tankW - fishR.w - 4;
+          var park = courseW - fishR.w - 8;
           if (fishR.x + fishR.w >= finishX) {
             fishR.crossed = true;
           }
@@ -751,6 +891,28 @@ function startRace(lineup) {
           fishR.el.style.top = fishR.y + "px";
         }
       }
+
+      var leadNose = 0;
+      var look;
+      for (look = 0; look < racers.length; look += 1) {
+        var nose = racers[look].x + racers[look].w;
+        if (nose > leadNose) {
+          leadNose = nose;
+        }
+      }
+      var viewMax = courseW - tankW;
+      if (viewMax < 0) {
+        viewMax = 0;
+      }
+      var viewGoal = leadNose - tankW * 0.36;
+      if (viewGoal < 0) {
+        viewGoal = 0;
+      }
+      if (viewGoal > viewMax) {
+        viewGoal = viewMax;
+      }
+      cameraX += (viewGoal - cameraX) * Math.min(1, dt * 2.6);
+      world.style.transform = "translate3d(" + -cameraX + "px,0,0)";
 
       if (!winner) {
         var leader = null;
@@ -775,7 +937,7 @@ function startRace(lineup) {
         }
       }
 
-      if (allDone || elapsed > 18) {
+      if (allDone || elapsed > 40) {
         stopRaceLoop();
         if (!winner && racers.length) {
           showFinishButtons();
