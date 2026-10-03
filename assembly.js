@@ -491,6 +491,10 @@ function normalizeOut(text) {
 }
 
 function setTip(text) {
+  if (helpLine && window.CodeReefHelp) {
+    CodeReefHelp.show(helpLine, text);
+    return;
+  }
   if (helpLine) {
     helpLine.textContent = text;
   }

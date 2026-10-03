@@ -601,7 +601,9 @@ function putBlockBack(type) {
 }
 
 function setTip(text) {
-  if (helpLine) {
+  if (helpLine && window.CodeReefHelp) {
+    CodeReefHelp.show(helpLine, text);
+  } else if (helpLine) {
     helpLine.textContent = text;
   }
   if (tip) {

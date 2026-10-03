@@ -1040,6 +1040,68 @@ html:has(.page--web) {
   border: 1px solid #f0d45c;
 }
 
+.help-steps__count {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1864ab;
+}
+
+.help-steps__now {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.help-steps__code {
+  display: block;
+  margin-top: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.45rem;
+  background: #102028;
+  color: #d3f9d8;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.help-steps__nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.help-steps__back,
+.help-steps__next {
+  min-height: 2.6rem;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  border: none;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.help-steps__back {
+  background: #fff;
+  color: #1864ab;
+  border: 2px solid #74c0fc;
+}
+
+.help-steps__back:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.help-steps__next {
+  background: #1c7ed6;
+  color: #fff;
+}
+
 /* Python path — big code editor + output */
 .web-editor-panel--solo {
   grid-template-rows: minmax(0, 1fr);
