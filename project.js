@@ -70,7 +70,8 @@
     if (!active) {
       return;
     }
-    localStorage.setItem(
+    try {
+      localStorage.setItem(
       storageKey(active.pathKey),
       JSON.stringify({
         phase: active.phase,
@@ -84,7 +85,16 @@
         advancedDone: active.advancedDone,
       })
     );
+    } catch (err) {
+      // Quota or private mode — the next save can try again.
+    }
   }
+
+  function saveNow() {
+    saveProgress();
+  }
+
+  window.addEventListener("pagehide", saveNow);
 
   function escapeHtml(text) {
     return String(text || "")
@@ -1619,5 +1629,6 @@
     attach: attach,
     loadProgress: loadProgress,
     clearProgress: clearProgress,
+    saveNow: saveNow,
   };
 })(window);

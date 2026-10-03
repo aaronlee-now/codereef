@@ -49,10 +49,51 @@ function decorPlayKind(item) {
   if (id === "bubbles") {
     return "bubbles";
   }
+  if (id === "sand-dollar") {
+    return "spin";
+  }
+  if (id === "driftwood") {
+    return "perch";
+  }
   if (id === "cave" || id === "chest" || id === "castle") {
     return "peek";
   }
   return "fun";
+}
+
+function bindDecorPlay(node) {
+  node.addEventListener("click", function (event) {
+    event.stopPropagation();
+    if (raceOn || !tankEl) {
+      return;
+    }
+    var fish = tankEl.querySelectorAll(".aquarium-swimmer:not(.aquarium-swimmer--race)");
+    var i;
+    if (node.getAttribute("data-play") === "rest") {
+      for (i = 0; i < fish.length; i += 1) {
+        if (fishIsOnLeaf(fish[i], node)) {
+          beginFishRest(fish[i], node);
+          return;
+        }
+      }
+      return;
+    }
+    for (i = 0; i < fish.length; i += 1) {
+      var swimmer = fish[i];
+      if (
+        swimmer.classList.contains("aquarium-swimmer--rest") ||
+        swimmer.classList.contains("aquarium-swimmer--play")
+      ) {
+        continue;
+      }
+      beginFishPlay(swimmer, node);
+      return;
+    }
+    node.classList.add("aquarium-decor--played");
+    window.setTimeout(function () {
+      node.classList.remove("aquarium-decor--played");
+    }, 900);
+  });
 }
 
 function fishFaceHtml(fish, outfitId) {
@@ -1041,12 +1082,15 @@ function placeBoughtDecor() {
       node.style.bottom = "auto";
       restN += 1;
     } else {
-      var col = floorN % 8;
-      var layer = Math.floor(floorN / 8);
-      node.style.left = 4 + col * 11 + (layer % 2) * 3 + "%";
-      node.style.bottom = 1.7 + (layer % 4) * 0.4 + "rem";
+      var playLeft = [8, 24, 40, 56, 72, 16, 48, 64, 32, 80];
+      var playTop = [22, 38, 54, 68, 30, 46, 62, 18, 50, 34];
+      var spot = floorN % playLeft.length;
+      node.style.left = playLeft[spot] + "%";
+      node.style.top = playTop[spot] + "%";
+      node.style.bottom = "auto";
       floorN += 1;
     }
+    bindDecorPlay(node);
     tankEl.appendChild(node);
   }
 }
@@ -1066,16 +1110,38 @@ function startDecorRest() {
   decorRestTimer = window.setInterval(checkFishRest, 400);
 }
 
+function fishIsOnLeaf(swimmer, leaf) {
+  var box = swimmer.getBoundingClientRect();
+  var lb = leaf.getBoundingClientRect();
+  var fishCx = box.left + box.width * 0.5;
+  var fishCy = box.top + box.height * 0.62;
+  var overX = fishCx >= lb.left && fishCx <= lb.right;
+  var overY = fishCy >= lb.top - box.height * 0.2 && fishCy <= lb.bottom;
+  return overX && overY;
+}
+
 function beginFishRest(swimmer, leaf) {
+  if (swimmer.classList.contains("aquarium-swimmer--rest")) {
+    return;
+  }
+  var tankBox = tankEl.getBoundingClientRect();
+  var leafBox = leaf.getBoundingClientRect();
+  var fishBox = swimmer.getBoundingClientRect();
+  var left = leafBox.left + leafBox.width * 0.5 - fishBox.width * 0.5 - tankBox.left;
+  var top = leafBox.top + leafBox.height * 0.08 - fishBox.height * 0.62 - tankBox.top;
+  swimmer.style.animation = "none";
+  swimmer.style.left = left + "px";
+  swimmer.style.top = top + "px";
   swimmer.classList.add("aquarium-swimmer--rest");
   leaf._restBusy = true;
   window.setTimeout(function () {
     if (swimmer.isConnected) {
       swimmer.classList.remove("aquarium-swimmer--rest");
+      swimmer.style.animation = "";
       swimmer._restCool = Date.now() + 2200;
     }
     leaf._restBusy = false;
-  }, 1500);
+  }, 1800);
 }
 
 function beginFishPlay(swimmer, decor) {
@@ -1093,7 +1159,9 @@ function beginFishPlay(swimmer, decor) {
         "aquarium-swimmer--play",
         "aquarium-swimmer--play-fun",
         "aquarium-swimmer--play-bubbles",
-        "aquarium-swimmer--play-peek"
+        "aquarium-swimmer--play-peek",
+        "aquarium-swimmer--play-spin",
+        "aquarium-swimmer--play-perch"
       );
       swimmer._restCool = Date.now() + 1800;
     }
@@ -1130,10 +1198,17 @@ function checkFishRest() {
       if (toy._restBusy) {
         continue;
       }
+      if (toy.getAttribute("data-play") === "rest") {
+        if (fishIsOnLeaf(swimmer, toy)) {
+          beginFishRest(swimmer, toy);
+          break;
+        }
+        continue;
+      }
       var lb = toy.getBoundingClientRect();
       var lx = lb.left + lb.width * 0.5;
       var ly = lb.top + lb.height * 0.45;
-      if (Math.abs(fx - lx) < 56 && Math.abs(fy - ly) < 50) {
+      if (Math.abs(fx - lx) < 90 && Math.abs(fy - ly) < 74) {
         beginFishPlay(swimmer, toy);
         break;
       }

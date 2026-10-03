@@ -47,6 +47,12 @@ function persistLessonSoon() {
   CodeReefProgress.saveDebounced(PATH_KEY, snapshotProgress(), 400);
 }
 
+if (typeof CodeReefProgress !== "undefined" && CodeReefProgress.registerSnapshot) {
+  CodeReefProgress.registerSnapshot(function () {
+    return { path: PATH_KEY, data: snapshotProgress() };
+  });
+}
+
 function restoreDoneWaitingForNext() {
   taskDone = true;
   taskBar.classList.add("is-done");

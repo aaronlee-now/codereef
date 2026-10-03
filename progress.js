@@ -7,6 +7,7 @@
 
   var debounceTimers = Object.create(null);
   var pendingSaves = Object.create(null);
+  var liveSnapshots = [];
 
   function kidName() {
     var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
@@ -99,8 +100,30 @@
     }, wait);
   }
 
-  // Write any typing that has not been saved yet (logout or closing the tab).
+  function registerSnapshot(reader) {
+    if (typeof reader === "function") {
+      liveSnapshots.push(reader);
+    }
+  }
+
+  // Write the open lesson, then any typing that has not been saved yet.
   function flushProgress() {
+    var i;
+    for (i = 0; i < liveSnapshots.length; i += 1) {
+      try {
+        var snap = liveSnapshots[i]();
+        if (snap && snap.path && snap.data) {
+          saveProgress(snap.path, snap.data);
+          delete pendingSaves[snap.path];
+          if (debounceTimers[snap.path]) {
+            clearTimeout(debounceTimers[snap.path]);
+            debounceTimers[snap.path] = null;
+          }
+        }
+      } catch (err) {
+        // Keep going so one lesson cannot block the rest of the save.
+      }
+    }
     var path;
     for (path in pendingSaves) {
       if (!Object.prototype.hasOwnProperty.call(pendingSaves, path)) {
@@ -115,7 +138,29 @@
     }
   }
 
-  window.addEventListener("pagehide", flushProgress);
+  function flushAll() {
+    flushProgress();
+    if (typeof saveWallet === "function" && typeof peekWallet === "function") {
+      var wallet = peekWallet();
+      if (wallet) {
+        saveWallet(wallet);
+      }
+    }
+    if (
+      window.CodeReefProject &&
+      typeof CodeReefProject.saveNow === "function"
+    ) {
+      CodeReefProject.saveNow();
+    }
+  }
+
+  window.addEventListener("pagehide", flushAll);
+  window.addEventListener("beforeunload", flushAll);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") {
+      flushAll();
+    }
+  });
 
   function clampTaskIndex(index, taskCount) {
     var n = typeof index === "number" ? index : 0;
@@ -198,7 +243,8 @@
     clampTaskIndex: clampTaskIndex,
     rememberLastPath: rememberLastPath,
     getLastPath: getLastPath,
-    flush: flushProgress,
+    flush: flushAll,
+    registerSnapshot: registerSnapshot,
     // Aliases matching the request wording
     saveProgress: saveProgress,
     loadProgress: loadProgress,
