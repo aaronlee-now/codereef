@@ -109,31 +109,165 @@ function numbered(lines) {
   for (let n = 0; n < lines.length; n += 1) {
     parts.push(n + 1 + ". " + lines[n]);
   }
-  return parts.join(" ");
+  return parts.join("\n\n");
+}
+
+function splitIdeas(text) {
+  const bits = String(text || "").split(/(?<=[.!])\s+/);
+  const out = [];
+  for (let i = 0; i < bits.length; i += 1) {
+    const bit = bits[i].trim();
+    if (bit) out.push(bit);
+  }
+  return out;
+}
+
+function explainHtmlTag(tagLine) {
+  const raw = String(tagLine || "").trim();
+  if (raw === "</ul>") {
+    return [
+      "Type </ul>",
+      "The slash / means this tag is finished.",
+      "This ends the list.",
+    ];
+  }
+  if (raw === "<ul>" || raw === "<ul></ul>") {
+    return [
+      "ul means a list.",
+      "Type this mark: <",
+      "Then type ul",
+      "Then type this mark: >",
+      raw.indexOf("</ul>") !== -1 ? "Then type </ul> so the list is closed." : "You can put list items inside later.",
+      "The slash / means a tag is finished.",
+    ];
+  }
+  const m = raw.match(/^<([a-z0-9]+)([^>]*)>([\s\S]*)<\/\1>$/i);
+  if (!m) return [];
+  const tag = m[1].toLowerCase();
+  const attrs = m[2] || "";
+  const inner = m[3];
+  const names = {
+    p: "p means a paragraph. A paragraph is one sentence block.",
+    h1: "h1 means the biggest title.",
+    h2: "h2 means a middle-size title.",
+    h3: "h3 means a small title.",
+    button: "button means a word you could press.",
+    li: "li means one item in a list.",
+    div: "div means a box that groups things.",
+    strong: "strong makes the word look important. It is usually bold.",
+    a: "a means a link. A link is a word you can tap.",
+    ul: "ul means a list.",
+  };
+  const steps = [names[tag] || tag + " is a label for the page."];
+  steps.push("Type this mark: <");
+  steps.push("Then type " + tag);
+  const classMatch = attrs.match(/class\s*=\s*"([^"]*)"/i);
+  const hrefMatch = attrs.match(/href\s*=\s*"([^"]*)"/i);
+  if (classMatch) {
+    steps.push("Then type a space.");
+    steps.push("Then type class=");
+    steps.push('A quote is this mark: "');
+    steps.push("Type a quote, then " + classMatch[1] + ", then a quote.");
+    steps.push("class is a nickname the colors can use.");
+  }
+  if (hrefMatch) {
+    steps.push("Then type a space.");
+    steps.push("Then type href=");
+    steps.push('A quote is this mark: "');
+    steps.push("Type a quote, then " + hrefMatch[1] + ", then a quote.");
+    steps.push("href is where the link goes.");
+    steps.push("# means stay on this page.");
+  }
+  steps.push("Then type this mark: >");
+  if (inner) steps.push("Then type " + inner);
+  steps.push("Then type </" + tag + ">");
+  steps.push("The slash / means this tag is finished.");
+  return steps;
+}
+
+function explainCssLine(line) {
+  const m = String(line || "").trim().match(/^([a-z-]+)\s*:\s*(.+);$/i);
+  if (!m) {
+    return [
+      "Type every mark you see.",
+      "A colon is this mark: :",
+      "A semicolon is this mark: ;",
+    ];
+  }
+  const prop = m[1].toLowerCase();
+  const val = m[2];
+  const meanings = {
+    color: "color means the color of the letters.",
+    background: "background means the color behind the words.",
+    "font-size": "font-size means how big the letters are.",
+    margin: "margin means empty space outside a box.",
+    padding: "padding means empty space inside a box.",
+    "text-align": "text-align means which side the words sit on.",
+    width: "width means how wide the box is.",
+    border: "border means a line around a box.",
+  };
+  const steps = [];
+  if (meanings[prop]) steps.push(meanings[prop]);
+  steps.push("Type " + prop);
+  steps.push("Then type a colon. A colon is this mark: :");
+  steps.push("Then type a space.");
+  steps.push("Then type " + val);
+  if (/px/i.test(val)) {
+    steps.push("px means pixels. Pixels are tiny dots on the screen.");
+  }
+  steps.push("Then type a semicolon. A semicolon is this mark: ;");
+  steps.push("The semicolon ends the line. Do not skip it.");
+  return steps;
 }
 
 function htmlHelp(fresh, tagLine, what) {
-  return numbered([
-    fresh
-      ? "Start fresh in the HTML box. Tap the HTML tab. Highlight the old HTML and press Delete. You can leave the CSS alone."
-      : "Tap the HTML tab. Keep your old HTML. Do not erase it.",
-    "Click in the HTML box at the end of the last line. Press the Enter key.",
-    "Type this exactly: " + tagLine,
-    what,
-    "Press the Show button.",
-  ]);
+  const steps = [];
+  steps.push("Find the HTML tab. It is above the code box.");
+  steps.push("Tap the HTML tab.");
+  steps.push("HTML is the words on the page.");
+  if (fresh) {
+    steps.push("Start fresh in the HTML box.");
+    steps.push("Highlight the old HTML.");
+    steps.push("Press the Delete key.");
+    steps.push("Leave the CSS tab alone.");
+    steps.push("CSS is the colors.");
+    steps.push("Click in the empty HTML box.");
+  } else {
+    steps.push("Keep your old HTML. Do not erase it.");
+    steps.push("Click in the HTML box.");
+    steps.push("Click at the end of the last line.");
+    steps.push("Press the Enter key. That starts a new line.");
+  }
+  steps.push("Type this exactly: " + tagLine);
+  const tagSteps = explainHtmlTag(tagLine);
+  for (let i = 0; i < tagSteps.length; i += 1) steps.push(tagSteps[i]);
+  if (!tagSteps.length) {
+    const ideas = splitIdeas(what);
+    for (let i = 0; i < ideas.length; i += 1) steps.push(ideas[i]);
+  }
+  steps.push("Press the Show button. It is at the top.");
+  return numbered(steps);
 }
 
 function cssHelp(fresh, line, what) {
-  return numbered([
-    fresh
-      ? "Tap the CSS tab. You can keep the old CSS and add this, or change the one line I name."
-      : "Tap the CSS tab. Keep your old CSS. Do not erase the other lines.",
-    "Click in the CSS box where I say. Press Enter if you need a new line.",
-    "Type this: " + line,
-    what,
-    "Press the Show button.",
-  ]);
+  const steps = [];
+  steps.push("Find the CSS tab. It is above the code box.");
+  steps.push("Tap the CSS tab.");
+  steps.push("CSS is the colors and sizes.");
+  if (fresh) {
+    steps.push("You can keep the old CSS.");
+    steps.push("Add this new line, or change the one line named below.");
+  } else {
+    steps.push("Keep your old CSS. Do not erase the other lines.");
+  }
+  steps.push("Click in the CSS box.");
+  const ideas = splitIdeas(what);
+  for (let i = 0; i < ideas.length; i += 1) steps.push(ideas[i]);
+  steps.push("Type this exactly: " + line);
+  const bits = explainCssLine(line);
+  for (let i = 0; i < bits.length; i += 1) steps.push(bits[i]);
+  steps.push("Press the Show button. It is at the top.");
+  return numbered(steps);
 }
 
 const tasks = (function buildHtmlTasks() {
@@ -149,13 +283,23 @@ const tasks = (function buildHtmlTasks() {
   add(
     "Change the big title to Hello, ocean!",
     numbered([
+      "Find the HTML tab. It is above the code box.",
       "Tap the HTML tab.",
-      "Keep the line. Do not erase the whole title.",
-      "Click on the word reef inside the <h1> line.",
-      "Delete r e e f. Type ocean in that spot.",
+      "HTML is the words on the page.",
+      "Keep your old line. Do not erase the whole title.",
+      "Click in the HTML box.",
+      "Click on the word reef inside the h1 line.",
+      "Delete the letters r e e f.",
+      "Type the word ocean in that same spot.",
       "The line should look like this: <h1>Hello, ocean!</h1>",
-      "<h1> starts a big title. </h1> ends it. The slash / means end.",
-      "Press the Show button.",
+      "h1 means the biggest title.",
+      "Type this mark: <",
+      "Then type h1",
+      "Then type this mark: >",
+      "The words Hello, ocean! stay in the middle.",
+      "Then type </h1>",
+      "The slash / means this tag is finished.",
+      "Press the Show button. It is at the top.",
     ]),
     function () { return /<h1>\s*Hello,\s*ocean!\s*<\/h1>/i.test(htmlCode.value); }
   );

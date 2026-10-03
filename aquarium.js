@@ -32,13 +32,27 @@ var lastKindKey = "";
 
 function seaweedHtml() {
   return (
-    '<div class="aquarium-decor" aria-hidden="true">' +
+    '<div class="aquarium-decor" data-play="fun" aria-hidden="true">' +
     '<span class="shop-decor-preview">' +
     '<span class="shop-decor-preview__leaf"></span>' +
     '<span class="shop-decor-preview__leaf"></span>' +
     '<span class="shop-decor-preview__leaf"></span>' +
     "</span></div>"
   );
+}
+
+function decorPlayKind(item) {
+  if (item && item.rest) {
+    return "rest";
+  }
+  var id = item && item.id ? item.id : "";
+  if (id === "bubbles") {
+    return "bubbles";
+  }
+  if (id === "cave" || id === "chest" || id === "castle") {
+    return "peek";
+  }
+  return "fun";
 }
 
 function fishFaceHtml(fish, outfitId) {
@@ -1012,6 +1026,7 @@ function placeBoughtDecor() {
     var node = document.createElement("div");
     node.className = "aquarium-decor";
     node.setAttribute("aria-hidden", "true");
+    node.setAttribute("data-play", decorPlayKind(item));
     if (typeof decorShapeHtml === "function") {
       node.innerHTML = decorShapeHtml(item.id);
     } else {
@@ -1045,7 +1060,7 @@ function stopDecorRest() {
 
 function startDecorRest() {
   stopDecorRest();
-  if (!tankEl || !tankEl.querySelector(".aquarium-decor--rest")) {
+  if (!tankEl || !tankEl.querySelector(".aquarium-decor")) {
     return;
   }
   decorRestTimer = window.setInterval(checkFishRest, 400);
@@ -1063,18 +1078,45 @@ function beginFishRest(swimmer, leaf) {
   }, 1500);
 }
 
+function beginFishPlay(swimmer, decor) {
+  var kind = decor.getAttribute("data-play") || "fun";
+  if (kind === "rest") {
+    beginFishRest(swimmer, decor);
+    return;
+  }
+  swimmer.classList.add("aquarium-swimmer--play", "aquarium-swimmer--play-" + kind);
+  decor.classList.add("aquarium-decor--played");
+  decor._restBusy = true;
+  window.setTimeout(function () {
+    if (swimmer.isConnected) {
+      swimmer.classList.remove(
+        "aquarium-swimmer--play",
+        "aquarium-swimmer--play-fun",
+        "aquarium-swimmer--play-bubbles",
+        "aquarium-swimmer--play-peek"
+      );
+      swimmer._restCool = Date.now() + 1800;
+    }
+    decor.classList.remove("aquarium-decor--played");
+    decor._restBusy = false;
+  }, 1200);
+}
+
 function checkFishRest() {
   if (raceOn || !tankEl) {
     return;
   }
-  var rests = tankEl.querySelectorAll(".aquarium-decor--rest");
+  var toys = tankEl.querySelectorAll(".aquarium-decor");
   var fish = tankEl.querySelectorAll(".aquarium-swimmer:not(.aquarium-swimmer--race)");
   var now = Date.now();
   var f;
   var r;
   for (f = 0; f < fish.length; f += 1) {
     var swimmer = fish[f];
-    if (swimmer.classList.contains("aquarium-swimmer--rest")) {
+    if (
+      swimmer.classList.contains("aquarium-swimmer--rest") ||
+      swimmer.classList.contains("aquarium-swimmer--play")
+    ) {
       continue;
     }
     if (swimmer._restCool && now < swimmer._restCool) {
@@ -1083,16 +1125,16 @@ function checkFishRest() {
     var box = swimmer.getBoundingClientRect();
     var fx = box.left + box.width * 0.5;
     var fy = box.top + box.height * 0.55;
-    for (r = 0; r < rests.length; r += 1) {
-      var leaf = rests[r];
-      if (leaf._restBusy) {
+    for (r = 0; r < toys.length; r += 1) {
+      var toy = toys[r];
+      if (toy._restBusy) {
         continue;
       }
-      var lb = leaf.getBoundingClientRect();
+      var lb = toy.getBoundingClientRect();
       var lx = lb.left + lb.width * 0.5;
-      var ly = lb.top + lb.height * 0.35;
-      if (Math.abs(fx - lx) < 52 && Math.abs(fy - ly) < 46) {
-        beginFishRest(swimmer, leaf);
+      var ly = lb.top + lb.height * 0.45;
+      if (Math.abs(fx - lx) < 56 && Math.abs(fy - ly) < 50) {
+        beginFishPlay(swimmer, toy);
         break;
       }
     }

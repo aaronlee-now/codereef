@@ -24,7 +24,7 @@ var FISH_FOR_SALE = [
   {
     id: "guppy",
     name: "Guppy",
-    cost: { sand: 3 },
+    cost: { sand: 30 },
     image: "assets/fish/guppy.png?v=morefish",
     kind: "fish",
     rarity: 1,
@@ -32,7 +32,7 @@ var FISH_FOR_SALE = [
   {
     id: "damsel",
     name: "Damselfish",
-    cost: { sand: 5 },
+    cost: { sand: 50 },
     image: "assets/fish/damselfish.png?v=morefish",
     kind: "fish",
     rarity: 2,
@@ -40,7 +40,7 @@ var FISH_FOR_SALE = [
   {
     id: "goldie",
     name: "Goldfish",
-    cost: { sand: 6 },
+    cost: { sand: 60 },
     image: "assets/fish/goldfish.png?v=morefish",
     kind: "fish",
     rarity: 3,
@@ -48,7 +48,7 @@ var FISH_FOR_SALE = [
   {
     id: "sunny",
     name: "Clownfish",
-    cost: { sand: 8 },
+    cost: { sand: 80 },
     image: "assets/fish/clownfish.png?v=morefish",
     kind: "fish",
     rarity: 4,
@@ -56,7 +56,7 @@ var FISH_FOR_SALE = [
   {
     id: "cardinal",
     name: "Cardinalfish",
-    cost: { sand: 7, coral: 2 },
+    cost: { sand: 70, coral: 20 },
     image: "assets/fish/cardinalfish.png?v=morefish",
     kind: "fish",
     rarity: 5,
@@ -64,7 +64,7 @@ var FISH_FOR_SALE = [
   {
     id: "betta",
     name: "Betta",
-    cost: { sand: 9 },
+    cost: { sand: 90 },
     image: "assets/fish/betta.png?v=morefish",
     kind: "fish",
     rarity: 6,
@@ -72,7 +72,7 @@ var FISH_FOR_SALE = [
   {
     id: "bubbles",
     name: "Yellow Tang",
-    cost: { sand: 10, coral: 1 },
+    cost: { sand: 100, coral: 10 },
     image: "assets/fish/yellow-tang.png?v=morefish",
     kind: "fish",
     rarity: 7,
@@ -80,7 +80,7 @@ var FISH_FOR_SALE = [
   {
     id: "snapper",
     name: "Snapper",
-    cost: { sand: 11, coral: 2 },
+    cost: { sand: 110, coral: 20 },
     image: "assets/fish/snapper.png?v=morefish",
     kind: "fish",
     rarity: 8,
@@ -88,7 +88,7 @@ var FISH_FOR_SALE = [
   {
     id: "bluey",
     name: "Blue Tang",
-    cost: { sand: 12, coral: 2 },
+    cost: { sand: 120, coral: 20 },
     image: "assets/fish/blue-tang.png?v=morefish",
     kind: "fish",
     rarity: 9,
@@ -96,7 +96,7 @@ var FISH_FOR_SALE = [
   {
     id: "grouper",
     name: "Grouper",
-    cost: { sand: 18, coral: 3 },
+    cost: { sand: 180, coral: 30 },
     image: "assets/fish/grouper.png?v=morefish",
     kind: "fish",
     rarity: 10,
@@ -104,7 +104,7 @@ var FISH_FOR_SALE = [
   {
     id: "flutter",
     name: "Butterflyfish",
-    cost: { sand: 8, coral: 3 },
+    cost: { sand: 80, coral: 30 },
     image: "assets/fish/butterflyfish.png?v=morefish",
     kind: "fish",
     rarity: 11,
@@ -112,7 +112,7 @@ var FISH_FOR_SALE = [
   {
     id: "banner",
     name: "Bannerfish",
-    cost: { sand: 12, coral: 4 },
+    cost: { sand: 120, coral: 40 },
     image: "assets/fish/bannerfish.png?v=morefish",
     kind: "fish",
     rarity: 12,
@@ -120,7 +120,7 @@ var FISH_FOR_SALE = [
   {
     id: "angel",
     name: "Queen Angelfish",
-    cost: { sand: 10, coral: 2, pearl: 1 },
+    cost: { sand: 100, coral: 20, pearl: 10 },
     image: "assets/fish/angelfish.png?v=morefish",
     kind: "fish",
     rarity: 13,
@@ -128,7 +128,7 @@ var FISH_FOR_SALE = [
   {
     id: "discus",
     name: "Discus",
-    cost: { sand: 8, coral: 5, pearl: 2 },
+    cost: { sand: 80, coral: 50, pearl: 20 },
     image: "assets/fish/discus.png?v=morefish",
     kind: "fish",
     rarity: 14,
@@ -136,7 +136,7 @@ var FISH_FOR_SALE = [
   {
     id: "glow",
     name: "Fairy Wrasse",
-    cost: { sand: 6, coral: 4, pearl: 1 },
+    cost: { sand: 60, coral: 40, pearl: 10 },
     image: "assets/fish/fairy-wrasse.png?v=morefish",
     kind: "fish",
     rarity: 15,
@@ -144,7 +144,7 @@ var FISH_FOR_SALE = [
   {
     id: "koi",
     name: "Koi",
-    cost: { sand: 15, coral: 7 },
+    cost: { sand: 150, coral: 70 },
     image: "assets/fish/koi.png?v=morefish",
     kind: "fish",
     rarity: 16,
@@ -152,7 +152,7 @@ var FISH_FOR_SALE = [
   {
     id: "parrot",
     name: "Parrotfish",
-    cost: { sand: 20, coral: 8, pearl: 1 },
+    cost: { sand: 200, coral: 80, pearl: 10 },
     image: "assets/fish/parrotfish.png?v=morefish",
     kind: "fish",
     rarity: 17,
@@ -160,7 +160,7 @@ var FISH_FOR_SALE = [
   {
     id: "idol",
     name: "Moorish Idol",
-    cost: { coral: 8, pearl: 2 },
+    cost: { coral: 80, pearl: 20 },
     image: "assets/fish/moorish-idol.png?v=morefish",
     kind: "fish",
     rarity: 18,
@@ -168,7 +168,7 @@ var FISH_FOR_SALE = [
   {
     id: "puffer",
     name: "Pufferfish",
-    cost: { sand: 2, coral: 7, pearl: 3 },
+    cost: { sand: 20, coral: 70, pearl: 30 },
     image: "assets/fish/pufferfish.png?v=morefish",
     kind: "fish",
     rarity: 19,
@@ -176,7 +176,7 @@ var FISH_FOR_SALE = [
   {
     id: "mandarin",
     name: "Mandarin Dragonet",
-    cost: { coral: 4, pearl: 3 },
+    cost: { coral: 40, pearl: 30 },
     image: "assets/fish/mandarin-dragonet.png?v=morefish",
     kind: "fish",
     rarity: 20,
@@ -184,7 +184,7 @@ var FISH_FOR_SALE = [
   {
     id: "seahorse",
     name: "Seahorse",
-    cost: { sand: 6, coral: 2, pearl: 4 },
+    cost: { sand: 60, coral: 20, pearl: 40 },
     image: "assets/fish/seahorse.png?v=morefish",
     kind: "fish",
     rarity: 21,
@@ -192,7 +192,7 @@ var FISH_FOR_SALE = [
   {
     id: "stingray",
     name: "Stingray",
-    cost: { coral: 8, pearl: 5 },
+    cost: { coral: 80, pearl: 50 },
     image: "assets/fish/stingray.png?v=morefish",
     kind: "fish",
     rarity: 22,
@@ -200,7 +200,7 @@ var FISH_FOR_SALE = [
   {
     id: "turtle",
     name: "Sea Turtle",
-    cost: { pearl: 2, treasure: 1 },
+    cost: { pearl: 20, treasure: 10 },
     image: "assets/fish/sea-turtle.png?v=morefish",
     kind: "turtle",
     rarity: 23,
@@ -208,7 +208,7 @@ var FISH_FOR_SALE = [
   {
     id: "moray",
     name: "Moray Eel",
-    cost: { sand: 1, coral: 9, pearl: 2, treasure: 1 },
+    cost: { sand: 10, coral: 90, pearl: 20, treasure: 10 },
     image: "assets/fish/moray-eel.png?v=morefish",
     kind: "fish",
     rarity: 24,
@@ -216,7 +216,7 @@ var FISH_FOR_SALE = [
   {
     id: "trigger",
     name: "Clown Triggerfish",
-    cost: { coral: 1, pearl: 6, treasure: 1 },
+    cost: { coral: 10, pearl: 60, treasure: 10 },
     image: "assets/fish/clown-triggerfish.png?v=morefish",
     kind: "fish",
     rarity: 25,
@@ -224,7 +224,7 @@ var FISH_FOR_SALE = [
   {
     id: "octopus",
     name: "Octopus",
-    cost: { pearl: 3, treasure: 2 },
+    cost: { pearl: 30, treasure: 20 },
     image: "assets/fish/octopus.png?v=morefish",
     kind: "octopus",
     rarity: 26,
@@ -232,7 +232,7 @@ var FISH_FOR_SALE = [
   {
     id: "cuda",
     name: "Barracuda",
-    cost: { pearl: 5, treasure: 2 },
+    cost: { pearl: 50, treasure: 20 },
     image: "assets/fish/barracuda.png?v=morefish",
     kind: "fish",
     rarity: 27,
@@ -240,7 +240,7 @@ var FISH_FOR_SALE = [
   {
     id: "lion",
     name: "Lionfish",
-    cost: { coral: 2, pearl: 5, treasure: 3 },
+    cost: { coral: 20, pearl: 50, treasure: 30 },
     image: "assets/fish/lionfish.png?v=morefish",
     kind: "fish",
     rarity: 28,
@@ -248,7 +248,7 @@ var FISH_FOR_SALE = [
   {
     id: "shark",
     name: "Reef Shark",
-    cost: { pearl: 2, treasure: 3 },
+    cost: { pearl: 20, treasure: 30 },
     image: "assets/fish/shark.png?v=morefish",
     kind: "shark",
     rarity: 29,
@@ -256,7 +256,7 @@ var FISH_FOR_SALE = [
   {
     id: "sword",
     name: "Swordfish",
-    cost: { sand: 4, pearl: 2, treasure: 5 },
+    cost: { sand: 40, pearl: 20, treasure: 50 },
     image: "assets/fish/swordfish.png?v=morefish",
     kind: "fish",
     rarity: 30,
@@ -264,7 +264,7 @@ var FISH_FOR_SALE = [
   {
     id: "manta",
     name: "Manta Ray",
-    cost: { pearl: 6, treasure: 4 },
+    cost: { pearl: 60, treasure: 40 },
     image: "assets/fish/manta-ray.png?v=morefish",
     kind: "fish",
     rarity: 31,
@@ -272,7 +272,7 @@ var FISH_FOR_SALE = [
   {
     id: "chromis",
     name: "Blue Chromis",
-    cost: { sand: 4 },
+    cost: { sand: 40 },
     image: "assets/fish/chromis.svg?v=more1",
     kind: "fish",
     rarity: 32,
@@ -280,7 +280,7 @@ var FISH_FOR_SALE = [
   {
     id: "humbug",
     name: "Humbug Dascyllus",
-    cost: { sand: 5, coral: 1 },
+    cost: { sand: 50, coral: 10 },
     image: "assets/fish/humbug.svg?v=more1",
     kind: "fish",
     rarity: 33,
@@ -288,7 +288,7 @@ var FISH_FOR_SALE = [
   {
     id: "gramma",
     name: "Royal Gramma",
-    cost: { sand: 6, coral: 2 },
+    cost: { sand: 60, coral: 20 },
     image: "assets/fish/gramma.svg?v=more1",
     kind: "fish",
     rarity: 34,
@@ -296,7 +296,7 @@ var FISH_FOR_SALE = [
   {
     id: "firefish",
     name: "Firefish",
-    cost: { sand: 8, coral: 2 },
+    cost: { sand: 80, coral: 20 },
     image: "assets/fish/firefish.svg?v=more1",
     kind: "fish",
     rarity: 35,
@@ -304,7 +304,7 @@ var FISH_FOR_SALE = [
   {
     id: "cleaner",
     name: "Cleaner Wrasse",
-    cost: { sand: 7, coral: 3 },
+    cost: { sand: 70, coral: 30 },
     image: "assets/fish/cleaner-wrasse.svg?v=more1",
     kind: "fish",
     rarity: 36,
@@ -312,7 +312,7 @@ var FISH_FOR_SALE = [
   {
     id: "anthias",
     name: "Lyretail Anthias",
-    cost: { sand: 9, coral: 3 },
+    cost: { sand: 90, coral: 30 },
     image: "assets/fish/anthias.svg?v=more1",
     kind: "fish",
     rarity: 37,
@@ -320,7 +320,7 @@ var FISH_FOR_SALE = [
   {
     id: "banggai",
     name: "Banggai Cardinalfish",
-    cost: { sand: 6, coral: 4 },
+    cost: { sand: 60, coral: 40 },
     image: "assets/fish/banggai.svg?v=more1",
     kind: "fish",
     rarity: 38,
@@ -328,7 +328,7 @@ var FISH_FOR_SALE = [
   {
     id: "foxface",
     name: "Foxface",
-    cost: { sand: 10, coral: 3, pearl: 1 },
+    cost: { sand: 100, coral: 30, pearl: 10 },
     image: "assets/fish/foxface.svg?v=more1",
     kind: "fish",
     rarity: 39,
@@ -336,7 +336,7 @@ var FISH_FOR_SALE = [
   {
     id: "copperband",
     name: "Copperband Butterflyfish",
-    cost: { coral: 5, pearl: 1 },
+    cost: { coral: 50, pearl: 10 },
     image: "assets/fish/copperband.svg?v=more1",
     kind: "fish",
     rarity: 40,
@@ -344,7 +344,7 @@ var FISH_FOR_SALE = [
   {
     id: "powder",
     name: "Powder Blue Tang",
-    cost: { sand: 8, coral: 4, pearl: 2 },
+    cost: { sand: 80, coral: 40, pearl: 20 },
     image: "assets/fish/powder-blue-tang.svg?v=more1",
     kind: "fish",
     rarity: 41,
@@ -352,7 +352,7 @@ var FISH_FOR_SALE = [
   {
     id: "flame",
     name: "Flame Angelfish",
-    cost: { sand: 4, coral: 3, pearl: 2 },
+    cost: { sand: 40, coral: 30, pearl: 20 },
     image: "assets/fish/flame-angel.svg?v=more1",
     kind: "fish",
     rarity: 42,
@@ -360,7 +360,7 @@ var FISH_FOR_SALE = [
   {
     id: "sailfin",
     name: "Sailfin Tang",
-    cost: { coral: 6, pearl: 2 },
+    cost: { coral: 60, pearl: 20 },
     image: "assets/fish/sailfin-tang.svg?v=more1",
     kind: "fish",
     rarity: 43,
@@ -368,7 +368,7 @@ var FISH_FOR_SALE = [
   {
     id: "french",
     name: "French Angelfish",
-    cost: { pearl: 3, treasure: 1 },
+    cost: { pearl: 30, treasure: 10 },
     image: "assets/fish/french-angel.svg?v=more1",
     kind: "fish",
     rarity: 44,
@@ -376,7 +376,7 @@ var FISH_FOR_SALE = [
   {
     id: "emperor",
     name: "Emperor Angelfish",
-    cost: { pearl: 4, treasure: 2 },
+    cost: { pearl: 40, treasure: 20 },
     image: "assets/fish/emperor-angel.svg?v=more1",
     kind: "fish",
     rarity: 45,
@@ -384,7 +384,7 @@ var FISH_FOR_SALE = [
   {
     id: "picasso",
     name: "Picasso Triggerfish",
-    cost: { coral: 2, pearl: 4, treasure: 2 },
+    cost: { coral: 20, pearl: 40, treasure: 20 },
     image: "assets/fish/picasso-trigger.svg?v=more1",
     kind: "fish",
     rarity: 46,
@@ -392,7 +392,7 @@ var FISH_FOR_SALE = [
   {
     id: "unicorn",
     name: "Unicorn Tang",
-    cost: { pearl: 5, treasure: 3 },
+    cost: { pearl: 50, treasure: 30 },
     image: "assets/fish/unicorn-tang.svg?v=more1",
     kind: "fish",
     rarity: 47,
@@ -400,7 +400,7 @@ var FISH_FOR_SALE = [
   {
     id: "hawk",
     name: "Longnose Hawkfish",
-    cost: { sand: 8, coral: 5, pearl: 1 },
+    cost: { sand: 80, coral: 50, pearl: 10 },
     image: "assets/fish/hawkfish.svg?v=more1",
     kind: "fish",
     rarity: 48,
@@ -408,7 +408,7 @@ var FISH_FOR_SALE = [
   {
     id: "porcupine",
     name: "Porcupinefish",
-    cost: { pearl: 2, treasure: 1 },
+    cost: { pearl: 20, treasure: 10 },
     image: "assets/fish/porcupine.svg?v=more1",
     kind: "fish",
     rarity: 49,
@@ -805,6 +805,7 @@ function buyFish(fishId) {
 }
 
 // Half of each buy coin, rounded down. A sale always gives at least 1 Sand.
+// Works for fish, decorations, and outfits. Same coin types as the buy price.
 function sellPriceFor(fish) {
   var refund = {};
   var any = false;
@@ -824,6 +825,17 @@ function sellPriceFor(fish) {
   return refund;
 }
 
+function addSellCoins(wallet, refund) {
+  var i;
+  for (i = 0; i < COIN_ORDER.length; i += 1) {
+    var id = COIN_ORDER[i];
+    var amount = refund[id] || 0;
+    if (amount > 0) {
+      wallet.coins[id] = (wallet.coins[id] || 0) + amount;
+    }
+  }
+}
+
 function sellFish(fishId) {
   var fish = findFish(fishId);
   if (!fish) {
@@ -835,14 +847,7 @@ function sellFish(fishId) {
     return { ok: false, reason: "none" };
   }
   var refund = sellPriceFor(fish);
-  var i;
-  for (i = 0; i < COIN_ORDER.length; i += 1) {
-    var id = COIN_ORDER[i];
-    var amount = refund[id] || 0;
-    if (amount > 0) {
-      wallet.coins[id] = (wallet.coins[id] || 0) + amount;
-    }
-  }
+  addSellCoins(wallet, refund);
   owned -= 1;
   if (owned > 0) {
     wallet.fishCounts[fishId] = owned;
@@ -1034,6 +1039,45 @@ function buyDecor(decorId) {
   return { ok: true, decor: item, count: have + 1 };
 }
 
+// Sell one decoration. It leaves the aquarium, and the kid gets half the buy price.
+function sellDecor(decorId) {
+  var item = findDecor(decorId);
+  if (!item) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  if (!Array.isArray(wallet.decor)) {
+    wallet.decor = [];
+  }
+  var index = -1;
+  var i;
+  for (i = 0; i < wallet.decor.length; i += 1) {
+    if (wallet.decor[i] === decorId) {
+      index = i;
+      break;
+    }
+  }
+  if (index < 0) {
+    return { ok: false, reason: "none" };
+  }
+  var refund = sellPriceFor(item);
+  addSellCoins(wallet, refund);
+  wallet.decor.splice(index, 1);
+  saveWallet(wallet);
+  var left = 0;
+  for (i = 0; i < wallet.decor.length; i += 1) {
+    if (wallet.decor[i] === decorId) {
+      left += 1;
+    }
+  }
+  return {
+    ok: true,
+    decor: item,
+    count: left,
+    priceText: formatCoinCost(refund),
+  };
+}
+
 function getDecorCopies() {
   var copies = [];
   var i;
@@ -1149,6 +1193,43 @@ function buyOutfit(outfitId, fishId) {
     outfit: outfit,
     fish: fish,
     count: outfitCount(outfitId),
+  };
+}
+
+// Sell one outfit. If a fish is wearing it, that costume comes off one fish.
+// If several fish wear the same outfit, only one of them loses it.
+function sellOutfit(outfitId) {
+  var outfit = findOutfit(outfitId);
+  if (!outfit) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  if (!Array.isArray(wallet.outfits)) {
+    wallet.outfits = [];
+  }
+  var index = -1;
+  var i;
+  for (i = 0; i < wallet.outfits.length; i += 1) {
+    if (wallet.outfits[i] && wallet.outfits[i].outfitId === outfitId) {
+      index = i;
+      break;
+    }
+  }
+  if (index < 0) {
+    return { ok: false, reason: "none" };
+  }
+  var worn = wallet.outfits[index];
+  var fromFish = worn && worn.fishId ? findFish(worn.fishId) : null;
+  var refund = sellPriceFor(outfit);
+  addSellCoins(wallet, refund);
+  wallet.outfits.splice(index, 1);
+  saveWallet(wallet);
+  return {
+    ok: true,
+    outfit: outfit,
+    fish: fromFish,
+    count: outfitCount(outfitId),
+    priceText: formatCoinCost(refund),
   };
 }
 

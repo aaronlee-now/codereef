@@ -458,6 +458,10 @@
   display: none !important;
 }
 
+.trail-btn--shop[hidden] {
+  display: none !important;
+}
+
 .trail-btn--shop {
   display: inline-flex;
   align-items: center;

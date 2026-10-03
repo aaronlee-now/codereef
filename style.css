@@ -603,6 +603,22 @@ html:has(.page--blocks) {
 }
 
 .blk-top {
+  grid-row: 1;
+}
+
+.page--blocks > .task-bar {
+  grid-row: 2;
+}
+
+.blk-tip {
+  grid-row: 3;
+}
+
+.blk-main {
+  grid-row: 4;
+}
+
+.blk-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -674,7 +690,7 @@ html:has(.page--blocks) {
 .blk-main {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(280px, 42%) minmax(0, 1fr);
+  grid-template-columns: minmax(10rem, 1fr) minmax(0, 9fr);
   gap: 0.6rem;
   padding: 0.55rem 0.75rem 0.7rem;
 }
@@ -727,19 +743,25 @@ html:has(.page--blocks) {
 }
 
 .blk-blockly {
+  position: relative;
   width: 100%;
   height: 100%;
-  min-height: 240px;
+  min-height: 0;
   border-radius: 1rem;
   overflow: hidden;
   border: 3px solid #c5d0de;
   background: #fff;
 }
 
+.blk-blockly .injectionDiv {
+  width: 100%;
+  height: 100%;
+}
+
 @media (max-width: 860px) {
   .blk-main {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(180px, 38%) minmax(0, 1fr);
+    grid-template-rows: minmax(6.5rem, 1fr) minmax(0, 9fr);
   }
 }
 
@@ -761,6 +783,22 @@ html:has(.page--web) {
   background: #eef6f4;
   color: #1b2b34;
   font-family: "Nunito", sans-serif;
+}
+
+.web-top {
+  grid-row: 1;
+}
+
+.page--web > .task-bar {
+  grid-row: 2;
+}
+
+.web-tip {
+  grid-row: 3;
+}
+
+.web-main {
+  grid-row: 4;
 }
 
 .web-top {
@@ -826,7 +864,7 @@ html:has(.page--web) {
 .web-main {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 9fr) minmax(10rem, 1fr);
   gap: 0.5rem;
   padding: 0.5rem 0.65rem 0.55rem;
   overflow: hidden;
@@ -920,7 +958,7 @@ html:has(.page--web) {
 @media (max-width: 860px) {
   .web-main {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 9fr) minmax(6.5rem, 1fr);
   }
 }
 
@@ -977,13 +1015,15 @@ html:has(.page--web) {
   margin: 0;
   flex: 1 1 100%;
   font-weight: 700;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: #1b2b34;
   background: #fff;
   border-radius: 0.55rem;
-  padding: 0.45rem 0.6rem;
-  white-space: normal;
+  padding: 0.55rem 0.7rem;
+  white-space: pre-line;
+  max-height: min(42vh, 18rem);
+  overflow: auto;
 }
 
 .task-bar.is-done {
@@ -1006,7 +1046,7 @@ html:has(.page--web) {
 }
 
 .page--py .web-main {
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 9fr) minmax(10rem, 1fr);
 }
 
 .py-output {

@@ -65,7 +65,7 @@ function numbered(lines) {
   for (let n = 0; n < lines.length; n += 1) {
     parts.push(n + 1 + ". " + lines[n]);
   }
-  return parts.join(" ");
+  return parts.join("\n\n");
 }
 
 function L(text, indent) {
@@ -84,193 +84,322 @@ function codeFrom(lines) {
 
 function explainJsLine(line) {
   const t = String(line || "").trim();
+  const quote = 'A quote is this mark: "';
+  const semi = "Then type a semicolon. A semicolon is this mark: ;";
   let m = t.match(/^console\.log\("([^"]*)"\);$/);
   if (m) {
-    return (
-      'Type console.log("' +
-      m[1] +
-      '"); That is the word console, a dot ., the word log, then (, then a quote ", then ' +
-      m[1] +
-      ', then a quote ", then ), then a semicolon ; . A semicolon ; ends the line.'
-    );
+    return [
+      'Type this exactly: console.log("' + m[1] + '");',
+      "console.log means show these words on the screen.",
+      "Type the word console.",
+      "Then type a dot. A dot is this mark: .",
+      "Then type the word log.",
+      "Then type this mark: (",
+      quote,
+      "Then type " + m[1],
+      "Then type a quote again.",
+      "Then type this mark: )",
+      semi,
+      "The semicolon ends the line.",
+    ];
   }
   m = t.match(/^console\.log\("([^"]*)"\s*\+\s*([A-Za-z_][A-Za-z0-9_]*)\);$/);
   if (m) {
-    return (
-      'Type console.log("' +
-      m[1] +
-      '" + ' +
-      m[2] +
-      "); A plus sign + sticks words together. End with a semicolon ; ."
-    );
+    return [
+      'Type this exactly: console.log("' + m[1] + '" + ' + m[2] + ");",
+      "console.log means show words on the screen.",
+      "A plus sign + sticks words together.",
+      "Type console.log",
+      "Then type this mark: (",
+      quote,
+      "Then type " + m[1],
+      "Then type a quote again.",
+      "Then type a space, then +, then a space.",
+      "Then type " + m[2] + " with no quotes.",
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]\);$/);
   if (m) {
-    return (
-      "Type console.log(" +
-      m[1] +
-      "[" +
-      m[2] +
-      "]); [" +
-      m[2] +
-      "] means spot " +
-      m[2] +
-      ". Lists start at 0, so 0 is the first word. End with a semicolon ; ."
-    );
+    return [
+      "Type this exactly: console.log(" + m[1] + "[" + m[2] + "]);",
+      "console.log means show this on the screen.",
+      "[" + m[2] + "] means spot " + m[2] + " in the list.",
+      "Lists start at 0. So 0 is the first word.",
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1],
+      "Then type this mark: [",
+      "Then type " + m[2],
+      "Then type this mark: ]",
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\);$/);
   if (m) {
-    return (
-      "Type console.log(" +
-      m[1] +
-      "); Type console.log, (, " +
-      m[1] +
-      " with no quotes, ), then a semicolon ; ."
-    );
+    return [
+      "Type this exactly: console.log(" + m[1] + ");",
+      "console.log means show what " + m[1] + " remembers.",
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1] + " with no quotes.",
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\s*\+\s*(\d+)\);$/);
   if (m) {
-    return "Type console.log(" + m[1] + " + " + m[2] + "); Plus + adds numbers. End with a semicolon ; .";
+    return [
+      "Type this exactly: console.log(" + m[1] + " + " + m[2] + ");",
+      "Plus + adds numbers.",
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1],
+      "Then type a space, then +, then a space.",
+      "Then type " + m[2],
+      "Then type this mark: )",
+      semi,
+      "Do not put quotes around the number.",
+    ];
   }
   m = t.match(/^console\.log\(([A-Za-z_][A-Za-z0-9_]*)\s*-\s*(\d+)\);$/);
   if (m) {
-    return "Type console.log(" + m[1] + " - " + m[2] + "); Minus - takes away. End with a semicolon ; .";
+    return [
+      "Type this exactly: console.log(" + m[1] + " - " + m[2] + ");",
+      "Minus - takes away.",
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1],
+      "Then type a space, then -, then a space.",
+      "Then type " + m[2],
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^console\.log\((\d+)\s*([+\-*])\s*(\d+)\);$/);
   if (m) {
-    const word = m[2] === "+" ? "plus +" : m[2] === "-" ? "minus -" : "times *";
-    return "Type console.log(" + m[1] + " " + m[2] + " " + m[3] + "); " + word + " is math. No quotes. End with a semicolon ; .";
+    const word = m[2] === "+" ? "Plus + adds." : m[2] === "-" ? "Minus - takes away." : "The star * means times.";
+    return [
+      "Type this exactly: console.log(" + m[1] + " " + m[2] + " " + m[3] + ");",
+      word,
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1] + ", a space, " + m[2] + ", a space, " + m[3],
+      "Then type this mark: )",
+      semi,
+      "Do not put quotes around the numbers.",
+    ];
+  }
+  m = t.match(/^console\.log\((.+)\);$/);
+  if (m) {
+    return [
+      "Type this exactly: console.log(" + m[1] + ");",
+      "console.log means show this on the screen.",
+      "Type console.log",
+      "Then type this mark: (",
+      "Then type " + m[1],
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\[.*\]);$/);
   if (m) {
-    return (
-      "Type let " +
-      m[1] +
-      " = " +
-      m[2] +
-      "; A list is a box of words. let makes a variable, a name that remembers something. Type let, a space, " +
-      m[1] +
-      ", a space, =, a space, " +
-      m[2] +
-      ", then a semicolon ; ."
-    );
+    return [
+      "Type this exactly: let " + m[1] + " = " + m[2] + ";",
+      "let makes a variable. A variable is a name that remembers something.",
+      "A list is a box of words.",
+      "Type the word let.",
+      "Then type a space, then " + m[1],
+      "Then type a space, then =, then a space.",
+      "= means remember this.",
+      "Then type " + m[2],
+      semi,
+    ];
   }
   m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*"([^"]*)";$/);
   if (m) {
-    return (
-      'Type let ' +
-      m[1] +
-      ' = "' +
-      m[2] +
-      '"; let makes a variable. A variable is a name that remembers a word. Type let, a space, ' +
-      m[1] +
-      ", a space, =, a space, a quote, " +
-      m[2] +
-      ", a quote, then a semicolon ; ."
-    );
+    return [
+      'Type this exactly: let ' + m[1] + ' = "' + m[2] + '";',
+      "let makes a variable. A variable is a name that remembers a word.",
+      "Type the word let.",
+      "Then type a space, then " + m[1],
+      "Then type a space, then =, then a space.",
+      quote,
+      "Then type " + m[2],
+      "Then type a quote again.",
+      semi,
+    ];
   }
   m = t.match(/^let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(-?\d+);$/);
   if (m) {
-    return (
-      "Type let " +
-      m[1] +
-      " = " +
-      m[2] +
-      "; This variable remembers a number. Type let, a space, " +
-      m[1] +
-      ", a space, =, a space, " +
-      m[2] +
-      ", then a semicolon ; . No quotes."
-    );
+    return [
+      "Type this exactly: let " + m[1] + " = " + m[2] + ";",
+      "let makes a variable. This one remembers a number.",
+      "Type the word let.",
+      "Then type a space, then " + m[1],
+      "Then type a space, then =, then a space.",
+      "Then type " + m[2],
+      semi,
+      "Do not put quotes around a number.",
+    ];
   }
-  m = t.match(
-    /^for\s*\(\s*let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\d+)\s*;\s*\1\s*(<=|<)\s*(\d+)\s*;\s*\1\+\+\s*\)\s*\{$/
-  );
+  m = t.match(/^for\s*\(\s*let\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\d+)\s*;\s*\1\s*(<=|<)\s*(\d+)\s*;\s*\1\+\+\s*\)\s*\{$/);
   if (m) {
-    return (
-      "Type " +
-      t +
-      " A loop repeats. Type for, a space, (, let, a space, " +
-      m[1] +
-      " = " +
-      m[2] +
-      ", a semicolon ;, a space, " +
-      m[1] +
-      " " +
-      m[3] +
-      " " +
-      m[4] +
-      ", a semicolon ;, a space, " +
-      m[1] +
-      "++, ), a space, then { . { opens the loop."
-    );
+    return [
+      "Type this exactly: " + t,
+      "for means do the next lines again and again.",
+      "That is called a loop.",
+      "A loop means do it again and again.",
+      "Type the word for.",
+      "Then type a space, then this mark: (",
+      "Then type let, a space, " + m[1] + " = " + m[2],
+      semi,
+      "Then type a space, then " + m[1] + " " + m[3] + " " + m[4],
+      semi,
+      "Then type a space, then " + m[1] + "++",
+      m[1] + "++ means add 1 to " + m[1] + " each time.",
+      "Then type this mark: )",
+      "Then type a space, then this mark: {",
+      "{ opens the loop. The next line belongs inside.",
+    ];
   }
   m = t.match(/^for\s*\(\s*let\s+([A-Za-z_][A-Za-z0-9_]*)\s+of\s+([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*\{$/);
   if (m) {
-    return (
-      "Type " +
-      t +
-      " This loop walks through a list. Type for, (, let, a space, " +
-      m[1] +
-      ", a space, of, a space, " +
-      m[2] +
-      ", ), a space, then { ."
-    );
+    return [
+      "Type this exactly: " + t,
+      "for means walk through the list, one word at a time.",
+      "That is called a loop.",
+      "A loop means do it again and again.",
+      "Type the word for.",
+      "Then type this mark: (",
+      "Then type let, a space, " + m[1],
+      "Then type a space, the word of, a space, then " + m[2],
+      "Then type this mark: )",
+      "Then type a space, then this mark: {",
+    ];
   }
   m = t.match(/^if\s*\((.+)\)\s*\{$/);
-  if (m) return "Type " + t + " if picks a path. Type if, a space, (, " + m[1] + ", ), a space, then { .";
-  if (t === "else {") return "Type else { . else is the other path. { opens that path.";
-  if (t === "}") return "Type } . This curly brace } closes the block that started with { .";
+  if (m) {
+    return [
+      "Type this exactly: " + t,
+      "if means pick a path. Do this only when it is true.",
+      "Type the word if.",
+      "Then type a space, then this mark: (",
+      "Then type " + m[1],
+      "Then type this mark: )",
+      "Then type a space, then this mark: {",
+      "{ opens that path.",
+    ];
+  }
+  if (t === "else {") {
+    return [
+      "Type this exactly: else {",
+      "else means the other path.",
+      "Type the word else.",
+      "Then type a space, then this mark: {",
+    ];
+  }
+  if (t === "}") {
+    return [
+      "Type this exactly: }",
+      "This curly brace } closes the block that started with {.",
+    ];
+  }
   m = t.match(/^function\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*\{$/);
   if (m) {
-    return (
-      "Type " +
-      t +
-      " function makes a recipe you can run later. Type function, a space, " +
-      m[1] +
-      ", (, " +
-      (m[2] || "nothing") +
-      ", ), a space, then { ."
-    );
+    return [
+      "Type this exactly: " + t,
+      "function makes a recipe you can run later.",
+      "Type the word function.",
+      "Then type a space, then " + m[1],
+      "Then type this mark: (",
+      "Then type " + (m[2] || "nothing"),
+      "Then type this mark: )",
+      "Then type a space, then this mark: {",
+      "The next line belongs inside the recipe.",
+    ];
   }
   m = t.match(/^([A-Za-z_][A-Za-z0-9_]*)\("([^"]*)"\);$/);
   if (m) {
-    return (
-      "Type " +
-      m[1] +
-      '("' +
-      m[2] +
-      '"); This runs the recipe. Type ' +
-      m[1] +
-      ", (, a quote, " +
-      m[2] +
-      ", a quote, ), then a semicolon ; ."
-    );
+    return [
+      'Type this exactly: ' + m[1] + '("' + m[2] + '");',
+      "This runs the recipe named " + m[1] + ".",
+      "Type " + m[1],
+      "Then type this mark: (",
+      quote,
+      "Then type " + m[2],
+      "Then type a quote again.",
+      "Then type this mark: )",
+      semi,
+    ];
   }
   m = t.match(/^([A-Za-z_][A-Za-z0-9_]*)\(\);$/);
-  if (m) return "Type " + m[1] + "(); This runs the recipe. Type " + m[1] + ", (, ), then a semicolon ; .";
-  return "Type this exactly: " + t;
+  if (m) {
+    return [
+      "Type this exactly: " + m[1] + "();",
+      "This runs the recipe named " + m[1] + ".",
+      "Type " + m[1],
+      "Then type this mark: (",
+      "Then type this mark: )",
+      semi,
+    ];
+  }
+  return ["Type this exactly: " + t];
+}
+
+function pushBits(steps, bits) {
+  if (!bits) return;
+  if (Array.isArray(bits)) {
+    for (let i = 0; i < bits.length; i += 1) {
+      if (bits[i]) steps.push(bits[i]);
+    }
+    return;
+  }
+  steps.push(bits);
 }
 
 function helpForLines(fresh, lines, see, note) {
   const steps = [];
-  if ((fresh)) {
-    steps.push("Start fresh. Click in the code box, highlight the old code, and press Delete.");
+  if (fresh) {
+    steps.push("Start fresh. That means erase the old code.");
+    steps.push("Click in the code box.");
+    steps.push("Highlight all the old code.");
+    steps.push("Press the Delete key.");
+    steps.push("The code box should be empty.");
+    steps.push("Click in the empty code box.");
   } else {
     steps.push("Keep your old code. Do not erase it.");
+    steps.push("Click in the code box.");
+    steps.push("Click at the end of the last line.");
   }
-  steps.push(fresh ? "Click in the empty code box." : "Click in the code box at the end of the last line.");
-  if (note) steps.push(note);
+  if (note) {
+    const bits = String(note).split(/(?<=[.!])\s+/);
+    for (let n = 0; n < bits.length; n += 1) {
+      const bit = bits[n].trim();
+      if (bit) steps.push(bit);
+    }
+  }
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
-    let where = "";
-    if (!fresh && i === 0) where = "Press the Enter key for a new line. ";
-    else if (i > 0) where = "Press the Enter key. ";
-    if (line.indent) where += "Press the space bar 2 times so this line sits inside the curly braces. ";
-    else if (i > 0 && lines[i - 1].indent) where += "Press Backspace until this line starts at the left edge. ";
-    steps.push(where + explainJsLine(line.text));
+    if ((!fresh && i === 0) || i > 0) {
+      steps.push("Press the Enter key. That starts a new line.");
+    }
+    if (line.indent) {
+      steps.push("Press the space bar 2 times.");
+      steps.push("This line sits inside the curly braces.");
+      steps.push("A curly brace looks like { or }.");
+    } else if (i > 0 && lines[i - 1].indent) {
+      steps.push("Press Backspace until this line starts at the left edge.");
+    }
+    pushBits(steps, explainJsLine(line.text));
   }
-  steps.push("Press the Run button." + (see ? " You should see " + see + ". Old lines can stay. That is OK." : ""));
+  steps.push("Press the Run button. It is at the top.");
+  if (see) {
+    steps.push("You should see " + see + ".");
+    steps.push("Old lines can stay. That is OK.");
+  }
   return numbered(steps);
 }
 
@@ -325,12 +454,24 @@ const tasks = (function buildJsTasks() {
 
   add("Make JavaScript say Hello, ocean!", true, [L('console.log("Hello, ocean!");')], { contains: "hello, ocean!" }, "Hello, ocean!");
   list[0].help = numbered([
-    "Keep the line you already have. Do not erase the whole line.",
-    "Click in the code box on the word reef.",
-    "Delete the letters r e e f. Type the word ocean in that same spot.",
+    "Keep your old code. Do not erase the whole line.",
+    "Click in the code box.",
+    "Click on the word reef.",
+    "Delete the letters r e e f.",
+    "Type the word ocean in that same spot.",
     'The line should look like this: console.log("Hello, ocean!");',
-    'That is console, a dot, log, then (, then a quote ", then Hello, ocean!, then a quote ", then ), then a semicolon ; . A semicolon ends the line.',
-    "Press the Run button. You should see Hello, ocean!",
+    "console.log means show these words on the screen.",
+    "Type the word console.",
+    "Then type a dot. A dot is this mark: .",
+    "Then type the word log.",
+    "Then type this mark: (",
+    'A quote is this mark: "',
+    "The words Hello, ocean! stay between the quotes.",
+    "Then type this mark: )",
+    "Then type a semicolon. A semicolon is this mark: ;",
+    "The semicolon ends the line.",
+    "Press the Run button. It is at the top.",
+    "You should see Hello, ocean!",
   ]);
 
   add(

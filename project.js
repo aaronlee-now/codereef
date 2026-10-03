@@ -200,12 +200,17 @@
           {
             goal: "Advanced step 1: Print or show a title for your project.",
             help:
-              "You can delete the old code and start fresh for this advanced project. " +
-              "Make " +
+              "1. Start fresh. That means erase the old code.\n\n" +
+              "2. Click in the code box.\n\n" +
+              "3. Highlight the old code.\n\n" +
+              "4. Press the Delete key.\n\n" +
+              "5. Make " +
               printWord +
-              " show a title that mentions your idea. Then press " +
+              " show a title.\n\n" +
+              "6. The title should mention your idea.\n\n" +
+              "7. Press the " +
               verb +
-              ".",
+              " button. It is at the top.",
             check: function (ctx) {
               return outputHasAny(ctx, [name.toLowerCase(), "advanced", "project", "reef"]);
             },
@@ -213,10 +218,15 @@
           {
             goal: "Advanced step 2: Use a variable (or named value).",
             help:
-              "Keep your old code. Add a variable under it. " +
-              "Then show that variable. Press " +
+              "1. Keep your old code. Do not erase it.\n\n" +
+              "2. Click in the code box.\n\n" +
+              "3. Click at the end of the last line.\n\n" +
+              "4. Press the Enter key. That starts a new line.\n\n" +
+              "5. Add a variable. A variable is a name that remembers something.\n\n" +
+              "6. Then show that name on the screen.\n\n" +
+              "7. Press the " +
               verb +
-              ".",
+              " button. It is at the top.",
             check: function (ctx) {
               return codeLooksLikeVariable(ctx);
             },
@@ -224,9 +234,14 @@
           {
             goal: "Advanced step 3: Use a loop or repeat.",
             help:
-              "Keep your old code. Add a loop (or Repeat block) so something runs more than once. Press " +
+              "1. Keep your old code. Do not erase it.\n\n" +
+              "2. Click at the end of the last line.\n\n" +
+              "3. Press the Enter key. That starts a new line.\n\n" +
+              "4. Add a loop. A loop means do something again and again.\n\n" +
+              "5. On Block Coding, use a Repeat block instead.\n\n" +
+              "6. Press the " +
               verb +
-              ".",
+              " button. It is at the top.",
             check: function (ctx) {
               return codeLooksLikeLoop(ctx);
             },
@@ -248,12 +263,16 @@
         {
           goal: "Project step 1: Show a welcome line for your idea.",
           help:
-            "You can delete the old code and start fresh for this project. " +
-            "Make " +
+            "1. Start fresh. That means erase the old code.\n\n" +
+            "2. Click in the code box.\n\n" +
+            "3. Highlight the old code.\n\n" +
+            "4. Press the Delete key.\n\n" +
+            "5. Make " +
             printWord +
-            " say something about your idea. Then press " +
+            " say something about your idea.\n\n" +
+            "6. Press the " +
             verb +
-            ".",
+            " button. It is at the top.",
           check: function (ctx) {
             return (
               outputHasAny(ctx, [name.toLowerCase(), "hello", "welcome", "reef", "ocean"]) ||
@@ -264,9 +283,13 @@
         {
           goal: "Project step 2: Add a second line of text.",
           help:
-            "Keep your old code. Add another print/log/say line under it. Then press " +
+            "1. Keep your old code. Do not erase it.\n\n" +
+            "2. Click at the end of the last line.\n\n" +
+            "3. Press the Enter key. That starts a new line.\n\n" +
+            "4. Add one more line that shows words.\n\n" +
+            "5. Press the " +
             verb +
-            ".",
+            " button. It is at the top.",
           check: function (ctx) {
             var lines = normalizeOut(ctx.output).split("\n").filter(Boolean);
             return lines.length >= 2 || (ctx.actions && ctx.actions.length >= 2);
@@ -275,9 +298,14 @@
         {
           goal: "Project step 3: Use a variable or named value (or say something new).",
           help:
-            "Keep your old code. Add a variable if your language has one, or add one more fun line. Press " +
+            "1. Keep your old code. Do not erase it.\n\n" +
+            "2. Click at the end of the last line.\n\n" +
+            "3. Press the Enter key. That starts a new line.\n\n" +
+            "4. Add a variable if you can. A variable is a name that remembers something.\n\n" +
+            "5. Or add one more fun line.\n\n" +
+            "6. Press the " +
             verb +
-            ".",
+            " button. It is at the top.",
           check: function (ctx) {
             return (
               codeLooksLikeVariable(ctx) ||

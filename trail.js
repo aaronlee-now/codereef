@@ -184,7 +184,7 @@ function openCoralTrail(trailId, options) {
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
     '<button type="button" class="trail-btn trail-btn--continue" id="trail-continue" hidden>Continue</button>' +
-    '<a class="trail-btn trail-btn--shop" id="trail-shop" href="shop.html?v=swim1">Fish Shop</a>' +
+    '<a class="trail-btn trail-btn--shop" id="trail-shop" hidden>Fish Shop</a>' +
     "</div>" +
     "</div>";
 
@@ -193,8 +193,10 @@ function openCoralTrail(trailId, options) {
   var msgEl = document.getElementById("trail-msg");
   var swimBtn = document.getElementById("trail-swim");
   var continueBtn = document.getElementById("trail-continue");
+  var shopBtn = document.getElementById("trail-shop");
   var diver = document.getElementById("trail-diver");
   var spotEls = overlay.querySelectorAll(".trail-spot");
+  var coinsGranted = false;
 
   function setDiverSpot(index) {
     // Spots go bottom → top visually (first coin stop at bottom).
@@ -202,6 +204,32 @@ function openCoralTrail(trailId, options) {
     var fromBottom = index;
     var pct = total <= 1 ? 12 : 12 + (fromBottom / (total - 1)) * 70;
     diver.style.bottom = pct + "%";
+  }
+
+  function coinTotal() {
+    if (typeof getWallet !== "function" || typeof COIN_ORDER === "undefined") {
+      return null;
+    }
+    var wallet = getWallet();
+    if (!wallet || !wallet.coins) {
+      return null;
+    }
+    var total = 0;
+    var i;
+    for (i = 0; i < COIN_ORDER.length; i += 1) {
+      total += wallet.coins[COIN_ORDER[i]] || 0;
+    }
+    return total;
+  }
+
+  function revealTrailShop() {
+    // Swim up! put coins in the wallet. The shop link can leave this screen now.
+    if (!shopBtn || !coinsGranted) {
+      return;
+    }
+    shopBtn.setAttribute("href", "shop.html?v=swim1");
+    shopBtn.hidden = false;
+    shopBtn.removeAttribute("hidden");
   }
 
   function finishTrail() {
@@ -260,7 +288,17 @@ function openCoralTrail(trailId, options) {
       saveTrailProgress(trailId, progress);
 
       if (typeof addCoinDrop === "function") {
+        var beforeCoins = coinTotal();
         addCoinDrop(drop);
+        var afterCoins = coinTotal();
+        if (
+          beforeCoins !== null &&
+          afterCoins !== null &&
+          afterCoins > beforeCoins
+        ) {
+          coinsGranted = true;
+          revealTrailShop();
+        }
       }
 
       rare = tryRareFishBonus();

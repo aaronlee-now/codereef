@@ -1,4 +1,4 @@
-// Fish Shop — buy fish (and one seaweed) with coins.
+// Fish Shop — buy and sell fish, decorations, and outfits.
 
 if (!getCurrentUser()) {
   window.location.href = "login.html";
@@ -67,6 +67,16 @@ function makeBuyButton(label, disabled) {
   return btn;
 }
 
+function addSellButton(actions, item, kind) {
+  var priceText = formatCoinCost(sellPriceFor(item));
+  var sellBtn = makeBuyButton("Sell for " + priceText, false);
+  sellBtn.classList.add("shop-card__btn--sell");
+  sellBtn.addEventListener("click", function () {
+    openSellCheck(item, kind);
+  });
+  actions.appendChild(sellBtn);
+}
+
 function addFishCard(fish) {
   var card = document.createElement("article");
   card.className = "shop-card";
@@ -123,13 +133,7 @@ function addFishCard(fish) {
 
   actions.appendChild(btn);
   if (fishCount(fish.id) > 0) {
-    var priceText = formatCoinCost(sellPriceFor(fish));
-    var sellBtn = makeBuyButton("Sell for " + priceText, false);
-    sellBtn.classList.add("shop-card__btn--sell");
-    sellBtn.addEventListener("click", function () {
-      openSellCheck(fish);
-    });
-    actions.appendChild(sellBtn);
+    addSellButton(actions, fish, "fish");
   }
 
   card.appendChild(preview);
@@ -196,11 +200,18 @@ function addDecorCard(item) {
     showMsg("That decoration is not for sale.", "need");
   });
 
+  var actions = document.createElement("div");
+  actions.className = "shop-card__actions";
+  actions.appendChild(btn);
+  if (haveN > 0) {
+    addSellButton(actions, item, "decor");
+  }
+
   card.appendChild(preview);
   card.appendChild(name);
   card.appendChild(price);
   card.appendChild(have);
-  card.appendChild(btn);
+  card.appendChild(actions);
   gridEl.appendChild(card);
 }
 
@@ -303,11 +314,18 @@ function addOutfitCard(item) {
     openOutfitPicks(item, preview, picks);
   });
 
+  var actions = document.createElement("div");
+  actions.className = "shop-card__actions";
+  actions.appendChild(btn);
+  if ((typeof outfitCount === "function" ? outfitCount(item.id) : 0) > 0) {
+    addSellButton(actions, item, "outfit");
+  }
+
   card.appendChild(preview);
   card.appendChild(name);
   card.appendChild(price);
   card.appendChild(have);
-  card.appendChild(btn);
+  card.appendChild(actions);
   card.appendChild(picks);
   gridEl.appendChild(card);
 }
@@ -323,11 +341,23 @@ var replaceListEl = document.getElementById("shop-replace-list");
 var replaceNeedEl = document.getElementById("shop-replace-need");
 var replaceNoEl = document.getElementById("shop-replace-no");
 var pendingSellId = null;
+var pendingSellKind = "fish";
 var pendingBuyId = null;
 var pendingGiveUpId = null;
 
+function shopOwnedCount(kind, id) {
+  if (kind === "decor") {
+    return typeof decorCount === "function" ? decorCount(id) : 0;
+  }
+  if (kind === "outfit") {
+    return typeof outfitCount === "function" ? outfitCount(id) : 0;
+  }
+  return fishCount(id);
+}
+
 function closeSellCheck() {
   pendingSellId = null;
+  pendingSellKind = "fish";
   pendingGiveUpId = null;
   if (sureYesEl) {
     sureYesEl.textContent = "Yes, sell";
@@ -486,43 +516,80 @@ function confirmReplace() {
   showMsg("Hmm, that fish is not in the shop.", "need");
 }
 
-function openSellCheck(fish) {
-  if (!sureEl || !fish || fishCount(fish.id) < 1) {
+function openSellCheck(item, kind) {
+  var sellKind = kind || "fish";
+  if (!sureEl || !item || shopOwnedCount(sellKind, item.id) < 1) {
     return;
   }
-  var priceText = formatCoinCost(sellPriceFor(fish));
+  var priceText = formatCoinCost(sellPriceFor(item));
   pendingGiveUpId = null;
-  pendingSellId = fish.id;
+  pendingSellKind = sellKind;
+  pendingSellId = item.id;
   if (sureYesEl) {
     sureYesEl.textContent = "Yes, sell";
   }
   sureTextEl.textContent =
-    "Are you sure you want to sell the " + fish.name + " for " + priceText + "?";
+    "Are you sure you want to sell the " + item.name + " for " + priceText + "?";
   sureEl.hidden = false;
   sureNoEl.focus();
 }
 
 function confirmSell() {
-  var fishId = pendingSellId;
+  var itemId = pendingSellId;
+  var kind = pendingSellKind || "fish";
   closeSellCheck();
-  if (!fishId) {
+  if (!itemId) {
     return;
   }
-  var result = sellFish(fishId);
+  var result;
+  if (kind === "decor") {
+    result = sellDecor(itemId);
+  } else if (kind === "outfit") {
+    result = sellOutfit(itemId);
+  } else {
+    result = sellFish(itemId);
+  }
   if (result.ok) {
-    showMsg(
-      "Sold! You got " + result.priceText + " back. You have " + result.count + ".",
-      "ok"
-    );
+    if (kind === "outfit" && result.fish) {
+      showMsg(
+        "Sold! The " +
+          result.outfit.name +
+          " came off your " +
+          result.fish.name +
+          ". You got " +
+          result.priceText +
+          " back. You have " +
+          result.count +
+          ".",
+        "ok"
+      );
+    } else {
+      showMsg(
+        "Sold! You got " + result.priceText + " back. You have " + result.count + ".",
+        "ok"
+      );
+    }
     buildShop();
     return;
   }
   if (result.reason === "none") {
-    showMsg("You do not have that fish to sell.", "need");
+    if (kind === "decor") {
+      showMsg("You do not have that decoration to sell.", "need");
+    } else if (kind === "outfit") {
+      showMsg("You do not have that outfit to sell.", "need");
+    } else {
+      showMsg("You do not have that fish to sell.", "need");
+    }
     buildShop();
     return;
   }
-  showMsg("Hmm, that fish is not in the shop.", "need");
+  if (kind === "decor") {
+    showMsg("That decoration is not for sale.", "need");
+  } else if (kind === "outfit") {
+    showMsg("That outfit is not for sale.", "need");
+  } else {
+    showMsg("Hmm, that fish is not in the shop.", "need");
+  }
 }
 
 function onSureYes() {

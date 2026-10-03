@@ -66,7 +66,7 @@ function numbered(lines) {
   for (let n = 0; n < lines.length; n += 1) {
     parts.push(n + 1 + ". " + lines[n]);
   }
-  return parts.join(" ");
+  return parts.join("\n\n");
 }
 
 function L(text, indent) {
@@ -79,50 +79,138 @@ function codeFrom(lines) {
 
 function explainAsmLine(line) {
   const t = String(line || "").trim();
+  const quote = 'A quote is this mark: "';
   let m = t.match(/^PRINT\s+"([^"]*)"$/i);
   if (m) {
-    return 'Type PRINT "' + m[1] + '". PRINT shows words. Type PRINT, a space, a quote ", then ' + m[1] + ', then a quote ".';
+    return [
+      'Type this exactly: PRINT "' + m[1] + '"',
+      "PRINT means show these words on the screen.",
+      "Type the word PRINT.",
+      "Then type a space.",
+      quote,
+      "Then type " + m[1],
+      "Then type a quote again.",
+    ];
   }
   m = t.match(/^PRINT\s+([A-Za-z_][A-Za-z0-9_]*)$/i);
   if (m) {
-    return "Type PRINT " + m[1] + ". No quotes this time, because " + m[1] + " is a name that already remembers something. Type PRINT, a space, then " + m[1] + ".";
+    return [
+      "Type this exactly: PRINT " + m[1],
+      "PRINT means show what " + m[1] + " remembers.",
+      "Do not use quotes this time.",
+      m[1] + " is a name that already remembers something.",
+      "Type the word PRINT.",
+      "Then type a space.",
+      "Then type " + m[1],
+    ];
   }
   m = t.match(/^MOV\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*"([^"]*)"$/i);
   if (m) {
-    return 'Type MOV ' + m[1] + ', "' + m[2] + '". MOV puts a word into a name. A name here is like a box. Type MOV, a space, ' + m[1] + ', a comma ,, a space, a quote, ' + m[2] + ', then a quote.';
+    return [
+      'Type this exactly: MOV ' + m[1] + ', "' + m[2] + '"',
+      "MOV puts a word into a name.",
+      "A name here is a box that remembers.",
+      "Type the word MOV.",
+      "Then type a space, then " + m[1],
+      "Then type a comma. A comma is this mark: ,",
+      "Then type a space.",
+      quote,
+      "Then type " + m[2],
+      "Then type a quote again.",
+    ];
   }
   m = t.match(/^MOV\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*(-?\d+)$/i);
   if (m) {
-    return "Type MOV " + m[1] + ", " + m[2] + ". MOV puts a number into a box. Type MOV, a space, " + m[1] + ", a comma ,, a space, then " + m[2] + ". No quotes around a number.";
+    return [
+      "Type this exactly: MOV " + m[1] + ", " + m[2],
+      "MOV puts a number into a box.",
+      "Type the word MOV.",
+      "Then type a space, then " + m[1],
+      "Then type a comma. A comma is this mark: ,",
+      "Then type a space, then " + m[2],
+      "Do not put quotes around a number.",
+    ];
   }
   m = t.match(/^ADD\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*(-?\d+)$/i);
   if (m) {
-    return "Type ADD " + m[1] + ", " + m[2] + ". ADD adds a number into the box. Type ADD, a space, " + m[1] + ", a comma ,, a space, then " + m[2] + ".";
+    return [
+      "Type this exactly: ADD " + m[1] + ", " + m[2],
+      "ADD adds a number into the box named " + m[1] + ".",
+      "Type the word ADD.",
+      "Then type a space, then " + m[1],
+      "Then type a comma. A comma is this mark: ,",
+      "Then type a space, then " + m[2],
+    ];
   }
   m = t.match(/^REPEAT\s+(\d+)$/i);
   if (m) {
-    return "Type REPEAT " + m[1] + ". REPEAT does the next lines that many times. Type REPEAT, a space, then " + m[1] + ".";
+    return [
+      "Type this exactly: REPEAT " + m[1],
+      "REPEAT means do the next lines that many times.",
+      "That is called a loop.",
+      "A loop means do it again and again.",
+      "Type the word REPEAT.",
+      "Then type a space.",
+      "Then type " + m[1],
+    ];
   }
   if (/^END$/i.test(t)) {
-    return "Type END. END means the REPEAT is finished. Type the letters E N D.";
+    return [
+      "Type this exactly: END",
+      "END means the REPEAT is finished.",
+      "Type the letters E N D.",
+    ];
   }
-  return "Type this exactly: " + t;
+  return ["Type this exactly: " + t];
+}
+
+function pushBits(steps, bits) {
+  if (!bits) return;
+  if (Array.isArray(bits)) {
+    for (let i = 0; i < bits.length; i += 1) {
+      if (bits[i]) steps.push(bits[i]);
+    }
+    return;
+  }
+  steps.push(bits);
 }
 
 function helpForLines(fresh, lines, see, note) {
   const steps = [];
-  if (fresh) steps.push("Start fresh. Click in the code box, highlight the old code, and press Delete.");
-  else steps.push("Keep your old code. Do not erase it.");
-  steps.push(fresh ? "Click in the empty code box." : "Click in the code box at the end of the last line.");
-  if (note) steps.push(note);
-  for (let i = 0; i < lines.length; i += 1) {
-    let where = "";
-    if (!fresh && i === 0) where = "Press the Enter key for a new line. ";
-    else if (i > 0) where = "Press the Enter key. ";
-    if (lines[i].indent) where += "This line is inside REPEAT. Press the space bar 2 times, then type it. ";
-    steps.push(where + explainAsmLine(lines[i].text));
+  if (fresh) {
+    steps.push("Start fresh. That means erase the old code.");
+    steps.push("Click in the code box.");
+    steps.push("Highlight all the old code.");
+    steps.push("Press the Delete key.");
+    steps.push("The code box should be empty.");
+    steps.push("Click in the empty code box.");
+  } else {
+    steps.push("Keep your old code. Do not erase it.");
+    steps.push("Click in the code box.");
+    steps.push("Click at the end of the last line.");
   }
-  steps.push("Press the Run button." + (see ? " You should see " + see + ". Old lines can stay. That is OK." : ""));
+  if (note) {
+    const bits = String(note).split(/(?<=[.!])\s+/);
+    for (let n = 0; n < bits.length; n += 1) {
+      const bit = bits[n].trim();
+      if (bit) steps.push(bit);
+    }
+  }
+  for (let i = 0; i < lines.length; i += 1) {
+    if ((!fresh && i === 0) || i > 0) {
+      steps.push("Press the Enter key. That starts a new line.");
+    }
+    if (lines[i].indent) {
+      steps.push("This line is inside REPEAT.");
+      steps.push("Press the space bar 2 times before you type it.");
+    }
+    pushBits(steps, explainAsmLine(lines[i].text));
+  }
+  steps.push("Press the Run button. It is at the top.");
+  if (see) {
+    steps.push("You should see " + see + ".");
+    steps.push("Old lines can stay. That is OK.");
+  }
   return numbered(steps);
 }
 
@@ -172,12 +260,19 @@ const tasks = (function buildAsmTasks() {
 
   add('Make Assembly say Hello, ocean!', true, [L('PRINT "Hello, ocean!"')], { contains: "hello, ocean!" }, "Hello, ocean!");
   list[0].help = numbered([
-    "Keep the line you already have. Do not erase the whole line.",
-    "Click in the code box on the word reef.",
-    "Delete the letters r e e f. Type the word ocean in that same spot.",
+    "Keep your old code. Do not erase the whole line.",
+    "Click in the code box.",
+    "Click on the word reef.",
+    "Delete the letters r e e f.",
+    "Type the word ocean in that same spot.",
     'The line should look like this: PRINT "Hello, ocean!"',
-    'That is the word PRINT, a space, a quote ", then Hello, ocean!, then a quote ".',
-    "Press the Run button. You should see Hello, ocean!",
+    "PRINT means show these words on the screen.",
+    "Type the word PRINT.",
+    "Then type a space.",
+    'A quote is this mark: "',
+    "Type a quote, then Hello, ocean!, then a quote.",
+    "Press the Run button. It is at the top.",
+    "You should see Hello, ocean!",
   ]);
   add("Print two lines — Hello, ocean! then I love Assembly!", false, [L('PRINT "I love Assembly!"')], { contains: ["hello, ocean!", "i love assembly!"] }, "I love Assembly!", 'PRINT "Hello, ocean!"\nPRINT "I love Assembly!"\n');
   add('MOV clownfish into a name, then PRINT it.', false, [L('MOV fish, "clownfish"'), L("PRINT fish")], { code: /MOV\s+fish\s*,\s*["']clownfish["']/i, line: "clownfish" }, "clownfish");

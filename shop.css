@@ -751,9 +751,14 @@
   pointer-events: none;
 }
 
-.aquarium-decor .shop-decor-preview {
-  transform: scale(1.35);
+/* Tank decorations stay small. Shop cards keep the full-size preview. */
+.aquarium-tank > .aquarium-decor {
+  transform: scale(0.52);
   transform-origin: bottom center;
+}
+
+.aquarium-decor .shop-decor-preview {
+  transform: none;
 }
 
 @keyframes aquarium-swim-right {
@@ -1997,6 +2002,65 @@ body > .menu-fish-layer {
   z-index: 2;
 }
 
+.aquarium-decor--played .decor-shape,
+.aquarium-decor--played .shop-decor-preview {
+  animation: decor-play-wiggle 0.4s ease-in-out 2;
+}
+
+@keyframes decor-play-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-8deg) translateY(-3px);
+  }
+  70% {
+    transform: rotate(8deg) translateY(-1px);
+  }
+}
+
+.aquarium-swimmer--play {
+  animation-play-state: paused;
+  z-index: 4;
+}
+
+.aquarium-swimmer--play .reef-fish__img {
+  animation: fish-play-hop 0.34s ease-in-out 3;
+}
+
+@keyframes fish-play-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.aquarium-swimmer--play::after,
+.aquarium-swimmer--rest::after {
+  position: absolute;
+  top: -0.35rem;
+  left: 70%;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.aquarium-swimmer--play-fun::after {
+  content: "♪";
+}
+
+.aquarium-swimmer--play-bubbles::after {
+  content: "o";
+}
+
+.aquarium-swimmer--play-peek::after {
+  content: "!";
+}
+
 .aquarium-swimmer--rest {
   animation-play-state: paused;
   z-index: 4;
@@ -2008,10 +2072,4 @@ body > .menu-fish-layer {
 
 .aquarium-swimmer--rest::after {
   content: "z";
-  position: absolute;
-  top: -0.35rem;
-  left: 70%;
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.85rem;
 }

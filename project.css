@@ -244,7 +244,7 @@
 }
 
 .task-bar__hint {
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 
 .project-step-bar {
