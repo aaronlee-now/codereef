@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="assets/codereef-front-cover.png" />
+    <link rel="apple-touch-icon" href="assets/codereef-front-cover.png" />
+    <title>Settings — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=shop3" />
+    <link rel="stylesheet" href="shop.css?v=settings1" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="home.html?v=swim1">← Back home</a>
+
+    <main class="shop-page">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title">Settings</h1>
+        <p class="auth__hint">This is your account. Only you can see it.</p>
+      </header>
+
+      <section class="settings-card" aria-label="Your account">
+        <dl class="settings-list">
+          <div class="settings-row">
+            <dt>Your name</dt>
+            <dd id="settings-name"></dd>
+          </div>
+          <div class="settings-row">
+            <dt>Parent email</dt>
+            <dd id="settings-email"></dd>
+          </div>
+          <div class="settings-row">
+            <dt>Password</dt>
+            <dd id="settings-password"></dd>
+          </div>
+          <div class="settings-row">
+            <dt>Progress</dt>
+            <dd>
+              <ul class="settings-progress" id="settings-progress"></ul>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <nav class="shop-links" aria-label="Reef places">
+        <a href="explore.html?v=swim1">Start exploring</a>
+        <a href="aquarium.html?v=swim1">My aquarium</a>
+        <a href="shop.html?v=swim1">Fish shop</a>
+        <a href="sell.html?v=sell1">Sell items</a>
+        <a class="shop-links__settings" href="settings.html?v=settings1" aria-current="page">Settings</a>
+      </nav>
+    </main>
+
+    <script src="auth.js?v=mail3"></script>
+    <script src="progress.js?v=save2"></script>
+    <script src="settings.js?v=settings2"></script>
+  </body>
+</html>
