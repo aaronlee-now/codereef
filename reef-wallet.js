@@ -2,7 +2,7 @@
 // Sand is common. Coral is uncommon. Pearl is rare. Treasure is very rare.
 
 // Room for the bigger shop. Raising this never removes fish a kid already owns.
-var MAX_FISH = 120;
+var MAX_FISH = 200;
 var MAX_FISH_ON_SCREEN = 24;
 
 // Every trail stop. Rare coins are extra luck, not a sure thing.
@@ -798,6 +798,406 @@ var FISH_FOR_SALE = [
     kind: "fish",
     rarity: 66,
   },
+  {
+    id: "pompano",
+    name: "Pompano",
+    cost: { pearl: 4, treasure: 2 },
+    image: "assets/fish/pompano.svg?v=rare50",
+    kind: "fish",
+    rarity: 67,
+  },
+  {
+    id: "lookdown",
+    name: "Lookdown",
+    cost: { pearl: 4, treasure: 2 },
+    image: "assets/fish/lookdown.svg?v=rare50",
+    kind: "fish",
+    rarity: 68,
+  },
+  {
+    id: "wahoo",
+    name: "Wahoo",
+    cost: { pearl: 5, treasure: 2 },
+    image: "assets/fish/wahoo.svg?v=rare50",
+    kind: "fish",
+    rarity: 69,
+  },
+  {
+    id: "mahi",
+    name: "Mahi-Mahi",
+    cost: { pearl: 5, treasure: 2 },
+    image: "assets/fish/mahi-mahi.svg?v=rare50",
+    kind: "fish",
+    rarity: 70,
+  },
+  {
+    id: "threadfin",
+    name: "Threadfin Butterflyfish",
+    cost: { pearl: 3, treasure: 3 },
+    image: "assets/fish/threadfin-butterfly.svg?v=rare50",
+    kind: "fish",
+    rarity: 71,
+  },
+  {
+    id: "masked",
+    name: "Masked Bannerfish",
+    cost: { pearl: 3, treasure: 3 },
+    image: "assets/fish/masked-banner.svg?v=rare50",
+    kind: "fish",
+    rarity: 72,
+  },
+  {
+    id: "clarion",
+    name: "Clarion Angelfish",
+    cost: { pearl: 6, treasure: 2 },
+    image: "assets/fish/clarion-angel.svg?v=rare50",
+    kind: "fish",
+    rarity: 73,
+  },
+  {
+    id: "peppermint",
+    name: "Peppermint Angelfish",
+    cost: { pearl: 6, treasure: 2 },
+    image: "assets/fish/peppermint-angel.svg?v=rare50",
+    kind: "fish",
+    rarity: 74,
+  },
+  {
+    id: "dory",
+    name: "John Dory",
+    cost: { pearl: 4, treasure: 3 },
+    image: "assets/fish/john-dory.svg?v=rare50",
+    kind: "fish",
+    rarity: 75,
+  },
+  {
+    id: "opah",
+    name: "Opah",
+    cost: { pearl: 4, treasure: 3 },
+    image: "assets/fish/opah.svg?v=rare50",
+    kind: "fish",
+    rarity: 76,
+  },
+  {
+    id: "pinecone",
+    name: "Pinecone Fish",
+    cost: { pearl: 7, treasure: 2 },
+    image: "assets/fish/pinecone-fish.svg?v=rare50",
+    kind: "fish",
+    rarity: 77,
+  },
+  {
+    id: "stargaze",
+    name: "Stargazer",
+    cost: { pearl: 7, treasure: 2 },
+    image: "assets/fish/stargazer.svg?v=rare50",
+    kind: "fish",
+    rarity: 78,
+  },
+  {
+    id: "scorpion",
+    name: "Scorpionfish",
+    cost: { pearl: 5, treasure: 3 },
+    image: "assets/fish/scorpionfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 79,
+  },
+  {
+    id: "stone",
+    name: "Stonefish",
+    cost: { pearl: 5, treasure: 3 },
+    image: "assets/fish/stonefish.svg?v=rare50",
+    kind: "fish",
+    rarity: 80,
+  },
+  {
+    id: "leafscorp",
+    name: "Leaf Scorpionfish",
+    cost: { pearl: 8, treasure: 2 },
+    image: "assets/fish/leaf-scorpion.svg?v=rare50",
+    kind: "fish",
+    rarity: 81,
+  },
+  {
+    id: "sargassum",
+    name: "Sargassum Fish",
+    cost: { pearl: 8, treasure: 2 },
+    image: "assets/fish/sargassum-fish.svg?v=rare50",
+    kind: "fish",
+    rarity: 82,
+  },
+  {
+    id: "psyche",
+    name: "Psychedelic Frogfish",
+    cost: { pearl: 3, treasure: 4 },
+    image: "assets/fish/psychedelic-frog.svg?v=rare50",
+    kind: "fish",
+    rarity: 83,
+  },
+  {
+    id: "decorator",
+    name: "Decorator Crab",
+    cost: { pearl: 3, treasure: 4 },
+    image: "assets/fish/decorator-crab.svg?v=rare50",
+    kind: "fish",
+    rarity: 84,
+  },
+  {
+    id: "leopard",
+    name: "Leopard Shark",
+    cost: { pearl: 6, treasure: 3 },
+    image: "assets/fish/leopard-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 85,
+  },
+  {
+    id: "zebra",
+    name: "Zebra Shark",
+    cost: { pearl: 6, treasure: 3 },
+    image: "assets/fish/zebra-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 86,
+  },
+  {
+    id: "epaulette",
+    name: "Epaulette Shark",
+    cost: { pearl: 4, treasure: 4 },
+    image: "assets/fish/epaulette-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 87,
+  },
+  {
+    id: "blueshark",
+    name: "Blue Shark",
+    cost: { pearl: 4, treasure: 4 },
+    image: "assets/fish/blue-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 88,
+  },
+  {
+    id: "mako",
+    name: "Mako Shark",
+    cost: { pearl: 7, treasure: 3 },
+    image: "assets/fish/mako-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 89,
+  },
+  {
+    id: "basking",
+    name: "Basking Shark",
+    cost: { pearl: 7, treasure: 3 },
+    image: "assets/fish/basking-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 90,
+  },
+  {
+    id: "cookie",
+    name: "Cookiecutter Shark",
+    cost: { pearl: 5, treasure: 4 },
+    image: "assets/fish/cookiecutter.svg?v=rare50",
+    kind: "fish",
+    rarity: 91,
+  },
+  {
+    id: "wobbe",
+    name: "Wobbegong",
+    cost: { pearl: 5, treasure: 4 },
+    image: "assets/fish/wobbegong.svg?v=rare50",
+    kind: "fish",
+    rarity: 92,
+  },
+  {
+    id: "lantern",
+    name: "Lanternfish",
+    cost: { pearl: 8, treasure: 3 },
+    image: "assets/fish/lanternfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 93,
+  },
+  {
+    id: "hatchet",
+    name: "Hatchetfish",
+    cost: { pearl: 8, treasure: 3 },
+    image: "assets/fish/hatchetfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 94,
+  },
+  {
+    id: "viper",
+    name: "Viperfish",
+    cost: { pearl: 3, treasure: 5 },
+    image: "assets/fish/viperfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 95,
+  },
+  {
+    id: "deepdragon",
+    name: "Dragonfish",
+    cost: { pearl: 3, treasure: 5 },
+    image: "assets/fish/dragonfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 96,
+  },
+  {
+    id: "frilled",
+    name: "Frilled Shark",
+    cost: { pearl: 6, treasure: 4 },
+    image: "assets/fish/frilled-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 97,
+  },
+  {
+    id: "saw",
+    name: "Sawfish",
+    cost: { pearl: 6, treasure: 4 },
+    image: "assets/fish/sawfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 98,
+  },
+  {
+    id: "thresher",
+    name: "Thresher Shark",
+    cost: { pearl: 4, treasure: 5 },
+    image: "assets/fish/thresher-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 99,
+  },
+  {
+    id: "goblin",
+    name: "Goblin Shark",
+    cost: { pearl: 4, treasure: 5 },
+    image: "assets/fish/goblin-shark.svg?v=rare50",
+    kind: "fish",
+    rarity: 100,
+  },
+  {
+    id: "mega",
+    name: "Megamouth Shark",
+    cost: { pearl: 7, treasure: 4 },
+    image: "assets/fish/megamouth.svg?v=rare50",
+    kind: "fish",
+    rarity: 101,
+  },
+  {
+    id: "angler",
+    name: "Anglerfish",
+    cost: { pearl: 7, treasure: 4 },
+    image: "assets/fish/anglerfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 102,
+  },
+  {
+    id: "gulper",
+    name: "Gulper Eel",
+    cost: { pearl: 5, treasure: 5 },
+    image: "assets/fish/gulper-eel.svg?v=rare50",
+    kind: "fish",
+    rarity: 103,
+  },
+  {
+    id: "pelican",
+    name: "Pelican Eel",
+    cost: { pearl: 5, treasure: 5 },
+    image: "assets/fish/pelican-eel.svg?v=rare50",
+    kind: "fish",
+    rarity: 104,
+  },
+  {
+    id: "snipe",
+    name: "Snipe Eel",
+    cost: { pearl: 8, treasure: 4 },
+    image: "assets/fish/snipe-eel.svg?v=rare50",
+    kind: "fish",
+    rarity: 105,
+  },
+  {
+    id: "barrel",
+    name: "Barreleye",
+    cost: { pearl: 8, treasure: 4 },
+    image: "assets/fish/barreleye.svg?v=rare50",
+    kind: "fish",
+    rarity: 106,
+  },
+  {
+    id: "dumbo",
+    name: "Dumbo Octopus",
+    cost: { pearl: 3, treasure: 6 },
+    image: "assets/fish/dumbo-octopus.svg?v=rare50",
+    kind: "fish",
+    rarity: 107,
+  },
+  {
+    id: "vampire",
+    name: "Vampire Squid",
+    cost: { pearl: 3, treasure: 6 },
+    image: "assets/fish/vampire-squid.svg?v=rare50",
+    kind: "fish",
+    rarity: 108,
+  },
+  {
+    id: "bluering",
+    name: "Blue-Ring Octopus",
+    cost: { pearl: 6, treasure: 5 },
+    image: "assets/fish/blue-ring-octopus.svg?v=rare50",
+    kind: "fish",
+    rarity: 109,
+  },
+  {
+    id: "mimic",
+    name: "Mimic Octopus",
+    cost: { pearl: 4, treasure: 6 },
+    image: "assets/fish/mimic-octopus.svg?v=rare50",
+    kind: "fish",
+    rarity: 110,
+  },
+  {
+    id: "flamboyant",
+    name: "Flamboyant Cuttlefish",
+    cost: { pearl: 7, treasure: 5 },
+    image: "assets/fish/flamboyant-cuttle.svg?v=rare50",
+    kind: "fish",
+    rarity: 111,
+  },
+  {
+    id: "paper",
+    name: "Paper Nautilus",
+    cost: { pearl: 5, treasure: 6 },
+    image: "assets/fish/paper-nautilus.svg?v=rare50",
+    kind: "fish",
+    rarity: 112,
+  },
+  {
+    id: "sail",
+    name: "Sailfish",
+    cost: { pearl: 8, treasure: 5 },
+    image: "assets/fish/sailfish.svg?v=rare50",
+    kind: "fish",
+    rarity: 113,
+  },
+  {
+    id: "marlin",
+    name: "Blue Marlin",
+    cost: { pearl: 6, treasure: 6 },
+    image: "assets/fish/blue-marlin.svg?v=rare50",
+    kind: "fish",
+    rarity: 114,
+  },
+  {
+    id: "giant",
+    name: "Giant Squid",
+    cost: { pearl: 7, treasure: 6 },
+    image: "assets/fish/giant-squid.svg?v=rare50",
+    kind: "fish",
+    rarity: 115,
+  },
+  {
+    id: "colossal",
+    name: "Colossal Squid",
+    cost: { pearl: 8, treasure: 6 },
+    image: "assets/fish/colossal-squid.svg?v=rare50",
+    kind: "fish",
+    rarity: 116,
+  }
 ];
 
 var DECOR_FOR_SALE = [
@@ -1241,8 +1641,10 @@ function buyFish(fishId) {
   return { ok: true, fish: fish, count: wallet.fishCounts[fishId] };
 }
 
-// Half of each buy coin, rounded down. A sale always gives at least 1 Sand.
-// Works for fish, decorations, and outfits. Same coin types as the buy price.
+// About half of each buy coin, rounded down.
+// 1 Pearl or 1 Treasure still gives that coin back, because half of 1 is 0.
+// If that would pay the whole price, one rare coin is left out.
+// If nothing is left, they get 1 Sand. Buying and selling does not make free coins.
 function sellPriceFor(fish) {
   var refund = {};
   var any = false;
@@ -1250,7 +1652,11 @@ function sellPriceFor(fish) {
   var cost = fish && fish.cost ? fish.cost : {};
   for (i = 0; i < COIN_ORDER.length; i += 1) {
     var id = COIN_ORDER[i];
-    var half = Math.floor((cost[id] || 0) / 2);
+    var paid = cost[id] || 0;
+    var half = Math.floor(paid / 2);
+    if (half < 1 && paid > 0 && (id === "pearl" || id === "treasure")) {
+      half = 1;
+    }
     if (half > 0) {
       refund[id] = half;
       any = true;
@@ -1258,6 +1664,35 @@ function sellPriceFor(fish) {
   }
   if (!any) {
     refund.sand = 1;
+    return refund;
+  }
+  var same = true;
+  for (i = 0; i < COIN_ORDER.length; i += 1) {
+    var coinId = COIN_ORDER[i];
+    if ((refund[coinId] || 0) !== (cost[coinId] || 0)) {
+      same = false;
+    }
+  }
+  if (same) {
+    for (i = COIN_ORDER.length - 1; i >= 0; i -= 1) {
+      var cutId = COIN_ORDER[i];
+      if ((refund[cutId] || 0) > 0) {
+        refund[cutId] -= 1;
+        if (refund[cutId] < 1) {
+          delete refund[cutId];
+        }
+        break;
+      }
+    }
+    any = false;
+    for (i = 0; i < COIN_ORDER.length; i += 1) {
+      if ((refund[COIN_ORDER[i]] || 0) > 0) {
+        any = true;
+      }
+    }
+    if (!any) {
+      refund.sand = 1;
+    }
   }
   return refund;
 }
@@ -1578,16 +2013,32 @@ function outfitCount(outfitId) {
   return n;
 }
 
-function dropOneOutfit(wallet, fishId) {
+// Take costumes off a fish type, but keep them owned.
+// fishId becomes "" when nobody is wearing that copy.
+function unwearFish(wallet, fishId) {
   var worn = wallet.outfits || [];
+  var removedId = "";
   var i;
-  for (i = worn.length - 1; i >= 0; i -= 1) {
+  for (i = 0; i < worn.length; i += 1) {
     if (worn[i] && worn[i].fishId === fishId) {
-      worn.splice(i, 1);
-      wallet.outfits = worn;
-      return;
+      if (!removedId && worn[i].outfitId) {
+        removedId = worn[i].outfitId;
+      }
+      worn[i].fishId = "";
     }
   }
+  wallet.outfits = worn;
+  return removedId;
+}
+
+// Selling a fish does not throw the costume away.
+// If that kind of fish is all gone, the costume comes off and stays owned.
+function dropOneOutfit(wallet, fishId) {
+  var still = wallet.fishCounts[fishId] || 0;
+  if (still > 0) {
+    return;
+  }
+  unwearFish(wallet, fishId);
 }
 
 function buyOutfit(outfitId, fishId) {
@@ -1611,19 +2062,10 @@ function buyOutfit(outfitId, fishId) {
   if (!Array.isArray(wallet.outfits)) {
     wallet.outfits = [];
   }
-  var onFish = [];
-  var i;
-  for (i = 0; i < wallet.outfits.length; i += 1) {
-    if (wallet.outfits[i] && wallet.outfits[i].fishId === fishId) {
-      onFish.push(i);
-    }
-  }
   takeCoins(wallet, cost);
-  if (onFish.length < owned) {
-    wallet.outfits.push({ fishId: fishId, outfitId: outfitId });
-  } else {
-    wallet.outfits[onFish[0]] = { fishId: fishId, outfitId: outfitId };
-  }
+  // One costume on this kind of fish. The old one stays owned, just not worn.
+  unwearFish(wallet, fishId);
+  wallet.outfits.push({ fishId: fishId, outfitId: outfitId });
   saveWallet(wallet);
   return {
     ok: true,
@@ -1670,22 +2112,126 @@ function sellOutfit(outfitId) {
   };
 }
 
-function nextWornOutfit(fishId, cursor) {
+// The costume this kind of fish is wearing, or "" if none.
+// Copies of the same fish share it. One costume stays on one kind of fish.
+function wornOutfitForFish(fishId) {
   var worn = getWallet().outfits || [];
-  var want = cursor[fishId] || 0;
-  var seen = 0;
   var i;
   for (i = 0; i < worn.length; i += 1) {
-    if (worn[i] && worn[i].fishId === fishId) {
-      if (seen === want) {
-        cursor[fishId] = want + 1;
-        return worn[i].outfitId;
-      }
-      seen += 1;
+    if (worn[i] && worn[i].fishId === fishId && worn[i].outfitId) {
+      return worn[i].outfitId;
     }
   }
-  cursor[fishId] = want + 1;
   return "";
+}
+
+function outfitIsOnFish(outfitId, fishId) {
+  var worn = getWallet().outfits || [];
+  var i;
+  for (i = 0; i < worn.length; i += 1) {
+    if (worn[i] && worn[i].outfitId === outfitId && worn[i].fishId === fishId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function fishWearingOutfit(outfitId) {
+  var worn = getWallet().outfits || [];
+  var list = [];
+  var seen = {};
+  var i;
+  for (i = 0; i < worn.length; i += 1) {
+    if (worn[i] && worn[i].outfitId === outfitId && worn[i].fishId && !seen[worn[i].fishId]) {
+      seen[worn[i].fishId] = true;
+      var fish = findFish(worn[i].fishId);
+      if (fish) {
+        list.push(fish);
+      }
+    }
+  }
+  return list;
+}
+
+// Put one owned copy on this kind of fish.
+// If that copy was on another fish, it comes off. Other costumes on this fish come off too.
+function putOutfitOn(outfitId, fishId) {
+  var outfit = findOutfit(outfitId);
+  var fish = findFish(fishId);
+  if (!outfit || !fish) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  if ((wallet.fishCounts[fishId] || 0) < 1) {
+    return { ok: false, reason: "nofish" };
+  }
+  if (!Array.isArray(wallet.outfits)) {
+    wallet.outfits = [];
+  }
+  var copies = [];
+  var i;
+  for (i = 0; i < wallet.outfits.length; i += 1) {
+    if (wallet.outfits[i] && wallet.outfits[i].outfitId === outfitId) {
+      copies.push(i);
+    }
+  }
+  if (copies.length < 1) {
+    return { ok: false, reason: "none" };
+  }
+  for (i = 0; i < copies.length; i += 1) {
+    if (wallet.outfits[copies[i]].fishId === fishId) {
+      return { ok: true, outfit: outfit, fish: fish, already: true };
+    }
+  }
+  var removedId = unwearFish(wallet, fishId);
+  var pick = -1;
+  for (i = 0; i < copies.length; i += 1) {
+    if (!wallet.outfits[copies[i]].fishId) {
+      pick = copies[i];
+      break;
+    }
+  }
+  if (pick < 0) {
+    pick = copies[0];
+  }
+  wallet.outfits[pick].fishId = fishId;
+  saveWallet(wallet);
+  var removed = removedId && removedId !== outfitId ? findOutfit(removedId) : null;
+  return { ok: true, outfit: outfit, fish: fish, removed: removed };
+}
+
+// Costume stays owned. It just is not on a fish.
+function takeOutfitOff(outfitId, fishId) {
+  var outfit = findOutfit(outfitId);
+  if (!outfit) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  if (!Array.isArray(wallet.outfits)) {
+    return { ok: false, reason: "none" };
+  }
+  var i;
+  for (i = 0; i < wallet.outfits.length; i += 1) {
+    var row = wallet.outfits[i];
+    if (!row || row.outfitId !== outfitId || !row.fishId) {
+      continue;
+    }
+    if (fishId && row.fishId !== fishId) {
+      continue;
+    }
+    var fromFish = findFish(row.fishId);
+    row.fishId = "";
+    saveWallet(wallet);
+    return { ok: true, outfit: outfit, fish: fromFish };
+  }
+  return { ok: false, reason: "none" };
+}
+
+function nextWornOutfit(fishId, cursor) {
+  if (cursor && typeof cursor === "object") {
+    cursor[fishId] = (cursor[fishId] || 0) + 1;
+  }
+  return wornOutfitForFish(fishId);
 }
 
 // Fish to draw. Stops at MAX_FISH_ON_SCREEN so a full tank does not freeze the page.
@@ -2105,6 +2651,56 @@ var FISH_WEAR = {
   sunfish: wearSvg(27, 47, "round", "0.95", "1.2"),
   oar: wearSvg(19, 56, "long", "0.8", "0.65"),
   coela: wearSvg(27, 47),
+  pompano: wearSvg(27, 45),
+  lookdown: wearSvg(30, 42),
+  wahoo: wearSvg(24, 47, "long", "0.8", "0.7"),
+  mahi: wearSvg(25, 44),
+  threadfin: wearSvg(27, 45),
+  masked: wearSvg(28, 45),
+  clarion: wearSvg(28, 46, "round", "0.95", "1.1"),
+  peppermint: wearSvg(28, 46, "round", "0.95", "1.1"),
+  dory: wearSvg(30, 47, "round", "0.95", "1.15"),
+  opah: wearSvg(30, 47, "round", "0.95", "1.2"),
+  pinecone: wearSvg(28, 47, "round", "0.9", "1.1"),
+  stargaze: wearSvg(32, 35, "flat", "0.8", "1.1"),
+  scorpion: wearSvg(27, 47),
+  stone: wearSvg(28, 49, "round", "0.9", "1.15"),
+  leafscorp: wearSvg(30, 47),
+  sargassum: wearSvg(28, 47, "round", "0.9", "1.1"),
+  psyche: wearSvg(31, 49, "round", "0.95", "1.15"),
+  decorator: wearSvg(38, 44, "round", "0.9", "1.05"),
+  leopard: wearSvg(31, 46, "long", "0.85", "0.7"),
+  zebra: wearSvg(31, 47, "long", "0.85", "0.7"),
+  epaulette: wearSvg(32, 47, "long", "0.85", "0.75"),
+  blueshark: wearSvg(30, 45, "long", "0.8", "0.65"),
+  mako: wearSvg(29, 45, "long", "0.85", "0.7"),
+  basking: wearSvg(35, 44, "long", "0.85", "0.7"),
+  cookie: wearSvg(30, 49, "round", "0.9", "1"),
+  wobbe: wearSvg(38, 49, "flat", "0.75", "1.15"),
+  lantern: wearSvg(25, 47),
+  hatchet: wearSvg(30, 44, "round", "0.9", "1.15"),
+  viper: wearSvg(27, 45, "long", "0.8", "0.7"),
+  deepdragon: wearSvg(25, 46, "long", "0.8", "0.7"),
+  frilled: wearSvg(25, 47, "long", "0.8", "0.65"),
+  saw: wearSvg(42, 49, "flat", "0.75", "1.1"),
+  thresher: wearSvg(32, 45, "long", "0.8", "0.7"),
+  goblin: wearSvg(39, 45, "long", "0.85", "0.7"),
+  mega: wearSvg(42, 35, "round", "0.95", "1.15"),
+  angler: wearSvg(32, 49, "round", "0.95", "1.15"),
+  gulper: wearSvg(22, 41, "long", "0.8", "0.65"),
+  pelican: wearSvg(18, 45, "long", "0.75", "0.6"),
+  snipe: wearSvg(18, 49, "long", "0.75", "0.55"),
+  barrel: wearSvg(38, 44, "round", "0.9", "1.1"),
+  dumbo: wearSvg(42, 49, "bell", "1", "0.95"),
+  vampire: wearSvg(38, 44, "bell", "0.95", "1"),
+  bluering: wearSvg(40, 41, "bell", "1", "1"),
+  mimic: wearSvg(40, 42, "bell", "1", "1"),
+  flamboyant: wearSvg(38, 47),
+  paper: wearSvg(30, 49, "round", "0.9", "1"),
+  sail: wearSvg(32, 49, "long", "0.75", "0.65"),
+  marlin: wearSvg(35, 47, "long", "0.75", "0.65"),
+  giant: wearSvg(42, 41, "bell", "0.9", "0.9"),
+  colossal: wearSvg(40, 44, "round", "0.95", "1.1"),
 };
 
 function reefFishWear(fish) {

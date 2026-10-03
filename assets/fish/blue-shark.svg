@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="bluesharkBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bfdbfe"/>
+      <stop offset="0.45" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <radialGradient id="bluesharkShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M246 106 L358 36 L304 110 L360 180 Z" fill="#1e3a8a"/>
+    <path d="M78 110 C96 52, 176 42, 274 86 C314 110, 270 174, 176 178 C112 178, 70 150, 78 110Z" fill="url(#bluesharkBody)"/>
+    <path d="M110 126 C160 162, 230 160, 260 130" fill="#eff6ff" stroke="none"/>
+    <path d="M176 72 L194 26 L224 78" fill="#1e3a8a"/>
+    <path d="M150 128 C40 150, 30 196, 150 168" fill="#1d4ed8"/>
+    <ellipse cx="160" cy="100" rx="32" ry="14" fill="url(#bluesharkShine)" stroke="none"/>
+    <circle cx="118" cy="100" r="12" fill="#fff"/><circle cx="115.1" cy="100.7" r="6.0" fill="#102028" stroke="none"/><circle cx="112.5" cy="96.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M90 118 Q100 128 112 118" fill="none" stroke-width="2.6"/>
+    <path d="M100 118 L112 110 M108 126 L120 116 M116 132 L128 122" fill="none" stroke-width="2.2"/>
+  </g>
+</svg>

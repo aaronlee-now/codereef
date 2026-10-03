@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="vampireBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c0519"/>
+      <stop offset="0.45" stop-color="#881337"/>
+      <stop offset="1" stop-color="#1f0008"/>
+    </linearGradient>
+    <radialGradient id="vampireShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="190" cy="100" rx="54" ry="46" fill="url(#vampireBody)"/>
+    <path d="M150 110 C60 40, 30 160, 120 180 C90 200, 160 210, 190 160 C220 210, 300 190, 270 140 C340 150, 320 60, 220 90 Z" fill="#881337"/>
+    <path d="M170 120 C120 150, 130 180, 176 156" fill="#fb7185" stroke="none"/>
+    <circle cx="150" cy="96" r="12" fill="#fff"/><circle cx="147.1" cy="96.7" r="6.0" fill="#102028" stroke="none"/><circle cx="144.5" cy="92.4" r="2.2" fill="#fff" stroke="none"/>
+    <circle cx="188" cy="98" r="8" fill="#ef4444"/>
+    <circle cx="188" cy="98" r="6" fill="#fff"/><circle cx="186.6" cy="98.4" r="3.0" fill="#102028" stroke="none"/><circle cx="185.2" cy="96.2" r="1.1" fill="#fff" stroke="none"/>
+  </g>
+</svg>

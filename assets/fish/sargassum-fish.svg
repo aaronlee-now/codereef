@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="sargassumBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="0.45" stop-color="#ca8a04"/>
+      <stop offset="1" stop-color="#713f12"/>
+    </linearGradient>
+    <radialGradient id="sargassumShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L362 38 L308 112 L364 182 Z" fill="#713f12"/>
+    <path d="M72 112 C84 58, 168 42, 272 86 C308 112, 268 176, 168 180 C108 180, 68 154, 72 112Z" fill="url(#sargassumBody)"/>
+    <path d="M100 128 C150 164, 220 162, 250 132" fill="#fef3c7" stroke="none"/>
+    <path d="M176 78 L194 32 L224 84" fill="#65a30d"/>
+    <path d="M150 132 C114 180, 174 182, 186 138" fill="#65a30d"/>
+    <path d="M140 70 C150 30, 190 28, 180 72 M180 66 C210 20, 240 36, 214 78 M120 140 C90 180, 140 188, 150 150" fill="#65a30d"/>
+    <circle cx="170" cy="110" r="5" fill="#a16207" stroke="none"/><circle cx="200" cy="96" r="5" fill="#a16207" stroke="none"/><circle cx="190" cy="136" r="5" fill="#a16207" stroke="none"/>
+    <ellipse cx="168" cy="100" rx="32" ry="14" fill="url(#sargassumShine)" stroke="none"/>
+    <circle cx="112" cy="104" r="13" fill="#fff"/><circle cx="108.9" cy="104.8" r="6.5" fill="#102028" stroke="none"/><circle cx="106.0" cy="100.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M82 122 Q92 132 104 122" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

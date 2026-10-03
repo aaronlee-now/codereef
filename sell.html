@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sell items — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=shop3" />
+    <link rel="stylesheet" href="shop.css?v=outfitfit1wearsell1" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="home.html?v=swim1">← Back home</a>
+
+    <main class="shop-page">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title">Sell items</h1>
+        <p class="auth__hint">Sell one thing you own. You get some coins back.</p>
+      </header>
+
+      <div class="shop-coin-bar" aria-live="polite">
+        <span class="shop-coin-bar__icon" aria-hidden="true"></span>
+        <span id="sell-coins">0 Sand, 0 Coral, 0 Pearl, 0 Treasure</span>
+      </div>
+
+      <p class="sell-empty" id="sell-empty" hidden>
+        You have nothing to sell yet. Visit the
+        <a href="shop.html?v=swim1">Fish shop</a>
+        or try the
+        <a href="explore.html?v=swim1">trails</a>.
+      </p>
+
+      <div class="shop-grid" id="sell-grid" role="list"></div>
+      <p class="shop-msg" id="sell-msg" role="status"></p>
+
+      <nav class="shop-links" aria-label="Reef places">
+        <a href="explore.html?v=swim1">Start exploring</a>
+        <a href="aquarium.html?v=swim1">My aquarium</a>
+        <a href="shop.html?v=swim1">Fish shop</a>
+        <a href="sell.html?v=sell1" aria-current="page">Sell items</a>
+      </nav>
+    </main>
+
+    <div class="shop-sure" id="sell-sure" hidden>
+      <div
+        class="shop-sure__box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sell-sure-q"
+      >
+        <p class="shop-sure__text" id="sell-sure-q">Sell this?</p>
+        <p class="shop-sure__text" id="sell-sure-pay"></p>
+        <div class="shop-sure__actions">
+          <button class="shop-sure__yes" type="button" id="sell-sure-yes">Yes</button>
+          <button class="shop-sure__no" type="button" id="sell-sure-no">No</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="auth.js?v=shop3"></script>
+    <script src="reef-wallet.js?v=rare50wearsell1"></script>
+    <script src="sell.js?v=sell1"></script>
+  </body>
+</html>

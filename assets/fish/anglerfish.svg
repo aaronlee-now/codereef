@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="anglerBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3f3f46"/>
+      <stop offset="0.45" stop-color="#27272a"/>
+      <stop offset="1" stop-color="#18181b"/>
+    </linearGradient>
+    <radialGradient id="anglerShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M300 108 L368 70 L330 116 L368 160 Z" fill="#18181b"/>
+    <ellipse cx="190" cy="124" rx="100" ry="72" fill="url(#anglerBody)"/>
+    <path d="M150 62 C120 20, 70 16, 64 40" fill="none" stroke="#a1a1aa" stroke-width="6"/>
+    <circle cx="58" cy="36" r="12" fill="#fde047"/>
+    <circle cx="58" cy="36" r="5" fill="#fff" stroke="none"/>
+    <path d="M120 130 L132 156 L144 128 L156 154 L168 126" fill="#f4f4f5"/>
+    <ellipse cx="170" cy="100" rx="30" ry="14" fill="url(#anglerShine)" stroke="none"/>
+    <circle cx="130" cy="108" r="16" fill="#fff"/><circle cx="126.2" cy="109.0" r="8.0" fill="#102028" stroke="none"/><circle cx="122.6" cy="103.2" r="2.9" fill="#fff" stroke="none"/>
+    <path d="M96 132 Q108 142 122 132" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

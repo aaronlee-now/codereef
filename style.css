@@ -593,7 +593,7 @@ html:has(.page--blocks) {
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
-  overflow: auto;
+  overflow: hidden;
   box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
@@ -620,10 +620,10 @@ html:has(.page--blocks) {
 
 .blk-top {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.4rem;
+  padding: 0.35rem 0.65rem;
   background: #fff;
   border-bottom: 2px solid #d5dee8;
 }
@@ -678,55 +678,56 @@ html:has(.page--blocks) {
 }
 
 .blk-tip {
-  margin: 0.45rem 0.75rem 0;
-  padding: 0.55rem 0.8rem;
-  border-radius: 0.8rem;
+  margin: 0.25rem 0.55rem 0;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.65rem;
   background: #fff4b8;
   border: 2px solid #f0d45c;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 .blk-main {
   min-height: 0;
+  min-width: 0;
+  width: 100%;
   height: 100%;
   display: grid;
-  /* Stage column is wider than before. The extra width hangs off the
-     page so the block workspace stays the same size. */
-  width: calc(100% + 28rem);
-  grid-template-columns: 54rem minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
-  align-items: start;
-  gap: 0.6rem;
-  padding: 0.55rem 0.75rem 0.7rem;
-  overflow: visible;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0.4rem 0.55rem 0.5rem;
+  overflow: hidden;
 }
 
 .blk-stage-panel,
 .blk-workspace-panel {
   min-height: 0;
+  min-width: 0;
+  height: 100%;
+  max-height: 100%;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-}
-
-.blk-stage-panel {
-  align-self: start;
-  height: auto;
-  max-height: none;
+  align-self: stretch;
+  overflow: hidden;
 }
 
 .blk-workspace-panel {
+  order: 1;
   grid-template-rows: minmax(0, 1fr);
-  align-self: start;
-  height: 100%;
-  min-width: 0;
+}
+
+.blk-stage-panel {
+  order: 2;
 }
 
 .blk-stage {
   position: relative;
   width: 100%;
-  height: 105rem;
-  min-height: 105rem;
+  height: 100%;
+  min-height: 0;
   border-radius: 1rem;
   overflow: hidden;
   border: 3px solid #8eabc8;
@@ -778,26 +779,25 @@ html:has(.page--blocks) {
 
 @media (max-width: 860px) {
   .page--blocks {
-    height: auto;
-    min-height: 100dvh;
-    max-height: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
   }
 
   .blk-main {
-    width: auto;
-    height: auto;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    width: 100%;
+    height: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  .blk-stage {
-    height: 70vh;
-    min-height: 36rem;
-  }
-
-  .blk-workspace-panel {
-    height: 62vh;
-    min-height: 18rem;
+  .blk-stage,
+  .blk-workspace-panel,
+  .blk-stage-panel {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
   }
 }
 
@@ -811,7 +811,7 @@ html:has(.page--web) {
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
-  overflow: auto;
+  overflow: hidden;
   box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
@@ -842,7 +842,7 @@ html:has(.page--web) {
   flex-wrap: nowrap;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.65rem;
+  padding: 0.35rem 0.55rem;
   background: #fff;
   border-bottom: 2px solid #d5e6e1;
 }
@@ -882,9 +882,9 @@ html:has(.page--web) {
 }
 
 .web-tip {
-  margin: 0.35rem 0.65rem 0;
+  margin: 0.25rem 0.55rem 0;
   max-width: none;
-  padding: 0.4rem 0.65rem;
+  padding: 0.3rem 0.55rem;
   border-radius: 0.65rem;
   background: #fff4b8;
   border: 2px solid #f0d45c;
@@ -899,40 +899,31 @@ html:has(.page--web) {
 
 .web-main {
   min-height: 0;
+  min-width: 0;
+  width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(22rem, 26rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
-  align-items: start;
+  align-items: stretch;
   gap: 0.5rem;
-  padding: 0.5rem 0.65rem 0.55rem;
-  overflow: visible;
+  padding: 0.4rem 0.55rem 0.5rem;
+  overflow: hidden;
 }
 
 .web-editor-panel,
 .web-preview-panel {
   min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 0.3rem;
+  align-self: stretch;
+  justify-self: stretch;
   overflow: hidden;
-}
-
-.web-editor-panel {
-  align-self: start;
-  height: 100%;
-  max-height: 100%;
-}
-
-/* Run / preview box is wider than its column and taller than the code box.
-   The column stays the old width so the code editor does not shrink. */
-.web-preview-panel {
-  align-self: start;
-  justify-self: start;
-  width: 54rem;
-  height: auto;
-  max-height: none;
-  overflow: visible;
 }
 
 .web-tabs {
@@ -1003,8 +994,8 @@ html:has(.page--web) {
 
 .web-preview {
   width: 100%;
-  height: 105rem;
-  min-height: 105rem;
+  height: 100%;
+  min-height: 0;
   border: 2px solid #c5d0de;
   border-radius: 0.75rem;
   background: #fff;
@@ -1012,33 +1003,31 @@ html:has(.page--web) {
 
 @media (max-width: 860px) {
   .page--web {
-    height: auto;
-    min-height: 100dvh;
-    max-height: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
   }
 
   .web-main {
-    width: auto;
-    height: auto;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  .web-editor-panel {
-    height: 62vh;
-    max-height: none;
-    min-height: 16rem;
-  }
-
+  .web-editor-panel,
   .web-preview-panel {
     width: 100%;
-    justify-self: stretch;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
   }
 
   .web-preview,
   .py-output {
-    height: 70vh;
-    min-height: 36rem;
+    height: 100%;
+    min-height: 0;
   }
 }
 
@@ -1047,20 +1036,21 @@ html:has(.page--web) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
-  margin: 0.4rem 0.65rem 0;
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.75rem;
+  gap: 0.3rem 0.45rem;
+  margin: 0.3rem 0.55rem 0;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.7rem;
   background: #e7f5ff;
   border: 2px solid #a5d8ff;
 }
 
 .task-bar__goal {
   margin: 0;
-  flex: 1 1 100%;
+  flex: 1 1 12rem;
+  min-width: 0;
   font-weight: 800;
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 0.95rem;
+  line-height: 1.3;
   color: #1864ab;
 }
 
@@ -1095,15 +1085,14 @@ html:has(.page--web) {
   margin: 0;
   flex: 1 1 100%;
   font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1.55;
+  font-size: 0.88rem;
+  line-height: 1.3;
   color: #1b2b34;
   background: #fff;
-  border-radius: 0.55rem;
-  padding: 0.55rem 0.7rem;
+  border-radius: 0.5rem;
+  padding: 0.28rem 0.5rem;
   white-space: pre-line;
-  max-height: min(48vh, 22rem);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .task-bar.is-done {
@@ -1118,6 +1107,8 @@ html:has(.page--web) {
 .task-bar.is-help .task-bar__hint {
   background: #fff4b8;
   border: 1px solid #f0d45c;
+  max-height: 9rem;
+  overflow: auto;
 }
 
 .help-steps__count {
@@ -1188,14 +1179,14 @@ html:has(.page--web) {
 }
 
 .page--py .web-main {
-  grid-template-columns: minmax(0, 1fr) minmax(22rem, 26rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .py-output {
   margin: 0;
   width: 100%;
-  height: 105rem;
-  min-height: 105rem;
+  height: 100%;
+  min-height: 0;
   box-sizing: border-box;
   overflow: auto;
   border: 2px solid #c5d0de;
@@ -1218,22 +1209,22 @@ html:has(.page--web) {
 @media (max-width: 860px) {
   html:has(.page--web),
   html:has(.page--blocks) {
-    overflow: auto;
-    height: auto;
+    overflow: hidden;
+    height: 100%;
   }
 
   .page--py .web-main,
   .web-main {
-    width: auto;
-    height: auto;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .py-output,
   .web-preview {
-    height: 70vh;
-    min-height: 36rem;
+    height: 100%;
+    min-height: 0;
   }
 }
 

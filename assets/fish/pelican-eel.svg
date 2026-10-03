@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="pelicanBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18181b"/>
+      <stop offset="0.45" stop-color="#09090b"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <radialGradient id="pelicanShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M180 108 C260 100, 330 104, 386 116 C330 128, 250 126, 180 118 Z" fill="url(#pelicanBody)"/>
+    <path d="M170 90 C40 40, 16 120, 40 168 C90 150, 140 140, 176 120 Z" fill="#27272a"/>
+    <path d="M60 150 C100 186, 150 176, 168 140" fill="#fb7185" stroke="none"/>
+    <circle cx="250" cy="112" r="6" fill="#f472b6" stroke="none"/>
+    <circle cx="70" cy="100" r="9" fill="#fff"/><circle cx="67.8" cy="100.5" r="4.5" fill="#102028" stroke="none"/><circle cx="65.9" cy="97.3" r="1.6" fill="#fff" stroke="none"/>
+  </g>
+</svg>

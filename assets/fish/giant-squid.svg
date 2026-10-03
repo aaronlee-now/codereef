@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="giantBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecaca"/>
+      <stop offset="0.45" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <radialGradient id="giantShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M120 120 C40 150, 20 40, 80 70 M130 130 C70 200, 40 210, 90 150 M150 140 C160 210, 200 214, 180 146" fill="none" stroke="#b91c1c" stroke-width="8"/>
+    <path d="M160 130 C220 210, 260 80, 190 120" fill="none" stroke="#ef4444" stroke-width="7"/>
+    <path d="M150 70 C190 20, 280 30, 300 90 C320 150, 240 170, 180 140 Z" fill="url(#giantBody)"/>
+    <path d="M250 50 L300 20 L280 70 Z" fill="#fecaca"/>
+    <ellipse cx="200" cy="90" rx="24" ry="12" fill="url(#giantShine)" stroke="none"/>
+    <circle cx="168" cy="90" r="13" fill="#fff"/><circle cx="164.9" cy="90.8" r="6.5" fill="#102028" stroke="none"/><circle cx="162.0" cy="86.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M148 114 Q155 124 164 114" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

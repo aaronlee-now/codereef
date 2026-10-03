@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="lookdownBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2e8f0"/>
+      <stop offset="0.45" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <radialGradient id="lookdownShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L362 38 L308 112 L364 182 Z" fill="#334155"/>
+    <path d="M72 112 C84 58, 168 42, 272 86 C308 112, 268 176, 168 180 C108 180, 68 154, 72 112Z" fill="url(#lookdownBody)"/>
+    <path d="M100 128 C150 164, 220 162, 250 132" fill="#f8fafc" stroke="none"/>
+    <path d="M176 78 L194 32 L224 84" fill="#cbd5e1"/>
+    <path d="M150 132 C114 180, 174 182, 186 138" fill="#cbd5e1"/>
+    <path d="M90 70 C120 48, 150 90, 120 112 Z" fill="#e2e8f0"/>
+    <ellipse cx="168" cy="100" rx="32" ry="14" fill="url(#lookdownShine)" stroke="none"/>
+    <circle cx="118" cy="92" r="13" fill="#fff"/><circle cx="114.9" cy="92.8" r="6.5" fill="#102028" stroke="none"/><circle cx="112.0" cy="88.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M88 110 Q98 120 110 110" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

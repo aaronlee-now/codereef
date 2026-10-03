@@ -35,10 +35,14 @@
     swimmer.style.setProperty("--stroke", heavy ? "2.6s" : 1.4 + (i % 3) * 0.16 + "s");
     swimmer.style.setProperty("--stroke-delay", -(i * 0.41) + "s");
     swimmer.style.animationDelay = i * -6 + "s";
+    var worn = "";
+    if (typeof wornOutfitForFish === "function") {
+      worn = wornOutfitForFish(fish.id);
+    }
     swimmer.innerHTML =
       '<div class="menu-fish__face">' +
       (typeof reefFishMarkup === "function"
-        ? reefFishMarkup(fish)
+        ? reefFishMarkup(fish, worn)
         : '<span class="reef-fish"><img class="reef-fish__img" src="' +
           fish.image +
           '" alt="" /></span>') +

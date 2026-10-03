@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="leopardBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e5e7eb"/>
+      <stop offset="0.45" stop-color="#9ca3af"/>
+      <stop offset="1" stop-color="#374151"/>
+    </linearGradient>
+    <radialGradient id="leopardShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M246 106 L358 36 L304 110 L360 180 Z" fill="#374151"/>
+    <path d="M78 110 C96 52, 176 42, 274 86 C314 110, 270 174, 176 178 C112 178, 70 150, 78 110Z" fill="url(#leopardBody)"/>
+    <path d="M110 126 C160 162, 230 160, 260 130" fill="#f9fafb" stroke="none"/>
+    <path d="M176 72 L194 26 L224 78" fill="#374151"/>
+    <path d="M150 130 C114 178, 174 180, 186 136" fill="#111827"/>
+    <circle cx="140" cy="96" r="6" fill="#111827" stroke="none"/><circle cx="170" cy="118" r="6" fill="#111827" stroke="none"/><circle cx="200" cy="92" r="6" fill="#111827" stroke="none"/><circle cx="188" cy="140" r="6" fill="#111827" stroke="none"/><circle cx="230" cy="112" r="6" fill="#111827" stroke="none"/><circle cx="150" cy="132" r="6" fill="#111827" stroke="none"/><circle cx="210" cy="128" r="6" fill="#111827" stroke="none"/>
+    <ellipse cx="160" cy="100" rx="32" ry="14" fill="url(#leopardShine)" stroke="none"/>
+    <circle cx="124" cy="102" r="12" fill="#fff"/><circle cx="121.1" cy="102.7" r="6.0" fill="#102028" stroke="none"/><circle cx="118.5" cy="98.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M96 120 Q106 130 118 120" fill="none" stroke-width="2.6"/>
+    <path d="M100 118 L112 110 M108 126 L120 116 M116 132 L128 122" fill="none" stroke-width="2.2"/>
+  </g>
+</svg>

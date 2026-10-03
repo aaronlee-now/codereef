@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="barrelBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bae6fd"/>
+      <stop offset="0.45" stop-color="#7dd3fc"/>
+      <stop offset="1" stop-color="#0369a1"/>
+    </linearGradient>
+    <radialGradient id="barrelShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="200" cy="124" rx="70" ry="48" fill="url(#barrelBody)"/>
+    <ellipse cx="150" cy="78" rx="62" ry="40" fill="#e0f2fe" fill-opacity="0.85"/>
+    <ellipse cx="132" cy="84" rx="14" ry="18" fill="#22c55e"/>
+    <ellipse cx="168" cy="80" rx="14" ry="18" fill="#4ade80"/>
+    <circle cx="132" cy="86" r="5" fill="#052e16" stroke="none"/>
+    <circle cx="168" cy="82" r="5" fill="#052e16" stroke="none"/>
+    <ellipse cx="190" cy="116" rx="20" ry="10" fill="url(#barrelShine)" stroke="none"/>
+    <path d="M176 140 Q183 150 192 140" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="deepdragonBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.45" stop-color="#020617"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <radialGradient id="deepdragonShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M286 108 L398 38 L344 112 L400 182 Z" fill="#000"/>
+    <path d="M48 112 C72 74, 150 66, 300 96 C332 114, 300 150, 168 158 C96 158, 40 142, 48 112Z" fill="url(#deepdragonBody)"/>
+    <path d="M90 124 C140 160, 210 158, 240 128" fill="#1e293b" stroke="none"/>
+    <path d="M150 78 L168 32 L198 84" fill="#f472b6"/>
+    <path d="M130 128 C94 176, 154 178, 166 134" fill="#f472b6"/>
+    <path d="M70 128 C40 160, 30 186, 18 196" fill="none" stroke="#f472b6" stroke-width="4"/>
+    <circle cx="18" cy="196" r="7" fill="#f472b6"/>
+    <circle cx="18" cy="196" r="3" fill="#fef08a" stroke="none"/>
+    <circle cx="150" cy="124" r="4" fill="#f472b6" stroke="none"/><circle cx="190" cy="128" r="4" fill="#f472b6" stroke="none"/><circle cx="230" cy="122" r="4" fill="#f472b6" stroke="none"/>
+    <ellipse cx="160" cy="104" rx="32" ry="14" fill="url(#deepdragonShine)" stroke="none"/>
+    <circle cx="100" cy="102" r="12" fill="#fff"/><circle cx="97.1" cy="102.7" r="6.0" fill="#102028" stroke="none"/><circle cx="94.5" cy="98.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M64 118 Q74 128 86 118" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

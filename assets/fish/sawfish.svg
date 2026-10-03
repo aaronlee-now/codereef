@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="sawBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6d3d1"/>
+      <stop offset="0.45" stop-color="#a8a29e"/>
+      <stop offset="1" stop-color="#57534e"/>
+    </linearGradient>
+    <radialGradient id="sawShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 112 C170 70, 280 64, 340 108 C300 150, 200 170, 160 150 C140 160, 130 140, 150 112Z" fill="url(#sawBody)"/>
+    <path d="M150 108 L18 100 L18 122 L150 116 Z" fill="#d6d3d1"/>
+    <path d="M36 100 L42 84 L48 100" fill="#f5f5f4"/><path d="M36 122 L42 138 L48 122" fill="#e7e5e4"/><path d="M52 100 L58 84 L64 100" fill="#f5f5f4"/><path d="M52 122 L58 138 L64 122" fill="#e7e5e4"/><path d="M68 100 L74 84 L80 100" fill="#f5f5f4"/><path d="M68 122 L74 138 L80 122" fill="#e7e5e4"/><path d="M84 100 L90 84 L96 100" fill="#f5f5f4"/><path d="M84 122 L90 138 L96 122" fill="#e7e5e4"/><path d="M100 100 L106 84 L112 100" fill="#f5f5f4"/><path d="M100 122 L106 138 L112 122" fill="#e7e5e4"/><path d="M116 100 L122 84 L128 100" fill="#f5f5f4"/><path d="M116 122 L122 138 L128 122" fill="#e7e5e4"/><path d="M132 100 L138 84 L144 100" fill="#f5f5f4"/><path d="M132 122 L138 138 L144 122" fill="#e7e5e4"/>
+    <ellipse cx="230" cy="104" rx="28" ry="12" fill="url(#sawShine)" stroke="none"/>
+    <circle cx="168" cy="108" r="11" fill="#fff"/><circle cx="165.4" cy="108.7" r="5.5" fill="#102028" stroke="none"/><circle cx="162.9" cy="104.7" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M132 128 Q139 138 148 128" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

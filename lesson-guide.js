@@ -246,72 +246,32 @@ var CodeReefGuide = (function () {
 
   function instruction(goal, help) {
     var info = readHelp(help);
-    var meaning = meaningOf(info);
-    var bits = [String(goal || "").trim()];
-    if (meaning) {
-      bits.push(meaning);
-    }
-    if (info.editWord) {
-      bits.push("Keep the old line. Change only the one word Help names. Do not erase the whole line.");
-    } else if (info.fresh) {
-      bits.push("Start fresh. Erase the old code so the box is empty, then type the new lines.");
-    } else if (info.block) {
-      bits.push("Keep the blocks you already snapped on. Add the new block. Do not throw the old ones away.");
-    } else if (info.keep) {
-      bits.push("Keep the code you already wrote. Add the new part. Do not erase the old lines.");
-    }
-    if (info.exacts.length === 1) {
-      bits.push("The line you need looks like this: " + info.exact + ".");
-    } else if (info.exacts.length > 1) {
-      bits.push("You will type " + info.exacts.length + " lines. The first one looks like this: " + info.exact + ".");
-    } else if (info.block) {
-      bits.push("Find the block that says " + info.block + " and snap it on.");
-    }
+    var job = String(goal || "").trim();
+    var button = info.button || "Run";
     if (info.see) {
-      bits.push("Press the " + info.button + " button. You are done when you see " + info.see + ".");
-    } else if (info.steps.length) {
-      bits.push("Press the " + info.button + " button when you finish.");
+      var see = info.see;
+      if (!/[.!?]$/.test(see)) {
+        see += ".";
+      }
+      return job + " Press " + button + ". You should see " + see;
     }
-    bits.push("If you get stuck, press Help. It shows one small step, and the last tips help you fix a mistake.");
-    return bits.join(" ");
+    return job + " Press " + button + " when you are done.";
   }
 
   function startHint(goal, help, buttonFallback) {
     var info = readHelp(help);
     var button = info.button || buttonFallback || "Run";
-    var meaning = meaningOf(info);
-    var bits = ["Here is how to begin."];
+    var start = "Try the change, then press " + button + ".";
     if (info.editWord) {
-      bits.push("First, keep the old line. Do not erase it. Click the word you need to change, delete those letters, and type the new word in that same spot.");
+      start = "Change one word, then press " + button + ".";
     } else if (info.fresh) {
-      bits.push("First, erase the old code. Click in the code box, highlight all of it, and press Delete. The box should be empty.");
+      start = "Type the new lines, then press " + button + ".";
     } else if (info.block) {
-      bits.push("First, keep the blocks you already have. Do not throw them away.");
+      start = "Snap on one new block, then press " + button + ".";
     } else if (info.keep) {
-      bits.push("First, keep your old code. Click at the end of the last line. Press Enter to start a new line.");
-    } else {
-      bits.push("First, look at the box and find the part this task talks about. Change only that part.");
+      start = "Add the new part, then press " + button + ".";
     }
-    if (info.editWord && info.exact) {
-      bits.push("When you are done, the line should look like this: " + info.exact);
-    } else if (info.exact) {
-      bits.push("Then type this line. Copy every letter and every mark: " + info.exact);
-    } else if (info.block) {
-      bits.push("Then look at the left side. Drag the block that says " + info.block + " until it snaps on.");
-    }
-    if (info.exacts.length > 1) {
-      bits.push("This task has more than one new line. Press Help to see each line, one at a time.");
-    }
-    if (meaning) {
-      bits.push(meaning);
-    }
-    if (info.see) {
-      bits.push("Press the " + button + " button at the top. You should see " + info.see + ".");
-    } else {
-      bits.push("Press the " + button + " button at the top.");
-    }
-    bits.push("Stuck? Press Help. Read one tip, do it, then press Next tip. The last tips tell you how to fix a mistake.");
-    return bits.join(" ");
+    return start + " Press Help and it will walk you through it.";
   }
 
   function expandHelp(text) {

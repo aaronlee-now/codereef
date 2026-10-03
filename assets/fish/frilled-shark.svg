@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="frilledBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6d3d1"/>
+      <stop offset="0.45" stop-color="#78716c"/>
+      <stop offset="1" stop-color="#44403c"/>
+    </linearGradient>
+    <radialGradient id="frilledShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M36 118 C80 70, 160 78, 240 100 C300 86, 350 70, 378 96 C350 120, 300 130, 240 124 C160 150, 80 156, 36 118Z" fill="url(#frilledBody)"/>
+    <path d="M70 104 C90 78, 120 74, 132 100 M108 100 C128 76, 156 78, 164 104 M146 102 C166 80, 196 82, 204 108" fill="#57534e"/>
+    <ellipse cx="120" cy="108" rx="24" ry="10" fill="url(#frilledShine)" stroke="none"/>
+    <circle cx="100" cy="104" r="11" fill="#fff"/><circle cx="97.4" cy="104.7" r="5.5" fill="#102028" stroke="none"/><circle cx="94.9" cy="100.7" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M62 124 Q70 134 80 124" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

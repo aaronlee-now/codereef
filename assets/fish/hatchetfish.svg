@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="hatchetBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2e8f0"/>
+      <stop offset="0.45" stop-color="#cbd5e1"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <radialGradient id="hatchetShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M286 108 L398 38 L344 112 L400 182 Z" fill="#475569"/>
+    <path d="M86 112 C92 36, 176 18, 286 70 C324 112, 280 198, 176 206 C112 206, 78 164, 86 112Z" fill="url(#hatchetBody)"/>
+    <path d="M120 140 C170 176, 240 174, 270 144" fill="#f8fafc" stroke="none"/>
+    <path d="M170 48 L188 2 L218 54" fill="#fde047"/>
+    <path d="M140 150 C104 198, 164 200, 176 156" fill="#fde047"/>
+    <circle cx="150" cy="150" r="5" fill="#fde047" stroke="none"/><circle cx="180" cy="160" r="5" fill="#fde047" stroke="none"/><circle cx="210" cy="154" r="5" fill="#fde047" stroke="none"/><circle cx="240" cy="146" r="5" fill="#fde047" stroke="none"/>
+    <path d="M100 70 L150 40 L150 90 Z" fill="#f8fafc"/>
+    <ellipse cx="170" cy="90" rx="28" ry="12" fill="url(#hatchetShine)" stroke="none"/>
+    <circle cx="118" cy="96" r="13" fill="#fff"/><circle cx="114.9" cy="96.8" r="6.5" fill="#102028" stroke="none"/><circle cx="112.0" cy="92.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M88 118 Q98 128 110 118" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="snipeBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b7280"/>
+      <stop offset="0.45" stop-color="#374151"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <radialGradient id="snipeShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M90 108 C160 100, 260 104, 390 112 C260 122, 160 124, 90 116 Z" fill="url(#snipeBody)"/>
+    <path d="M90 110 L16 96 L18 114 Z" fill="#d1d5db"/>
+    <path d="M90 114 L16 124 L20 112 Z" fill="#9ca3af"/>
+    <circle cx="70" cy="108" r="8" fill="#fff"/><circle cx="68.1" cy="108.5" r="4.0" fill="#102028" stroke="none"/><circle cx="66.3" cy="105.6" r="1.4" fill="#fff" stroke="none"/>
+    <path d="M40 112 Q47 122 56 112" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

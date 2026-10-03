@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="wobbeBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6d3d1"/>
+      <stop offset="0.45" stop-color="#78716c"/>
+      <stop offset="1" stop-color="#44403c"/>
+    </linearGradient>
+    <radialGradient id="wobbeShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M40 120 C70 48, 250 40, 340 100 C360 140, 250 190, 120 184 C60 176, 28 150, 40 120Z" fill="url(#wobbeBody)"/>
+    <circle cx="120" cy="90" r="8" fill="#a16207" stroke="none"/><circle cx="160" cy="120" r="8" fill="#a16207" stroke="none"/><circle cx="210" cy="86" r="8" fill="#a16207" stroke="none"/><circle cx="250" cy="130" r="8" fill="#a16207" stroke="none"/><circle cx="190" cy="150" r="8" fill="#a16207" stroke="none"/><circle cx="280" cy="100" r="8" fill="#a16207" stroke="none"/><circle cx="140" cy="150" r="8" fill="#a16207" stroke="none"/><circle cx="230" cy="70" r="8" fill="#a16207" stroke="none"/>
+    <path d="M70 150 C60 176, 80 184, 96 160 M100 158 C96 186, 120 188, 124 162 M130 160 C128 190, 154 188, 152 160" fill="#fef3c7"/>
+    <ellipse cx="180" cy="100" rx="40" ry="16" fill="url(#wobbeShine)" stroke="none"/>
+    <circle cx="150" cy="108" r="11" fill="#fff"/><circle cx="147.4" cy="108.7" r="5.5" fill="#102028" stroke="none"/><circle cx="144.9" cy="104.7" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M120 130 Q131 140 144 130" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

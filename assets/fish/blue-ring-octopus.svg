@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="blueringBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde047"/>
+      <stop offset="0.45" stop-color="#eab308"/>
+      <stop offset="1" stop-color="#a16207"/>
+    </linearGradient>
+    <radialGradient id="blueringShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="200" cy="100" rx="62" ry="48" fill="url(#blueringBody)"/>
+    <path d="M150 130 C90 150, 70 200, 120 190 M170 140 C160 200, 200 206, 190 150 M210 136 C240 196, 280 190, 240 140 M230 120 C300 140, 310 190, 250 170" fill="none" stroke-width="10"/>
+    <circle cx="176" cy="86" r="10" fill="none" stroke="#2563eb" stroke-width="4"/><circle cx="210" cy="100" r="9" fill="none" stroke="#1d4ed8" stroke-width="4"/><circle cx="186" cy="116" r="8" fill="none" stroke="#3b82f6" stroke-width="4"/><circle cx="230" cy="78" r="7" fill="none" stroke="#2563eb" stroke-width="3"/>
+    <circle cx="160" cy="90" r="12" fill="#fff"/><circle cx="157.1" cy="90.7" r="6.0" fill="#102028" stroke="none"/><circle cx="154.5" cy="86.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M150 112 Q157 122 166 112" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="colossalBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fda4af"/>
+      <stop offset="0.45" stop-color="#e11d48"/>
+      <stop offset="1" stop-color="#881337"/>
+    </linearGradient>
+    <radialGradient id="colossalShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="210" cy="100" rx="90" ry="62" fill="url(#colossalBody)"/>
+    <path d="M250 48 L310 16 L286 70 Z" fill="#fda4af"/>
+    <path d="M140 120 C60 150, 50 200, 130 176 M160 136 C150 200, 200 208, 196 146 M200 140 C230 204, 280 190, 240 136" fill="#e11d48"/>
+    <circle cx="230" cy="96" r="16" fill="#fff"/>
+    <circle cx="230" cy="96" r="10" fill="#fff"/><circle cx="227.6" cy="96.6" r="5.0" fill="#102028" stroke="none"/><circle cx="225.4" cy="93.0" r="1.8" fill="#fff" stroke="none"/>
+    <ellipse cx="200" cy="90" rx="24" ry="12" fill="url(#colossalShine)" stroke="none"/>
+    <circle cx="160" cy="96" r="16" fill="#fff"/><circle cx="156.2" cy="97.0" r="8.0" fill="#102028" stroke="none"/><circle cx="152.6" cy="91.2" r="2.9" fill="#fff" stroke="none"/>
+    <path d="M140 120 Q147 130 156 120" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

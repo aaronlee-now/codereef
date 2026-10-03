@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="sailBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="0.45" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <radialGradient id="sailShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 108 L8 96 L10 116 Z" fill="#1e3a8a"/>
+    <path d="M150 100 C200 8, 280 10, 300 96 L180 108 Z" fill="#1d4ed8"/>
+    <circle cx="190" cy="40" r="5" fill="#bfdbfe" stroke="none"/><circle cx="220" cy="36" r="5" fill="#bfdbfe" stroke="none"/><circle cx="250" cy="48" r="5" fill="#bfdbfe" stroke="none"/><circle cx="210" cy="60" r="5" fill="#bfdbfe" stroke="none"/><circle cx="240" cy="70" r="5" fill="#bfdbfe" stroke="none"/>
+    <path d="M120 112 C150 78, 220 74, 310 100 C330 114, 300 146, 190 150 C140 150, 110 136, 120 112Z" fill="url(#sailBody)"/>
+    <path d="M160 124 C210 160, 280 158, 310 128" fill="#dbeafe" stroke="none"/>
+    <path d="M300 112 L412 42 L358 116 L414 186 Z" fill="#1e3a8a"/>
+    <path d="M180 128 C144 176, 204 178, 216 134" fill="#1d4ed8"/>
+    <ellipse cx="200" cy="108" rx="26" ry="10" fill="url(#sailShine)" stroke="none"/>
+    <circle cx="130" cy="108" r="11" fill="#fff"/><circle cx="127.4" cy="108.7" r="5.5" fill="#102028" stroke="none"/><circle cx="124.9" cy="104.7" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M106 124 Q113 134 122 124" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="paperBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="0.45" stop-color="#fdba74"/>
+      <stop offset="1" stop-color="#c2410c"/>
+    </linearGradient>
+    <radialGradient id="paperShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M210 110 C250 40, 360 50, 340 120 C360 190, 250 190, 210 130" fill="#fff7ed"/>
+    <path d="M230 110 C260 70, 320 78, 318 120 C320 160, 260 162, 232 130" fill="none" stroke="#fdba74" stroke-width="4"/>
+    <path d="M248 112 C270 90, 300 96, 300 120" fill="none" stroke="#fb923c" stroke-width="3"/>
+    <ellipse cx="150" cy="120" rx="48" ry="36" fill="url(#paperBody)"/>
+    <path d="M120 140 C70 160, 60 190, 110 176 M140 150 C120 190, 160 196, 160 156" fill="#fdba74"/>
+    <circle cx="120" cy="108" r="11" fill="#fff"/><circle cx="117.4" cy="108.7" r="5.5" fill="#102028" stroke="none"/><circle cx="114.9" cy="104.7" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M100 128 Q107 138 116 128" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -72,7 +72,9 @@ var CodeReefHelp = (function () {
         body.textContent = step;
       }
 
-      el.appendChild(count);
+      if (steps.length > 1) {
+        el.appendChild(count);
+      }
       el.appendChild(body);
 
       if (steps.length < 2) {

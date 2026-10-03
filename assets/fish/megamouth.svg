@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="megaBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e1b4b"/>
+      <stop offset="0.45" stop-color="#312e81"/>
+      <stop offset="1" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <radialGradient id="megaShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M286 112 L398 42 L344 116 L400 186 Z" fill="#312e81"/>
+    <ellipse cx="176" cy="116" rx="118" ry="78" fill="url(#megaBody)"/>
+    <ellipse cx="78" cy="126" rx="52" ry="42" fill="#1e1b4b"/>
+    <ellipse cx="78" cy="130" rx="36" ry="26" fill="#f9a8d4" stroke="none"/>
+    <path d="M50 118 L58 128 L66 118 L74 128 L82 118 L90 128" fill="none" stroke="#fff" stroke-width="2"/>
+    <ellipse cx="190" cy="96" rx="28" ry="12" fill="url(#megaShine)" stroke="none"/>
+    <circle cx="168" cy="78" r="14" fill="#fff"/><circle cx="164.6" cy="78.8" r="7.0" fill="#102028" stroke="none"/><circle cx="161.6" cy="73.8" r="2.5" fill="#fff" stroke="none"/>
+    <path d="M210 58 L228 12 L258 64" fill="#4338ca"/>
+  </g>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="goblinBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecdd3"/>
+      <stop offset="0.45" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#9f1239"/>
+    </linearGradient>
+    <radialGradient id="goblinShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L362 38 L308 112 L364 182 Z" fill="#9f1239"/>
+    <path d="M130 108 C142 64, 196 52, 274 88 C308 112, 264 170, 184 174 C148 174, 126 148, 130 108Z" fill="url(#goblinBody)"/>
+    <path d="M28 102 L134 86 L134 126 L28 116 Z" fill="#fda4af"/>
+    <path d="M48 112 L54 122 L60 112 L66 122 L72 112" fill="none" stroke-width="2.2"/>
+    <path d="M190 74 L208 28 L238 80" fill="#9f1239"/>
+    <path d="M170 136 C134 184, 194 186, 206 142" fill="#fb7185"/>
+    <ellipse cx="190" cy="100" rx="32" ry="14" fill="url(#goblinShine)" stroke="none"/>
+    <circle cx="156" cy="98" r="12" fill="#fff"/><circle cx="153.1" cy="98.7" r="6.0" fill="#102028" stroke="none"/><circle cx="150.5" cy="94.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M118 118 Q126 128 136 118" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

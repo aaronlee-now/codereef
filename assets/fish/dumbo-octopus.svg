@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="dumboBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbcfe8"/>
+      <stop offset="0.45" stop-color="#f472b6"/>
+      <stop offset="1" stop-color="#9d174d"/>
+    </linearGradient>
+    <radialGradient id="dumboShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M120 70 C70 10, 20 70, 90 100" fill="#f9a8d4"/>
+    <path d="M210 68 C270 8, 330 70, 240 102" fill="#f472b6"/>
+    <ellipse cx="176" cy="120" rx="70" ry="58" fill="url(#dumboBody)"/>
+    <path d="M140 160 C120 196, 150 204, 160 170 M170 168 C168 206, 200 204, 196 166 M120 150 C90 180, 110 196, 140 168" fill="#fb7185"/>
+    <ellipse cx="160" cy="108" rx="22" ry="12" fill="url(#dumboShine)" stroke="none"/>
+    <circle cx="168" cy="108" r="12" fill="#fff"/><circle cx="165.1" cy="108.7" r="6.0" fill="#102028" stroke="none"/><circle cx="162.5" cy="104.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M150 128 Q158 138 168 128" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

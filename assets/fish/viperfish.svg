@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="viperBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="0.45" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <radialGradient id="viperShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M286 108 L398 38 L344 112 L400 182 Z" fill="#020617"/>
+    <path d="M48 112 C72 74, 150 66, 300 96 C332 114, 300 150, 168 158 C96 158, 40 142, 48 112Z" fill="url(#viperBody)"/>
+    <path d="M90 124 C140 160, 210 158, 240 128" fill="#334155" stroke="none"/>
+    <path d="M150 78 L168 32 L198 84" fill="#22d3ee"/>
+    <path d="M130 128 C94 176, 154 178, 166 134" fill="#22d3ee"/>
+    <path d="M78 112 L86 148 L96 112 L104 140 L112 112" fill="#e2e8f0"/>
+    <circle cx="160" cy="130" r="4" fill="#22d3ee" stroke="none"/><circle cx="190" cy="134" r="4" fill="#22d3ee" stroke="none"/><circle cx="220" cy="128" r="4" fill="#22d3ee" stroke="none"/><circle cx="250" cy="132" r="4" fill="#22d3ee" stroke="none"/>
+    <ellipse cx="160" cy="104" rx="32" ry="14" fill="url(#viperShine)" stroke="none"/>
+    <circle cx="108" cy="100" r="12" fill="#fff"/><circle cx="105.1" cy="100.7" r="6.0" fill="#102028" stroke="none"/><circle cx="102.5" cy="96.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M72 116 Q82 126 94 116" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="mahiBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#86efac"/>
+      <stop offset="0.45" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#14532d"/>
+    </linearGradient>
+    <radialGradient id="mahiShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L362 38 L308 112 L364 182 Z" fill="#14532d"/>
+    <path d="M72 112 C84 58, 168 42, 272 86 C308 112, 268 176, 168 180 C108 180, 68 154, 72 112Z" fill="url(#mahiBody)"/>
+    <path d="M100 128 C150 164, 220 162, 250 132" fill="#fef08a" stroke="none"/>
+    <path d="M176 78 L194 32 L224 84" fill="#0ea5e9"/>
+    <path d="M150 132 C114 180, 174 182, 186 138" fill="#0ea5e9"/>
+    <path d="M120 70 C160 20, 250 36, 260 78" fill="#0ea5e9"/>
+    <path d="M150 150 C190 190, 250 170, 240 140" fill="#facc15"/>
+    <ellipse cx="168" cy="100" rx="32" ry="14" fill="url(#mahiShine)" stroke="none"/>
+    <circle cx="100" cy="96" r="13" fill="#fff"/><circle cx="96.9" cy="96.8" r="6.5" fill="#102028" stroke="none"/><circle cx="94.0" cy="92.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M70 114 Q80 124 92 114" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

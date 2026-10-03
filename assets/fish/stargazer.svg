@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="stargazeBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6d3d1"/>
+      <stop offset="0.45" stop-color="#78716c"/>
+      <stop offset="1" stop-color="#292524"/>
+    </linearGradient>
+    <radialGradient id="stargazeShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="210" cy="130" rx="130" ry="58" fill="url(#stargazeBody)"/>
+    <ellipse cx="150" cy="78" rx="28" ry="16" fill="#44403c"/>
+    <circle cx="132" cy="74" r="10" fill="#fff"/><circle cx="129.6" cy="74.6" r="5.0" fill="#102028" stroke="none"/><circle cx="127.4" cy="71.0" r="1.8" fill="#fff" stroke="none"/>
+    <circle cx="176" cy="74" r="10" fill="#fff"/><circle cx="173.6" cy="74.6" r="5.0" fill="#102028" stroke="none"/><circle cx="171.4" cy="71.0" r="1.8" fill="#fff" stroke="none"/>
+    <path d="M120 150 Q160 170 200 148" fill="none" stroke-width="3"/>
+    <circle cx="220" cy="110" r="6" fill="#a8a29e" stroke="none"/><circle cx="250" cy="140" r="6" fill="#a8a29e" stroke="none"/><circle cx="190" cy="120" r="6" fill="#a8a29e" stroke="none"/>
+  </g>
+</svg>

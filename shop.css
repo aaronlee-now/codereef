@@ -576,11 +576,35 @@
   height: 2.2rem;
 }
 
-/* Aquarium */
+/* Aquarium — tank fills the screen; header, race buttons, and links stay usable. */
+body.page--auth:has(> .aquarium-page) {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: auto;
+}
+
 .aquarium-page {
-  width: min(42rem, calc(100% - 1.5rem));
-  margin: 0 auto 2rem;
+  width: calc(100% - 1.5rem);
+  margin: 0 auto 0.65rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   animation: rise-in 700ms ease-out both;
+}
+
+.aquarium-page > .auth__header,
+.aquarium-page > .shop-coin-bar,
+.aquarium-page > .aquarium-count,
+.aquarium-page > .aquarium-actions,
+.aquarium-page > .aquarium-race-msg,
+.aquarium-page > .shop-links {
+  flex-shrink: 0;
+}
+
+.aquarium-page .shop-links {
+  margin-top: 0.65rem;
 }
 
 .aquarium-page .auth__header {
@@ -662,7 +686,9 @@
 
 .aquarium-tank {
   position: relative;
-  height: min(20rem, 48vh);
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 22rem;
   margin-top: 0.55rem;
   overflow: hidden;
   border-radius: 1.25rem;
@@ -1338,6 +1364,18 @@ body > .menu-fish-layer {
   border-color: #c45d45;
 }
 
+.cover__btn--sell {
+  background: #f4c95d;
+  border: 2px solid #f4c95d;
+  color: #3d2914;
+}
+
+.cover__btn--sell:hover,
+.cover__btn--sell:focus-visible {
+  background: #e0b03a;
+  border-color: #e0b03a;
+}
+
 .explore-reef-nav {
   display: flex;
   flex-wrap: wrap;
@@ -1361,9 +1399,20 @@ body > .menu-fish-layer {
   border: 2px solid #3d9be9;
 }
 
+.explore-reef-nav__explore {
+  background: #2a9d8f;
+  border: 2px solid #2a9d8f;
+}
+
 .explore-reef-nav__shop {
   background: #e07a5f;
   border: 2px solid #e07a5f;
+}
+
+.explore-reef-nav a.explore-reef-nav__sell {
+  background: #f4c95d;
+  border: 2px solid #e0b03a;
+  color: #3d2914;
 }
 
 .explore-reef-nav a:hover,
@@ -1604,6 +1653,23 @@ body > .menu-fish-layer {
   background: #ffd166;
   color: #062430;
   outline: none;
+}
+
+.shop-card__wear {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.shop-card__wear-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
 }
 
 .shop-outfit-demo {
@@ -2808,4 +2874,22 @@ body > .menu-fish-layer {
   width: calc(34% * var(--bs));
   height: calc(32% * var(--bs));
   border-radius: 50%;
+}
+
+.sell-empty {
+  margin: 1.5rem auto 0;
+  max-width: 28rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--foam);
+}
+
+.sell-empty[hidden] {
+  display: none;
+}
+
+.sell-empty a {
+  color: var(--sand);
 }

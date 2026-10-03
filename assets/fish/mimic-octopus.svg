@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="mimicBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef3c7"/>
+      <stop offset="0.45" stop-color="#d97706"/>
+      <stop offset="1" stop-color="#78350f"/>
+    </linearGradient>
+    <radialGradient id="mimicShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="200" cy="100" rx="62" ry="48" fill="url(#mimicBody)"/>
+    <path d="M150 130 C90 150, 70 200, 120 190 M170 140 C160 200, 200 206, 190 150 M210 136 C240 196, 280 190, 240 140 M230 120 C300 140, 310 190, 250 170" fill="none" stroke-width="10"/>
+    <path d="M160 80 L230 120 M170 110 L240 78 M180 70 L200 130" stroke="#1f2937" stroke-width="6" fill="none"/>
+    <circle cx="158" cy="92" r="12" fill="#fff"/><circle cx="155.1" cy="92.7" r="6.0" fill="#102028" stroke="none"/><circle cx="152.5" cy="88.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M148 114 Q155 124 164 114" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

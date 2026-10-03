@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="gulperBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1917"/>
+      <stop offset="0.45" stop-color="#0c0a09"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <radialGradient id="gulperShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M160 108 C240 96, 320 100, 380 112 C320 124, 240 128, 160 120 Z" fill="url(#gulperBody)"/>
+    <path d="M150 100 C40 20, 20 90, 70 120 C20 160, 50 200, 160 130 Z" fill="#292524"/>
+    <path d="M150 108 C70 70, 40 120, 150 124" fill="#44403c" stroke="none"/>
+    <circle cx="90" cy="90" r="10" fill="#fff"/><circle cx="87.6" cy="90.6" r="5.0" fill="#102028" stroke="none"/><circle cx="85.4" cy="87.0" r="1.8" fill="#fff" stroke="none"/>
+    <path d="M90 112 Q110 124 130 112" fill="none" stroke-width="2"/>
+  </g>
+</svg>

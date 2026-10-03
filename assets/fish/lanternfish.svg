@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="lanternBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2e8f0"/>
+      <stop offset="0.45" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <radialGradient id="lanternShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L362 38 L308 112 L364 182 Z" fill="#334155"/>
+    <path d="M72 112 C84 58, 168 42, 272 86 C308 112, 268 176, 168 180 C108 180, 68 154, 72 112Z" fill="url(#lanternBody)"/>
+    <path d="M100 128 C150 164, 220 162, 250 132" fill="#f8fafc" stroke="none"/>
+    <path d="M176 78 L194 32 L224 84" fill="#facc15"/>
+    <path d="M150 132 C114 180, 174 182, 186 138" fill="#facc15"/>
+    <circle cx="140" cy="132" r="5" fill="#facc15" stroke="none"/><circle cx="164" cy="136" r="5" fill="#facc15" stroke="none"/><circle cx="188" cy="130" r="5" fill="#facc15" stroke="none"/><circle cx="212" cy="136" r="5" fill="#facc15" stroke="none"/><circle cx="236" cy="128" r="5" fill="#facc15" stroke="none"/>
+    <circle cx="200" cy="96" r="6" fill="#fde047" stroke="none"/>
+    <ellipse cx="168" cy="100" rx="32" ry="14" fill="url(#lanternShine)" stroke="none"/>
+    <circle cx="100" cy="104" r="13" fill="#fff"/><circle cx="96.9" cy="104.8" r="6.5" fill="#102028" stroke="none"/><circle cx="94.0" cy="100.1" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M70 122 Q80 132 92 122" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

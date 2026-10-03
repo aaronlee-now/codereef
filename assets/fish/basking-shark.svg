@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="baskingBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cbd5e1"/>
+      <stop offset="0.45" stop-color="#64748b"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <radialGradient id="baskingShine" cx="38%" cy="36%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M246 106 L358 36 L304 110 L360 180 Z" fill="#1e293b"/>
+    <path d="M78 110 C96 52, 176 42, 274 86 C314 110, 270 174, 176 178 C112 178, 70 150, 78 110Z" fill="url(#baskingBody)"/>
+    <path d="M110 126 C160 162, 230 160, 260 130" fill="#f1f5f9" stroke="none"/>
+    <path d="M176 72 L194 26 L224 78" fill="#1e293b"/>
+    <path d="M150 130 C114 178, 174 180, 186 136" fill="#334155"/>
+    <path d="M70 118 C40 108, 28 140, 78 150" fill="#0f172a"/>
+    <path d="M78 124 Q100 140 86 152" fill="none" stroke-width="2.4"/>
+    <ellipse cx="160" cy="100" rx="32" ry="14" fill="url(#baskingShine)" stroke="none"/>
+    <circle cx="140" cy="96" r="12" fill="#fff"/><circle cx="137.1" cy="96.7" r="6.0" fill="#102028" stroke="none"/><circle cx="134.5" cy="92.4" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M112 114 Q122 124 134 114" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>
