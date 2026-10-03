@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="maBody" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="#86efac"/>
+      <stop offset="0.35" stop-color="#22d3ee"/>
+      <stop offset="0.7" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+    <radialGradient id="maShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M118 108 C70 78, 36 96, 48 124 C70 112, 96 116, 118 108Z" fill="#7c3aed"/>
+    <path d="M110 120 L48 156 L86 132 L44 176 L124 138 Z" fill="#6d28d9"/>
+    <path d="M118 108 C150 78, 210 82, 240 110 C270 92, 320 100, 340 122 C360 112, 372 128, 350 138 C310 150, 250 146, 200 136 C160 156, 120 144, 118 120 Z" fill="url(#maBody)"/>
+    <path d="M160 100 H196" stroke="#fef08a" stroke-width="7"/>
+    <path d="M214 104 H250" stroke="#fbcfe8" stroke-width="7"/>
+    <path d="M268 112 H304" stroke="#bfdbfe" stroke-width="6"/>
+    <path d="M150 70 C160 40, 176 46, 170 74" fill="#22d3ee"/>
+    <path d="M176 66 C188 32, 204 40, 196 72" fill="#67e8f9"/>
+    <path d="M130 146 C150 178, 170 170, 160 144" fill="none" stroke="#f472b6" stroke-width="3"/>
+    <path d="M190 150 C208 184, 228 176, 214 146" fill="none" stroke="#f472b6" stroke-width="3"/>
+    <path d="M250 148 C266 176, 286 168, 272 144" fill="none" stroke="#f472b6" stroke-width="3"/>
+    <path d="M340 128 L376 116 L366 136 L378 154 L338 142 Z" fill="#f9a8d4"/>
+    <ellipse cx="220" cy="112" rx="40" ry="12" fill="url(#maShine)" stroke="none"/>
+    <circle cx="132" cy="96" r="10" fill="#fff"/>
+    <circle cx="129.6" cy="96.5" r="5.0" fill="#102028" stroke="none"/>
+    <circle cx="127.4" cy="93.2" r="1.8" fill="#fff" stroke="none"/>
+    <circle cx="158" cy="90" r="9" fill="#fff"/>
+    <circle cx="155.8" cy="90.5" r="4.5" fill="#102028" stroke="none"/>
+    <circle cx="153.9" cy="87.5" r="1.6" fill="#fff" stroke="none"/>
+  </g>
+</svg>

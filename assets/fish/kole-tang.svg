@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="koBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdba74"/>
+      <stop offset="0.45" stop-color="#c2410c"/>
+      <stop offset="1" stop-color="#7c2d12"/>
+    </linearGradient>
+    <radialGradient id="koShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M286 108 L368 62 L330 112 L368 164 Z" fill="#9a3412"/>
+    <path d="M78 112 C84 46, 170 28, 292 74 C324 112, 286 190, 176 198 C108 198, 72 162, 78 112Z" fill="url(#koBody)"/>
+    <path d="M120 150 C170 186, 240 182, 278 150" fill="#fed7aa" stroke="none"/>
+    <g fill="#fff7ed" stroke="none">
+      <circle cx="140" cy="88" r="5"/><circle cx="168" cy="78" r="4.5"/><circle cx="198" cy="86" r="5"/>
+      <circle cx="228" cy="80" r="4"/><circle cx="250" cy="98" r="5"/><circle cx="150" cy="112" r="4.5"/>
+      <circle cx="182" cy="116" r="5"/><circle cx="214" cy="122" r="4"/><circle cx="246" cy="124" r="4.5"/>
+      <circle cx="132" cy="136" r="4"/><circle cx="164" cy="146" r="5"/><circle cx="200" cy="150" r="4"/>
+      <circle cx="236" cy="148" r="4.5"/><circle cx="176" cy="96" r="3.5"/><circle cx="210" cy="100" r="3.5"/>
+    </g>
+    <circle cx="108" cy="104" r="18" fill="none" stroke="#fde68a" stroke-width="4"/>
+    <path d="M200 46 C220 18, 250 28, 236 56" fill="#ea580c"/>
+    <ellipse cx="180" cy="100" rx="40" ry="18" fill="url(#koShine)" stroke="none"/>
+    <circle cx="108" cy="104" r="14" fill="#fff"/>
+    <circle cx="104.6" cy="104.7" r="7.0" fill="#102028" stroke="none"/>
+    <circle cx="101.6" cy="100.1" r="2.5" fill="#fff" stroke="none"/>
+    <path d="M74 124 Q83.0 134 94 125" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

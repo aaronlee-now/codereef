@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="cuBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d0fe"/>
+      <stop offset="0.45" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#6b21a8"/>
+    </linearGradient>
+    <radialGradient id="cuShine" cx="45%" cy="40%" r="40%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 108 C90 70, 40 78, 28 108" fill="none" stroke="#e879f9" stroke-width="10"/>
+    <path d="M148 118 C86 130, 36 150, 24 132" fill="none" stroke="#c026d3" stroke-width="10"/>
+    <path d="M152 96 C100 60, 48 40, 36 62" fill="none" stroke="#f0abfc" stroke-width="9"/>
+    <path d="M146 132 C96 160, 50 184, 40 164" fill="none" stroke="#a21caf" stroke-width="9"/>
+    <path d="M156 86 C120 48, 70 36, 58 58" fill="none" stroke="#d946ef" stroke-width="8"/>
+    <path d="M150 78 C210 36, 320 48, 344 112 C352 162, 280 188, 190 176 C130 164, 112 120, 150 78Z" fill="url(#cuBody)"/>
+    <path d="M176 100 C230 82, 300 96, 322 124 C270 114, 210 118, 176 132 Z" fill="#fae8ff" stroke="none"/>
+    <path d="M190 64 C220 34, 280 36, 310 74 C260 64, 210 70, 190 64Z" fill="#f0abfc"/>
+    <path d="M200 168 C240 196, 310 184, 324 154" fill="#e879f9"/>
+    <g fill="none" stroke="#fef9c3" stroke-width="3">
+      <path d="M200 108 Q224 96 248 112"/>
+      <path d="M220 126 Q248 112 276 128"/>
+    </g>
+    <ellipse cx="230" cy="104" rx="40" ry="18" fill="url(#cuShine)" stroke="none"/>
+    <circle cx="168" cy="108" r="15" fill="#fff"/>
+    <circle cx="163" cy="109" r="7" fill="#102028" stroke="none"/>
+    <circle cx="159" cy="104" r="2.6" fill="#fff" stroke="none"/>
+    <path d="M150 118 Q164 130 178 118" fill="none" stroke-width="2.4"/>
+  </g>
+</svg>

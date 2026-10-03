@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="shBody" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fecaca"/>
+      <stop offset="0.5" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+    <radialGradient id="shShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M40 78 C70 20, 120 30, 108 78" fill="none" stroke="#fecaca" stroke-width="3"/>
+    <path d="M48 96 C90 8, 150 24, 124 92" fill="none" stroke="#fff" stroke-width="2.4"/>
+    <path d="M70 118 L36 150 L78 132 Z" fill="#f87171"/>
+    <path d="M92 124 L48 168 L108 140 Z" fill="#ef4444"/>
+    <path d="M118 108 C150 78, 200 86, 210 112 C230 96, 270 100, 286 118 C310 104, 340 112, 352 128 L340 150 C300 138, 250 146, 210 136 C180 156, 140 148, 118 128 Z" fill="url(#shBody)"/>
+    <path d="M150 112 H178" stroke="#fff" stroke-width="10" stroke-linecap="butt"/>
+    <path d="M196 114 H226" stroke="#fff" stroke-width="10" stroke-linecap="butt"/>
+    <path d="M244 118 H274" stroke="#fff" stroke-width="9" stroke-linecap="butt"/>
+    <path d="M300 124 H328" stroke="#fff" stroke-width="8" stroke-linecap="butt"/>
+    <path d="M352 132 L378 118 L368 140 L378 158 L348 146 Z" fill="#fecaca"/>
+    <path d="M130 150 C150 176, 180 170, 176 148" fill="none" stroke="#fda4af" stroke-width="3"/>
+    <path d="M190 154 C210 184, 240 176, 232 150" fill="none" stroke="#fda4af" stroke-width="3"/>
+    <path d="M250 156 C268 180, 292 172, 284 150" fill="none" stroke="#fda4af" stroke-width="3"/>
+    <ellipse cx="200" cy="118" rx="40" ry="12" fill="url(#shShine)" stroke="none"/>
+    <circle cx="124" cy="104" r="11" fill="#fff"/>
+    <circle cx="121.4" cy="104.5" r="5.5" fill="#102028" stroke="none"/>
+    <circle cx="118.9" cy="100.9" r="2.0" fill="#fff" stroke="none"/>
+    <path d="M96 116 Q108 124 122 116" fill="none" stroke-width="2.4"/>
+  </g>
+</svg>

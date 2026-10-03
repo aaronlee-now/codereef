@@ -39,6 +39,9 @@ var CodeReefHelp = (function () {
     if (!el) {
       return;
     }
+    if (window.CodeReefGuide) {
+      text = CodeReefGuide.expandHelp(text);
+    }
     var steps = stepsFrom(text);
     var index = 0;
 
@@ -50,7 +53,11 @@ var CodeReefHelp = (function () {
 
       var count = document.createElement("p");
       count.className = "help-steps__count";
-      count.textContent = steps.length === 1 ? "Help" : "Tip " + (index + 1) + " of " + steps.length;
+      if (steps.length === 1 && /^Here is how to begin/.test(step)) {
+        count.textContent = "Start here";
+      } else {
+        count.textContent = steps.length === 1 ? "Help" : "Tip " + (index + 1) + " of " + steps.length;
+      }
 
       var body = document.createElement("p");
       body.className = "help-steps__now";

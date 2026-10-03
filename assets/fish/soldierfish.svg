@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="soBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f87171"/>
+      <stop offset="0.4" stop-color="#dc2626"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <radialGradient id="soShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M268 110 L360 48 L318 114 L360 176 Z" fill="#b91c1c"/>
+    <path d="M250 70 C270 34, 300 48, 286 86" fill="#ef4444"/>
+    <path d="M190 62 C200 26, 236 40, 220 78" fill="#f87171"/>
+    <path d="M70 114 C78 52, 160 40, 280 86 C312 116, 268 182, 160 186 C96 186, 62 158, 70 114Z" fill="url(#soBody)"/>
+    <path d="M110 140 C160 176, 230 172, 262 142 C210 166, 150 164, 110 140Z" fill="#fecaca" stroke="none"/>
+    <path d="M168 164 C184 202, 226 196, 230 160" fill="#dc2626"/>
+    <path d="M148 86 C148 150, 168 156, 168 90" fill="#fff1f2" stroke="none"/>
+    <path d="M120 100 C150 118, 190 116, 210 98" fill="none" stroke="#7f1d1d" stroke-width="2" opacity="0.35"/>
+    <path d="M140 120 C170 136, 200 132, 220 116" fill="none" stroke="#7f1d1d" stroke-width="2" opacity="0.35"/>
+    <ellipse cx="160" cy="100" rx="40" ry="20" fill="url(#soShine)" stroke="none"/>
+    <circle cx="112" cy="100" r="24" fill="#fff"/>
+    <circle cx="106.2" cy="101.2" r="12.0" fill="#3f0a0a" stroke="none"/>
+    <circle cx="101.0" cy="93.3" r="4.3" fill="#fff" stroke="none"/>
+    <path d="M74 122 Q84.8 132 98 123" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

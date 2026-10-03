@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="coBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="0.4" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <radialGradient id="coShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L330 48 L300 108 L340 108 L300 128 L330 176 L250 128 Z" fill="#1e3a8a"/>
+    <path d="M300 108 L332 108" stroke="#bfdbfe" stroke-width="3"/>
+    <path d="M70 114 C80 60, 160 46, 270 88 C300 114, 258 176, 160 180 C100 180, 64 156, 70 114Z" fill="url(#coBody)"/>
+    <g fill="#dbeafe" stroke="none">
+      <circle cx="140" cy="96" r="5"/><circle cx="170" cy="108" r="4"/><circle cx="200" cy="96" r="5"/>
+      <circle cx="150" cy="126" r="4"/><circle cx="186" cy="132" r="5"/><circle cx="220" cy="118" r="4"/>
+      <circle cx="230" cy="104" r="3.5"/>
+    </g>
+    <path d="M120 140 C100 176, 130 184, 142 152" fill="#1e40af"/>
+    <path d="M170 150 C160 188, 196 186, 190 150" fill="#1d4ed8"/>
+    <path d="M90 120 C60 110, 58 142, 92 136" fill="#2563eb"/>
+    <path d="M210 70 C230 36, 256 48, 236 78" fill="#1e3a8a"/>
+    <path d="M130 78 C110 48, 136 46, 146 78" fill="#1d4ed8"/>
+    <ellipse cx="160" cy="104" rx="32" ry="14" fill="url(#coShine)" stroke="none"/>
+    <circle cx="108" cy="104" r="14" fill="#fff"/>
+    <circle cx="104.6" cy="104.7" r="7.0" fill="#102028" stroke="none"/>
+    <circle cx="101.6" cy="100.1" r="2.5" fill="#fff" stroke="none"/>
+    <path d="M72 122 Q81.0 132 92 123" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

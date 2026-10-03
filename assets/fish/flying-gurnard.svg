@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="guBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecaca"/>
+      <stop offset="1" stop-color="#b91c1c"/>
+    </linearGradient>
+    <radialGradient id="guFan" cx="50%" cy="50%" r="60%">
+      <stop offset="0" stop-color="#bfdbfe" stop-opacity="1"/>
+      <stop offset="1" stop-color="#1d4ed8" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M130 110 C80 10, 300 0, 340 100 C260 70, 180 74, 130 110Z" fill="url(#guFan)"/>
+    <path d="M140 120 C90 210, 310 214, 344 124 C270 160, 180 158, 140 120Z" fill="#3b82f6"/>
+    <g fill="#1e3a8a" stroke="none">
+      <circle cx="180" cy="60" r="6"/><circle cx="230" cy="48" r="5"/><circle cx="270" cy="70" r="6"/>
+      <circle cx="200" cy="90" r="4"/><circle cx="160" cy="86" r="4"/>
+      <circle cx="190" cy="160" r="6"/><circle cx="240" cy="172" r="5"/><circle cx="280" cy="150" r="5"/>
+      <circle cx="160" cy="150" r="4"/>
+    </g>
+    <path d="M150 70 L240 40" fill="none" stroke="#dbeafe" stroke-width="2"/>
+    <path d="M160 84 L280 46" fill="none" stroke="#dbeafe" stroke-width="2"/>
+    <path d="M170 150 L250 186" fill="none" stroke="#dbeafe" stroke-width="2"/>
+    <path d="M36 112 L110 100 L100 128 Z" fill="#ef4444"/>
+    <path d="M90 114 C100 86, 160 80, 230 100 C210 128, 140 136, 90 122 Z" fill="url(#guBody)"/>
+    <circle cx="112" cy="108" r="12" fill="#fff"/>
+    <circle cx="109.1" cy="108.6" r="6.0" fill="#102028" stroke="none"/>
+    <circle cx="106.5" cy="104.6" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M48 118 Q56.1 128 66 119" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

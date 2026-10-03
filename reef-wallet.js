@@ -1,7 +1,8 @@
 // Reef wallet — four coin types and fish for each kid (saved in this browser).
 // Sand is common. Coral is uncommon. Pearl is rare. Treasure is very rare.
 
-var MAX_FISH = 45;
+// Room for the bigger shop. Raising this never removes fish a kid already owns.
+var MAX_FISH = 120;
 var MAX_FISH_ON_SCREEN = 24;
 
 // Every trail stop. Rare coins are extra luck, not a sure thing.
@@ -508,6 +509,294 @@ var FISH_FOR_SALE = [
     image: "assets/fish/whale.svg?v=shopfair",
     kind: "fish",
     rarity: 61,
+  },
+  {
+    id: "squirrel",
+    name: "Squirrelfish",
+    cost: { sand: 6 },
+    image: "assets/fish/squirrelfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 8,
+  },
+  {
+    id: "soldier",
+    name: "Soldierfish",
+    cost: { sand: 7 },
+    image: "assets/fish/soldierfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 10,
+  },
+  {
+    id: "convict",
+    name: "Convict Tang",
+    cost: { sand: 8 },
+    image: "assets/fish/convict-tang.svg?v=morefish2",
+    kind: "fish",
+    rarity: 13,
+  },
+  {
+    id: "shrimp",
+    name: "Coral Shrimp",
+    cost: { sand: 6, coral: 1 },
+    image: "assets/fish/coral-shrimp.svg?v=morefish2",
+    kind: "fish",
+    rarity: 15,
+  },
+  {
+    id: "pipe",
+    name: "Pipefish",
+    cost: { sand: 5, coral: 1 },
+    image: "assets/fish/pipefish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 16,
+  },
+  {
+    id: "flashlight",
+    name: "Flashlight Fish",
+    cost: { sand: 8, coral: 1 },
+    image: "assets/fish/flashlight-fish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 20,
+  },
+  {
+    id: "garden",
+    name: "Garden Eel",
+    cost: { sand: 6, coral: 2 },
+    image: "assets/fish/garden-eel.svg?v=morefish2",
+    kind: "fish",
+    rarity: 22,
+  },
+  {
+    id: "kole",
+    name: "Kole Tang",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/kole-tang.svg?v=morefish2",
+    kind: "fish",
+    rarity: 24,
+  },
+  {
+    id: "robin",
+    name: "Sea Robin",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/sea-robin.svg?v=morefish2",
+    kind: "fish",
+    rarity: 26,
+  },
+  {
+    id: "longnose",
+    name: "Longnose Butterfly",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/longnose-butterfly.svg?v=morefish2",
+    kind: "fish",
+    rarity: 28,
+  },
+  {
+    id: "bird",
+    name: "Bird Wrasse",
+    cost: { sand: 6, coral: 2 },
+    image: "assets/fish/bird-wrasse.svg?v=morefish2",
+    kind: "fish",
+    rarity: 29,
+  },
+  {
+    id: "frogfish",
+    name: "Frogfish",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/frogfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 31,
+  },
+  {
+    id: "flying",
+    name: "Flying Fish",
+    cost: { sand: 8, coral: 3 },
+    image: "assets/fish/flying-fish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 32,
+  },
+  {
+    id: "boxfish",
+    name: "Yellow Boxfish",
+    cost: { sand: 8, coral: 3 },
+    image: "assets/fish/yellow-boxfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 33,
+  },
+  {
+    id: "batfish",
+    name: "Orb Batfish",
+    cost: { sand: 6, coral: 3, pearl: 1 },
+    image: "assets/fish/orb-batfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 35,
+  },
+  {
+    id: "bunny",
+    name: "Sea Bunny",
+    cost: { coral: 3, pearl: 1 },
+    image: "assets/fish/sea-bunny.svg?v=morefish2",
+    kind: "fish",
+    rarity: 36,
+  },
+  {
+    id: "purple",
+    name: "Purple Tang",
+    cost: { sand: 6, coral: 3, pearl: 1 },
+    image: "assets/fish/purple-tang.svg?v=morefish2",
+    kind: "fish",
+    rarity: 38,
+  },
+  {
+    id: "dancer",
+    name: "Spanish Dancer",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/spanish-dancer.svg?v=morefish2",
+    kind: "fish",
+    rarity: 39,
+  },
+  {
+    id: "gurnard",
+    name: "Flying Gurnard",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/flying-gurnard.svg?v=morefish2",
+    kind: "fish",
+    rarity: 41,
+  },
+  {
+    id: "achilles",
+    name: "Achilles Tang",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/achilles-tang.svg?v=morefish2",
+    kind: "fish",
+    rarity: 42,
+  },
+  {
+    id: "cowfish",
+    name: "Cowfish",
+    cost: { sand: 4, coral: 3, pearl: 1 },
+    image: "assets/fish/cowfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 43,
+  },
+  {
+    id: "tusk",
+    name: "Harlequin Tusk",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/harlequin-tusk.svg?v=morefish2",
+    kind: "fish",
+    rarity: 44,
+  },
+  {
+    id: "humuhumu",
+    name: "Humuhumu",
+    cost: { coral: 3, pearl: 2 },
+    image: "assets/fish/humuhumu.svg?v=morefish2",
+    kind: "fish",
+    rarity: 45,
+  },
+  {
+    id: "ribbon",
+    name: "Ribbon Eel",
+    cost: { coral: 3, pearl: 1 },
+    image: "assets/fish/ribbon-eel.svg?v=morefish2",
+    kind: "fish",
+    rarity: 46,
+  },
+  {
+    id: "regal",
+    name: "Regal Angel",
+    cost: { sand: 6, coral: 3, pearl: 1 },
+    image: "assets/fish/regal-angel.svg?v=morefish2",
+    kind: "fish",
+    rarity: 47,
+  },
+  {
+    id: "bluespot",
+    name: "Bluespotted Ray",
+    cost: { coral: 4, pearl: 2 },
+    image: "assets/fish/bluespotted-ray.svg?v=morefish2",
+    kind: "fish",
+    rarity: 48,
+  },
+  {
+    id: "pygmy",
+    name: "Pygmy Seahorse",
+    cost: { pearl: 2, treasure: 1 },
+    image: "assets/fish/pygmy-seahorse.svg?v=morefish2",
+    kind: "fish",
+    rarity: 52,
+  },
+  {
+    id: "weedy",
+    name: "Weedy Seadragon",
+    cost: { pearl: 2, treasure: 1 },
+    image: "assets/fish/weedy-seadragon.svg?v=morefish2",
+    kind: "fish",
+    rarity: 54,
+  },
+  {
+    id: "cuttle",
+    name: "Cuttlefish",
+    cost: { pearl: 2, treasure: 1 },
+    image: "assets/fish/cuttlefish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 55,
+  },
+  {
+    id: "nautilus",
+    name: "Nautilus",
+    cost: { pearl: 2, treasure: 1 },
+    image: "assets/fish/nautilus.svg?v=morefish2",
+    kind: "fish",
+    rarity: 56,
+  },
+  {
+    id: "mantis",
+    name: "Mantis Shrimp",
+    cost: { coral: 2, pearl: 2, treasure: 1 },
+    image: "assets/fish/mantis-shrimp.svg?v=morefish2",
+    kind: "fish",
+    rarity: 57,
+  },
+  {
+    id: "eagle",
+    name: "Eagle Ray",
+    cost: { pearl: 3, treasure: 2 },
+    image: "assets/fish/eagle-ray.svg?v=morefish2",
+    kind: "fish",
+    rarity: 60,
+  },
+  {
+    id: "hammer",
+    name: "Hammerhead",
+    cost: { pearl: 2, treasure: 2 },
+    image: "assets/fish/hammerhead.svg?v=morefish2",
+    kind: "fish",
+    rarity: 62,
+  },
+  {
+    id: "sunfish",
+    name: "Ocean Sunfish",
+    cost: { pearl: 3, treasure: 2 },
+    image: "assets/fish/ocean-sunfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 63,
+  },
+  {
+    id: "oar",
+    name: "Oarfish",
+    cost: { pearl: 2, treasure: 2 },
+    image: "assets/fish/oarfish.svg?v=morefish2",
+    kind: "fish",
+    rarity: 64,
+  },
+  {
+    id: "coela",
+    name: "Coelacanth",
+    cost: { pearl: 3, treasure: 2 },
+    image: "assets/fish/coelacanth.svg?v=morefish2",
+    kind: "fish",
+    rarity: 66,
   },
 ];
 
@@ -1434,24 +1723,454 @@ function getOwnedFishList() {
   return getSwimmingFishList();
 }
 
+// Where outfits sit on each fish picture.
+// Numbers are percents of the picture. 0 is the left edge or the top.
+// hx hy = hat, ex ey = eyes, nx ny = neck, bx by = body, kx ky = back.
+// hs and bs are how big the hat and the body clothes are.
+function wearPct(n) {
+  return Math.round(n) + "%";
+}
+
+function wearFit(o) {
+  return {
+    shape: o.shape || "side",
+    pic: o.pic || "1",
+    hx: wearPct(o.hx),
+    hy: wearPct(o.hy),
+    ex: wearPct(o.ex),
+    ey: wearPct(o.ey),
+    nx: wearPct(o.nx),
+    ny: wearPct(o.ny),
+    bx: wearPct(o.bx),
+    by: wearPct(o.by),
+    kx: wearPct(o.kx),
+    ky: wearPct(o.ky),
+    hs: o.hs || "1",
+    bs: o.bs || "1",
+    ew: o.ew || "1",
+  };
+}
+
+// Most fish face left. headX is the front of the head. eyeY is the eyes.
+function wearSide(headX, eyeY, shape, hs, bs) {
+  return wearFit({
+    shape: shape || "side",
+    hx: headX + 4,
+    hy: eyeY - 14,
+    ex: headX + 5,
+    ey: eyeY,
+    nx: headX + 14,
+    ny: eyeY + 7,
+    bx: 48,
+    by: eyeY + 2,
+    kx: 66,
+    ky: eyeY - 2,
+    hs: hs,
+    bs: bs,
+  });
+}
+
+// Drawn fish (SVG) use a wide picture, not a square.
+function wearSvg(eyeX, eyeY, shape, hs, bs) {
+  return wearFit({
+    shape: shape || "side",
+    pic: "1.8182",
+    hx: eyeX - 3,
+    hy: eyeY - 14,
+    ex: eyeX,
+    ey: eyeY,
+    nx: eyeX + 9,
+    ny: eyeY + 9,
+    bx: 46,
+    by: 52,
+    kx: 64,
+    ky: eyeY,
+    hs: hs,
+    bs: bs,
+    ew: "0.85",
+  });
+}
+
+var FISH_WEAR = {
+  neon: wearSvg(25, 46),
+  guppy: wearSide(19, 47),
+  chromis: wearSvg(27, 45),
+  damsel: wearSide(18, 50),
+  platy: wearSvg(26, 45),
+  humbug: wearSvg(27, 45),
+  goldie: wearSide(20, 50),
+  molly: wearSvg(25, 45),
+  cory: wearSvg(27, 51),
+  cardinal: wearSide(26, 48),
+  crab: wearFit({
+    shape: "crab",
+    pic: "1.8182",
+    hx: 50,
+    hy: 34,
+    ex: 50,
+    ey: 54,
+    nx: 50,
+    ny: 64,
+    bx: 50,
+    by: 60,
+    kx: 70,
+    ky: 56,
+    hs: "0.9",
+    bs: "1",
+  }),
+  sunny: wearSide(18, 49),
+  betta: wearSide(20, 49),
+  gramma: wearSvg(27, 45),
+  blenny: wearSvg(20, 49),
+  cleaner: wearSvg(27, 45),
+  jelly: wearFit({
+    shape: "bell",
+    pic: "1.8182",
+    hx: 50,
+    hy: 14,
+    ex: 49,
+    ey: 44,
+    nx: 50,
+    ny: 56,
+    bx: 50,
+    by: 50,
+    kx: 70,
+    ky: 38,
+    hs: "1",
+    bs: "0.9",
+  }),
+  firefish: wearSvg(27, 45),
+  goby: wearSvg(25, 47),
+  bubbles: wearSide(21, 54),
+  banggai: wearSvg(27, 45),
+  bluey: wearSide(21, 51),
+  flutter: wearSide(22, 53),
+  sixline: wearSvg(24, 45),
+  snapper: wearSide(19, 50),
+  anthias: wearSvg(27, 45),
+  banner: wearSide(16, 57),
+  glow: wearSide(16, 50),
+  hawk: wearSvg(27, 45),
+  grouper: wearSide(18, 50, "round", "1", "1.1"),
+  foxface: wearSvg(27, 45),
+  koi: wearSide(20, 50),
+  discus: wearSide(21, 50, "round", "1", "1.2"),
+  flame: wearSvg(27, 45),
+  angel: wearSide(18, 53),
+  beauty: wearSvg(27, 47),
+  powder: wearSvg(27, 45),
+  sailfin: wearSvg(27, 45),
+  copperband: wearSvg(27, 45),
+  parrot: wearSide(19, 49),
+  idol: wearSide(15, 57),
+  puffer: wearFit({
+    shape: "round",
+    hx: 28,
+    hy: 32,
+    ex: 26,
+    ey: 48,
+    nx: 36,
+    ny: 56,
+    bx: 46,
+    by: 52,
+    kx: 68,
+    ky: 46,
+    hs: "0.95",
+    bs: "1.2",
+  }),
+  seahorse: wearFit({
+    shape: "tall",
+    hx: 48,
+    hy: 18,
+    ex: 40,
+    ey: 30,
+    nx: 50,
+    ny: 40,
+    bx: 52,
+    by: 58,
+    kx: 66,
+    ky: 46,
+    hs: "0.85",
+    bs: "0.9",
+  }),
+  mandarin: wearSide(16, 51),
+  stingray: wearFit({
+    shape: "flat",
+    hx: 22,
+    hy: 40,
+    ex: 24,
+    ey: 56,
+    nx: 34,
+    ny: 60,
+    bx: 48,
+    by: 56,
+    kx: 66,
+    ky: 44,
+    hs: "0.75",
+    bs: "1.2",
+  }),
+  moray: wearFit({
+    shape: "long",
+    hx: 18,
+    hy: 38,
+    ex: 22,
+    ey: 48,
+    nx: 30,
+    ny: 54,
+    bx: 48,
+    by: 50,
+    kx: 72,
+    ky: 48,
+    hs: "0.85",
+    bs: "0.75",
+  }),
+  porcupine: wearSvg(27, 45, "round", "0.95", "1.15"),
+  trigger: wearSide(19, 50),
+  picasso: wearSvg(27, 45),
+  french: wearSvg(27, 45),
+  turtle: wearFit({
+    shape: "shell",
+    hx: 17,
+    hy: 28,
+    ex: 20,
+    ey: 40,
+    nx: 30,
+    ny: 48,
+    bx: 56,
+    by: 42,
+    kx: 70,
+    ky: 36,
+    hs: "0.7",
+    bs: "1.15",
+  }),
+  octopus: wearFit({
+    shape: "bell",
+    hx: 40,
+    hy: 16,
+    ex: 32,
+    ey: 34,
+    nx: 40,
+    ny: 52,
+    bx: 42,
+    by: 56,
+    kx: 56,
+    ky: 28,
+    hs: "1.05",
+    bs: "1",
+    ew: "0.62",
+  }),
+  emperor: wearSvg(27, 45),
+  unicorn: wearFit({
+    shape: "side",
+    pic: "1.8182",
+    hx: 42,
+    hy: 40,
+    ex: 27,
+    ey: 45,
+    nx: 36,
+    ny: 54,
+    bx: 46,
+    by: 52,
+    kx: 64,
+    ky: 46,
+    hs: "0.7",
+    bs: "1",
+  }),
+  cuda: wearFit({
+    shape: "long",
+    hx: 24,
+    hy: 40,
+    ex: 26,
+    ey: 48,
+    nx: 34,
+    ny: 52,
+    bx: 48,
+    by: 50,
+    kx: 62,
+    ky: 48,
+    hs: "0.75",
+    bs: "0.65",
+  }),
+  lion: wearSide(20, 52, "side", "0.85", "0.85"),
+  dragon: wearSvg(27, 49),
+  shark: wearFit({
+    shape: "long",
+    hx: 20,
+    hy: 38,
+    ex: 22,
+    ey: 50,
+    nx: 30,
+    ny: 56,
+    bx: 48,
+    by: 50,
+    kx: 64,
+    ky: 46,
+    hs: "0.85",
+    bs: "0.7",
+  }),
+  sword: wearFit({
+    shape: "long",
+    hx: 26,
+    hy: 38,
+    ex: 28,
+    ey: 48,
+    nx: 36,
+    ny: 54,
+    bx: 50,
+    by: 50,
+    kx: 68,
+    ky: 48,
+    hs: "0.8",
+    bs: "0.65",
+  }),
+  manta: wearFit({
+    shape: "flat",
+    hx: 36,
+    hy: 32,
+    ex: 34,
+    ey: 42,
+    nx: 42,
+    ny: 50,
+    bx: 50,
+    by: 54,
+    kx: 62,
+    ky: 46,
+    hs: "0.8",
+    bs: "1.15",
+  }),
+  whale: wearFit({
+    shape: "long",
+    pic: "1.8182",
+    hx: 22,
+    hy: 32,
+    ex: 24,
+    ey: 45,
+    nx: 34,
+    ny: 54,
+    bx: 42,
+    by: 52,
+    kx: 58,
+    ky: 46,
+    hs: "0.9",
+    bs: "0.8",
+  }),
+  squirrel: wearSvg(27, 45),
+  soldier: wearSvg(28, 45),
+  convict: wearSvg(27, 47),
+  shrimp: wearSvg(31, 47),
+  pipe: wearSvg(23, 50, "long", "0.85", "0.7"),
+  flashlight: wearSvg(28, 44),
+  garden: wearFit({
+    shape: "tall",
+    pic: "1.8182",
+    hx: 16,
+    hy: 16,
+    ex: 19,
+    ey: 32,
+    nx: 28,
+    ny: 44,
+    bx: 42,
+    by: 58,
+    kx: 64,
+    ky: 40,
+    hs: "0.8",
+    bs: "0.85",
+  }),
+  kole: wearSvg(27, 47),
+  robin: wearSvg(27, 45),
+  longnose: wearSvg(39, 45),
+  bird: wearSvg(28, 45),
+  frogfish: wearSvg(30, 49, "round", "0.95", "1.15"),
+  flying: wearSvg(27, 49),
+  boxfish: wearSvg(31, 51, "round", "0.95", "1.15"),
+  batfish: wearSvg(32, 49, "round", "1", "1.1"),
+  bunny: wearSvg(39, 54, "round", "0.9", "1.1"),
+  purple: wearSvg(27, 47),
+  dancer: wearSvg(25, 49, "flat", "0.8", "1.1"),
+  gurnard: wearSvg(28, 49),
+  achilles: wearSvg(28, 47),
+  cowfish: wearSvg(33, 51, "round", "0.9", "1.15"),
+  tusk: wearSvg(27, 45),
+  humuhumu: wearSvg(30, 45),
+  ribbon: wearSvg(22, 53, "long", "0.85", "0.7"),
+  regal: wearSvg(28, 47),
+  bluespot: wearSvg(30, 49, "flat", "0.75", "1.15"),
+  pygmy: wearSvg(31, 44, "tall", "0.85", "0.9"),
+  weedy: wearSvg(24, 49, "long", "0.85", "0.75"),
+  cuttle: wearSvg(42, 49),
+  nautilus: wearSvg(30, 49, "round", "0.9", "1"),
+  mantis: wearSvg(33, 44, "side", "0.85", "0.9"),
+  eagle: wearSvg(28, 47, "flat", "0.75", "1.15"),
+  hammer: wearSvg(16, 35, "long", "0.8", "0.7"),
+  sunfish: wearSvg(27, 47, "round", "0.95", "1.2"),
+  oar: wearSvg(19, 56, "long", "0.8", "0.65"),
+  coela: wearSvg(27, 47),
+};
+
+function reefFishWear(fish) {
+  if (FISH_WEAR[fish.id]) {
+    return FISH_WEAR[fish.id];
+  }
+  if (fish.image && fish.image.indexOf(".svg") !== -1) {
+    return wearSvg(27, 45);
+  }
+  return wearSide(18, 49);
+}
+
 // HTML for a swimming fish. The picture is the whole fish.
+// The frame matches the picture, so outfits land on the fish, not the empty margin.
 function reefFishMarkup(fish, outfitId) {
   var kind = fish.kind || "fish";
+  var wear = reefFishWear(fish);
   var outfit = "";
   if (outfitId) {
     outfit =
       '<span class="reef-outfit reef-outfit--' + outfitId + '" aria-hidden="true"></span>';
   }
+  var style =
+    "--pic:" +
+    wear.pic +
+    ";--hx:" +
+    wear.hx +
+    ";--hy:" +
+    wear.hy +
+    ";--ex:" +
+    wear.ex +
+    ";--ey:" +
+    wear.ey +
+    ";--nx:" +
+    wear.nx +
+    ";--ny:" +
+    wear.ny +
+    ";--bx:" +
+    wear.bx +
+    ";--by:" +
+    wear.by +
+    ";--kx:" +
+    wear.kx +
+    ";--ky:" +
+    wear.ky +
+    ";--hs:" +
+    wear.hs +
+    ";--bs:" +
+    wear.bs +
+    ";--ew:" +
+    wear.ew;
   return (
     '<span class="reef-fish reef-fish--' +
     kind +
+    " reef-wear--" +
+    wear.shape +
     '">' +
     '<span class="reef-fish__wiggle">' +
+    '<span class="reef-fish__frame" style="' +
+    style +
+    '">' +
     '<img class="reef-fish__img" src="' +
     fish.image +
     '" alt="" />' +
     outfit +
-    "</span></span>"
+    "</span></span></span>"
   );
 }
 

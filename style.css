@@ -593,7 +593,7 @@ html:has(.page--blocks) {
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
-  overflow: hidden;
+  overflow: auto;
   box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
@@ -689,10 +689,17 @@ html:has(.page--blocks) {
 
 .blk-main {
   min-height: 0;
+  height: 100%;
   display: grid;
-  grid-template-columns: minmax(10rem, 1fr) minmax(0, 9fr);
+  /* Stage column is wider than before. The extra width hangs off the
+     page so the block workspace stays the same size. */
+  width: calc(100% + 28rem);
+  grid-template-columns: 54rem minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: start;
   gap: 0.6rem;
   padding: 0.55rem 0.75rem 0.7rem;
+  overflow: visible;
 }
 
 .blk-stage-panel,
@@ -702,13 +709,24 @@ html:has(.page--blocks) {
   grid-template-rows: minmax(0, 1fr) auto;
 }
 
+.blk-stage-panel {
+  align-self: start;
+  height: auto;
+  max-height: none;
+}
+
 .blk-workspace-panel {
   grid-template-rows: minmax(0, 1fr);
+  align-self: start;
+  height: 100%;
+  min-width: 0;
 }
 
 .blk-stage {
   position: relative;
-  min-height: 0;
+  width: 100%;
+  height: 105rem;
+  min-height: 105rem;
   border-radius: 1rem;
   overflow: hidden;
   border: 3px solid #8eabc8;
@@ -759,9 +777,27 @@ html:has(.page--blocks) {
 }
 
 @media (max-width: 860px) {
+  .page--blocks {
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
   .blk-main {
+    width: auto;
+    height: auto;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(6.5rem, 1fr) minmax(0, 9fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .blk-stage {
+    height: 70vh;
+    min-height: 36rem;
+  }
+
+  .blk-workspace-panel {
+    height: 62vh;
+    min-height: 18rem;
   }
 }
 
@@ -775,7 +811,7 @@ html:has(.page--web) {
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
-  overflow: hidden;
+  overflow: auto;
   box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
@@ -863,21 +899,40 @@ html:has(.page--web) {
 
 .web-main {
   min-height: 0;
+  height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 9fr) minmax(10rem, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 26rem);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: start;
   gap: 0.5rem;
   padding: 0.5rem 0.65rem 0.55rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .web-editor-panel,
 .web-preview-panel {
   min-height: 0;
-  max-height: 100%;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 0.3rem;
   overflow: hidden;
+}
+
+.web-editor-panel {
+  align-self: start;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* Run / preview box is wider than its column and taller than the code box.
+   The column stays the old width so the code editor does not shrink. */
+.web-preview-panel {
+  align-self: start;
+  justify-self: start;
+  width: 54rem;
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .web-tabs {
@@ -948,17 +1003,42 @@ html:has(.page--web) {
 
 .web-preview {
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: 105rem;
+  min-height: 105rem;
   border: 2px solid #c5d0de;
   border-radius: 0.75rem;
   background: #fff;
 }
 
 @media (max-width: 860px) {
+  .page--web {
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
   .web-main {
+    width: auto;
+    height: auto;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 9fr) minmax(6.5rem, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  .web-editor-panel {
+    height: 62vh;
+    max-height: none;
+    min-height: 16rem;
+  }
+
+  .web-preview-panel {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .web-preview,
+  .py-output {
+    height: 70vh;
+    min-height: 36rem;
   }
 }
 
@@ -977,10 +1057,10 @@ html:has(.page--web) {
 
 .task-bar__goal {
   margin: 0;
-  flex: 1 1 12rem;
+  flex: 1 1 100%;
   font-weight: 800;
-  font-size: 0.92rem;
-  line-height: 1.3;
+  font-size: 1rem;
+  line-height: 1.45;
   color: #1864ab;
 }
 
@@ -1022,7 +1102,7 @@ html:has(.page--web) {
   border-radius: 0.55rem;
   padding: 0.55rem 0.7rem;
   white-space: pre-line;
-  max-height: min(42vh, 18rem);
+  max-height: min(48vh, 22rem);
   overflow: auto;
 }
 
@@ -1108,14 +1188,14 @@ html:has(.page--web) {
 }
 
 .page--py .web-main {
-  grid-template-columns: minmax(0, 9fr) minmax(10rem, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 26rem);
 }
 
 .py-output {
   margin: 0;
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: 105rem;
+  min-height: 105rem;
   box-sizing: border-box;
   overflow: auto;
   border: 2px solid #c5d0de;
@@ -1124,8 +1204,8 @@ html:has(.page--web) {
   background: #102028;
   color: #b2f2bb;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 1.2rem;
+  line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1133,5 +1213,27 @@ html:has(.page--web) {
 .py-output.is-error {
   color: #ffc9c9;
   border-color: #fa5252;
+}
+
+@media (max-width: 860px) {
+  html:has(.page--web),
+  html:has(.page--blocks) {
+    overflow: auto;
+    height: auto;
+  }
+
+  .page--py .web-main,
+  .web-main {
+    width: auto;
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .py-output,
+  .web-preview {
+    height: 70vh;
+    min-height: 36rem;
+  }
 }
 

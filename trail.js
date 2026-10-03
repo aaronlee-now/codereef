@@ -180,7 +180,7 @@ function openCoralTrail(trailId, options) {
     "</div>" +
     '<div class="trail-diver" id="trail-diver" aria-hidden="true"></div>' +
     "</div>" +
-    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong></p>' +
+    '<p class="trail-msg" id="trail-msg">Tap <strong>Swim up!</strong> Collect all 3 treasures. The Fish Shop button shows after the last one.</p>' +
     '<div class="trail-actions">' +
     '<button type="button" class="trail-btn trail-btn--swim" id="trail-swim">Swim up!</button>' +
     '<button type="button" class="trail-btn trail-btn--continue" id="trail-continue" hidden>Continue</button>' +
@@ -196,7 +196,6 @@ function openCoralTrail(trailId, options) {
   var shopBtn = document.getElementById("trail-shop");
   var diver = document.getElementById("trail-diver");
   var spotEls = overlay.querySelectorAll(".trail-spot");
-  var coinsGranted = false;
 
   function setDiverSpot(index) {
     // Spots go bottom → top visually (first coin stop at bottom).
@@ -206,25 +205,9 @@ function openCoralTrail(trailId, options) {
     diver.style.bottom = pct + "%";
   }
 
-  function coinTotal() {
-    if (typeof getWallet !== "function" || typeof COIN_ORDER === "undefined") {
-      return null;
-    }
-    var wallet = getWallet();
-    if (!wallet || !wallet.coins) {
-      return null;
-    }
-    var total = 0;
-    var i;
-    for (i = 0; i < COIN_ORDER.length; i += 1) {
-      total += wallet.coins[COIN_ORDER[i]] || 0;
-    }
-    return total;
-  }
-
   function revealTrailShop() {
-    // Swim up! put coins in the wallet. The shop link can leave this screen now.
-    if (!shopBtn || !coinsGranted) {
+    // The shop link waits until every treasure on this trail is collected.
+    if (!shopBtn) {
       return;
     }
     shopBtn.setAttribute("href", "shop.html?v=swim1");
@@ -236,6 +219,7 @@ function openCoralTrail(trailId, options) {
     swimBtn.hidden = true;
     continueBtn.hidden = false;
     continueBtn.removeAttribute("hidden");
+    revealTrailShop();
     progress.batchesDone = batchNumber;
     saveTrailProgress(trailId, progress);
   }
@@ -288,17 +272,7 @@ function openCoralTrail(trailId, options) {
       saveTrailProgress(trailId, progress);
 
       if (typeof addCoinDrop === "function") {
-        var beforeCoins = coinTotal();
         addCoinDrop(drop);
-        var afterCoins = coinTotal();
-        if (
-          beforeCoins !== null &&
-          afterCoins !== null &&
-          afterCoins > beforeCoins
-        ) {
-          coinsGranted = true;
-          revealTrailShop();
-        }
       }
 
       rare = tryRareFishBonus();
@@ -311,10 +285,11 @@ function openCoralTrail(trailId, options) {
       spotEls[index].classList.add("is-earned");
     }
 
-    var moreStops = index < theme.prizes.length - 1;
+    var got = index + 1;
+    var moreStops = got < theme.prizes.length;
     var nextBit = moreStops
-      ? " Keep swimming!"
-      : " Tap <strong>Continue</strong> when you are ready.";
+      ? " Treasure " + got + " of 3. Swim up for the next one!"
+      : " You collected all 3 treasures! The Fish Shop button is ready. Tap <strong>Continue</strong> when you want the next tasks.";
 
     if (rare && rare.kind === "fish") {
       msgEl.innerHTML =

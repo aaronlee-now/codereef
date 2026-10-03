@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="tuBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdba74"/>
+      <stop offset="0.45" stop-color="#ea580c"/>
+      <stop offset="1" stop-color="#9a3412"/>
+    </linearGradient>
+    <radialGradient id="tuShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 104 L362 34 L304 110 L362 186 Z" fill="#c2410c"/>
+    <path d="M300 110 L348 62" fill="none" stroke="#67e8f9" stroke-width="4"/>
+    <path d="M300 110 L348 160" fill="none" stroke="#67e8f9" stroke-width="4"/>
+    <path d="M28 118 L46 108 L40 128 Z" fill="#22d3ee"/>
+    <path d="M36 124 L54 132 L42 142 Z" fill="#06b6d4"/>
+    <path d="M62 112 C70 56, 150 42, 270 84 C306 114, 258 180, 156 184 C96 184, 56 156, 62 112Z" fill="url(#tuBody)"/>
+    <path d="M100 70 V170" stroke="#22d3ee" stroke-width="8"/>
+    <path d="M140 62 V180" stroke="#67e8f9" stroke-width="8"/>
+    <path d="M182 58 V184" stroke="#22d3ee" stroke-width="8"/>
+    <path d="M222 70 V174" stroke="#67e8f9" stroke-width="7"/>
+    <path d="M110 142 C150 172, 210 168, 248 140" fill="#ffedd5" stroke="none"/>
+    <ellipse cx="160" cy="96" rx="30" ry="14" fill="url(#tuShine)" stroke="none"/>
+    <circle cx="108" cy="100" r="15" fill="#fff"/>
+    <circle cx="104.4" cy="100.8" r="7.5" fill="#102028" stroke="none"/>
+    <circle cx="101.1" cy="95.8" r="2.7" fill="#fff" stroke="none"/>
+    <path d="M48 122 Q56.1 132 66 123" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

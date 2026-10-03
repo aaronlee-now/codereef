@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="flBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"/>
+      <stop offset="0.5" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <radialGradient id="flGlow" cx="30%" cy="70%" r="55%">
+      <stop offset="0" stop-color="#fef9c3" stop-opacity="1"/>
+      <stop offset="0.45" stop-color="#facc15" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#facc15" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 110 L356 52 L310 114 L356 174 Z" fill="#1e293b"/>
+    <path d="M240 74 C258 40, 286 52, 270 86" fill="#1d4ed8"/>
+    <path d="M64 114 C72 58, 150 44, 268 84 C304 114, 260 178, 156 184 C92 184, 58 158, 64 114Z" fill="url(#flBody)"/>
+    <path d="M100 138 C146 170, 210 166, 246 140" fill="#1e3a8a" stroke="none"/>
+    <ellipse cx="108" cy="128" rx="22" ry="14" fill="url(#flGlow)" stroke="#fef08a" stroke-width="2"/>
+    <ellipse cx="104" cy="124" rx="8" ry="5" fill="#fff" stroke="none"/>
+    <path d="M150 156 C166 190, 206 186, 214 154" fill="#172554"/>
+    <path d="M78 124 C66 146, 46 140, 62 120" fill="#1e3a8a"/>
+    <circle cx="112" cy="96" r="16" fill="#fff"/>
+    <circle cx="108.2" cy="96.8" r="8.0" fill="#fef08a" stroke="none"/>
+    <circle cx="104.6" cy="91.5" r="2.9" fill="#fff" stroke="none"/>
+    <path d="M70 122 Q79.9 132 92 123" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

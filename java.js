@@ -788,8 +788,14 @@ function showTask() {
   taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
   nextBtn.textContent = "Next task";
-  taskGoal.textContent = tasks[taskIndex].goal;
-  setTip("Do the task, then press Run. Tap Help if you get stuck.");
+  taskGoal.textContent = window.CodeReefGuide
+    ? CodeReefGuide.instruction(tasks[taskIndex].goal, tasks[taskIndex].help)
+    : tasks[taskIndex].goal;
+  setTip(
+    window.CodeReefGuide
+      ? CodeReefGuide.startHint(tasks[taskIndex].goal, tasks[taskIndex].help, "Run")
+      : "Do the task, then press Run. Tap Help if you get stuck."
+  );
 }
 
 function afterSkillsComplete() {

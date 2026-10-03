@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="sqBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="0.45" stop-color="#e11d48"/>
+      <stop offset="1" stop-color="#9f1239"/>
+    </linearGradient>
+    <radialGradient id="sqShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L352 42 L308 112 L352 178 Z" fill="#be123c"/>
+    <path d="M248 78 L268 36 L258 84" fill="#fda4af"/>
+    <path d="M188 64 L206 28 L198 74" fill="#fb7185"/>
+    <path d="M128 70 L140 38 L136 78" fill="#fda4af"/>
+    <path d="M58 112 C62 58, 150 42, 262 78 C300 112, 250 176, 150 180 C90 180, 52 156, 58 112Z" fill="url(#sqBody)"/>
+    <path d="M90 132 C140 168, 210 166, 246 138 C190 158, 130 156, 90 132Z" fill="#fecdd3" stroke="none"/>
+    <path d="M150 156 C168 196, 214 190, 220 154" fill="#e11d48"/>
+    <path d="M78 124 C70 150, 48 146, 62 122" fill="#fb7185"/>
+    <path d="M100 92 H232" fill="none" stroke="#fff1f2" stroke-width="5"/>
+    <path d="M108 112 H240" fill="none" stroke="#fff1f2" stroke-width="5"/>
+    <path d="M112 132 H228" fill="none" stroke="#fff1f2" stroke-width="4.5"/>
+    <path d="M96 78 C150 70, 210 74, 248 92" fill="none" stroke="#9f1239" stroke-width="2" stroke-opacity="0.35"/>
+    <ellipse cx="150" cy="96" rx="46" ry="22" fill="url(#sqShine)" stroke="none"/>
+    <circle cx="108" cy="98" r="18" fill="#fff"/>
+    <circle cx="103.7" cy="98.9" r="9.0" fill="#102028" stroke="none"/>
+    <circle cx="99.7" cy="93.0" r="3.2" fill="#fff" stroke="none"/>
+    <path d="M62 118 Q73.7 128 88 119" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

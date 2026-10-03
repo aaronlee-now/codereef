@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="fyBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="0.4" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="fyWing" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="1" stop-color="#0284c7"/>
+    </linearGradient>
+    <radialGradient id="fyShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M120 100 C160 10, 280 8, 300 96 C240 70, 170 72, 120 100Z" fill="url(#fyWing)"/>
+    <path d="M130 124 C170 200, 280 206, 304 128 C240 156, 170 154, 130 124Z" fill="#0ea5e9"/>
+    <path d="M160 70 L210 40" fill="none" stroke="#e0f2fe" stroke-width="2"/>
+    <path d="M180 78 L240 36" fill="none" stroke="#e0f2fe" stroke-width="2"/>
+    <path d="M200 86 L268 48" fill="none" stroke="#e0f2fe" stroke-width="2"/>
+    <path d="M168 150 L214 186" fill="none" stroke="#e0f2fe" stroke-width="2"/>
+    <path d="M196 146 L248 188" fill="none" stroke="#e0f2fe" stroke-width="2"/>
+    <path d="M250 108 L360 62 L318 112 L360 162 Z" fill="#0284c7"/>
+    <path d="M40 112 L100 100 L92 126 Z" fill="#7dd3fc"/>
+    <path d="M78 114 C90 78, 160 70, 268 96 C292 116, 250 150, 160 154 C108 154, 74 140, 78 114Z" fill="url(#fyBody)"/>
+    <ellipse cx="150" cy="108" rx="36" ry="14" fill="url(#fyShine)" stroke="none"/>
+    <circle cx="108" cy="108" r="13" fill="#fff"/>
+    <circle cx="104.9" cy="108.7" r="6.5" fill="#102028" stroke="none"/>
+    <circle cx="102.0" cy="104.4" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M52 118 Q61.9 128 74 119" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

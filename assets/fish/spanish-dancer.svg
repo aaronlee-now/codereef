@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="daBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecdd3"/>
+      <stop offset="0.4" stop-color="#e11d48"/>
+      <stop offset="1" stop-color="#9f1239"/>
+    </linearGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M70 78 C78 36, 108 34, 104 78" fill="#fb7185"/>
+    <path d="M96 70 C108 28, 138 32, 128 76" fill="#fda4af"/>
+    <path d="M50 130 C20 100, 16 170, 70 186 C30 176, 36 140, 78 148 C28 160, 40 206, 110 192 C70 200, 78 156, 90 150 C50 160, 40 120, 50 130Z" fill="#fff1f2"/>
+    <path d="M120 156 C90 196, 130 210, 150 176 C120 196, 130 166, 140 156Z" fill="#ffe4e6"/>
+    <path d="M180 160 C160 204, 210 214, 214 172 C186 196, 190 168, 180 160Z" fill="#fff"/>
+    <path d="M240 156 C230 202, 286 206, 286 160 C260 184, 254 166, 240 156Z" fill="#ffe4e6"/>
+    <path d="M300 148 C304 190, 360 184, 340 146 C348 168, 324 166, 300 148Z" fill="#fff"/>
+    <path d="M64 116 C96 70, 190 62, 320 100 C348 122, 330 164, 250 168 C160 180, 80 160, 64 116Z" fill="url(#daBody)"/>
+    <path d="M130 108 H270" stroke="#fff" stroke-width="4" opacity="0.75"/>
+    <path d="M140 130 H250" stroke="#fff1f2" stroke-width="3" opacity="0.65"/>
+    <circle cx="100" cy="108" r="12" fill="#fff"/>
+    <circle cx="96" cy="109" r="6" fill="#102028" stroke="none"/>
+    <circle cx="93" cy="105" r="2" fill="#fff" stroke="none"/>
+    <path d="M70 122 Q84 132 100 122" fill="none" stroke-width="2.4"/>
+  </g>
+</svg>

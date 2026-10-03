@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="piBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bbf7d0"/>
+      <stop offset="0.5" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#166534"/>
+    </linearGradient>
+    <radialGradient id="piShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M18 112 L78 104 L78 122 Z" fill="#86efac"/>
+    <path d="M70 114 C120 86, 200 84, 280 100 C330 110, 360 108, 378 116 C360 128, 320 132, 270 128 C190 136, 110 140, 70 124 Z" fill="url(#piBody)"/>
+    <path d="M110 108 H150" stroke="#14532d" stroke-width="2" opacity="0.45"/>
+    <path d="M160 104 H200" stroke="#14532d" stroke-width="2" opacity="0.45"/>
+    <path d="M210 106 H250" stroke="#14532d" stroke-width="2" opacity="0.45"/>
+    <path d="M260 110 H300" stroke="#14532d" stroke-width="2" opacity="0.45"/>
+    <path d="M310 114 H344" stroke="#14532d" stroke-width="2" opacity="0.45"/>
+    <path d="M160 96 C168 70, 184 72, 176 100" fill="#4ade80"/>
+    <path d="M230 100 C238 74, 254 78, 246 106" fill="#4ade80"/>
+    <path d="M300 108 C306 86, 320 90, 314 114" fill="#4ade80"/>
+    <path d="M200 128 C208 156, 222 154, 214 128" fill="#16a34a"/>
+    <path d="M270 130 C276 154, 290 150, 282 128" fill="#16a34a"/>
+    <ellipse cx="180" cy="110" rx="50" ry="8" fill="url(#piShine)" stroke="none"/>
+    <circle cx="92" cy="110" r="10" fill="#fff"/>
+    <circle cx="89.6" cy="110.5" r="5.0" fill="#102028" stroke="none"/>
+    <circle cx="87.4" cy="107.2" r="1.8" fill="#fff" stroke="none"/>
+    <path d="M28 114 Q36.1 124 46 115" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

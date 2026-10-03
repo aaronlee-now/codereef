@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="buBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.6" stop-color="#f1f5f9"/>
+      <stop offset="1" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <radialGradient id="buShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 78 C140 30, 168 24, 166 70" fill="#0f172a"/>
+    <path d="M188 80 C196 28, 224 36, 210 76" fill="#0f172a"/>
+    <path d="M250 130 C300 110, 324 150, 286 160 C310 150, 300 130, 270 136 Z" fill="#0f172a"/>
+    <path d="M120 120 C124 70, 200 58, 270 96 C310 124, 286 180, 210 188 C146 192, 112 164, 120 120Z" fill="url(#buBody)"/>
+    <g fill="#0f172a" stroke="none">
+      <circle cx="170" cy="130" r="5"/><circle cx="200" cy="118" r="4"/><circle cx="214" cy="146" r="5"/>
+      <circle cx="160" cy="156" r="3.5"/><circle cx="236" cy="124" r="3.5"/>
+    </g>
+    <ellipse cx="190" cy="110" rx="36" ry="16" fill="url(#buShine)" stroke="none"/>
+    <path d="M150 150 C170 166, 200 162, 214 146" fill="#fecdd3" stroke="none"/>
+    <circle cx="156" cy="118" r="12" fill="#fff"/>
+    <circle cx="153.1" cy="118.6" r="6.0" fill="#102028" stroke="none"/>
+    <circle cx="150.5" cy="114.6" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M132 136 Q146 146 158 134" fill="none" stroke-width="2.4"/>
+  </g>
+</svg>

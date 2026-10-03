@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="suBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.45" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <radialGradient id="suShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M300 70 C340 40, 356 80, 324 100" fill="#64748b"/>
+    <path d="M300 150 C344 160, 352 196, 312 176" fill="#64748b"/>
+    <path d="M250 40 C280 16, 300 36, 286 60" fill="#475569"/>
+    <path d="M250 180 C284 206, 304 184, 286 160" fill="#475569"/>
+    <path d="M70 112 C78 40, 180 24, 286 70 C310 112, 286 186, 180 198 C100 196, 64 164, 70 112Z" fill="url(#suBody)"/>
+    <path d="M286 78 C318 90, 324 140, 286 156 C300 130, 300 100, 286 78Z" fill="#334155"/>
+    <path d="M120 90 C170 80, 230 88, 260 110" fill="none" stroke="#e2e8f0" stroke-width="3" opacity="0.7"/>
+    <path d="M130 130 C180 150, 240 146, 270 124" fill="none" stroke="#cbd5e1" stroke-width="3" opacity="0.6"/>
+    <ellipse cx="150" cy="96" rx="40" ry="22" fill="url(#suShine)" stroke="none"/>
+    <circle cx="108" cy="104" r="16" fill="#fff"/>
+    <circle cx="104.2" cy="104.8" r="8.0" fill="#102028" stroke="none"/>
+    <circle cx="100.6" cy="99.5" r="2.9" fill="#fff" stroke="none"/>
+    <path d="M72 118 Q84 126 78 134" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

@@ -53,6 +53,47 @@
   user-select: none;
 }
 
+/* The wiggle waves. The frame inside it matches the picture shape. */
+.reef-fish__wiggle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  container-type: size;
+}
+
+.reef-fish__frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: var(--pic, 1);
+  height: min(100cqh, calc(100cqw / var(--pic, 1)));
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  --pic: 1;
+  --hx: 22%;
+  --hy: 36%;
+  --ex: 24%;
+  --ey: 48%;
+  --nx: 34%;
+  --ny: 56%;
+  --bx: 48%;
+  --by: 52%;
+  --kx: 66%;
+  --ky: 46%;
+  --hs: 1;
+  --bs: 1;
+  --ew: 1;
+}
+
+.reef-fish__frame .reef-fish__img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
 /* Shop page */
 .shop-page {
   width: min(40rem, calc(100% - 2rem));
@@ -1567,8 +1608,23 @@ body > .menu-fish-layer {
 
 .shop-outfit-demo {
   position: relative;
+  display: inline-block;
   width: 7.5rem;
   height: 4.2rem;
+  --pic: 1;
+  --hx: 26%;
+  --hy: 40%;
+  --ex: 28%;
+  --ey: 50%;
+  --nx: 38%;
+  --ny: 60%;
+  --bx: 50%;
+  --by: 54%;
+  --kx: 68%;
+  --ky: 46%;
+  --hs: 1;
+  --bs: 1;
+  --ew: 1;
 }
 
 .shop-outfit-demo__body {
@@ -2364,4 +2420,392 @@ body > .menu-fish-layer {
   border-radius: 999px;
   border: 3px solid #38bdf8;
   background: transparent;
+}
+
+/* Outfit places. Percents are of the fish picture, not the empty slot. */
+.reef-outfit--crown {
+  left: calc(var(--hx) - 12% * var(--hs));
+  top: calc(var(--hy) - 18% * var(--hs));
+  width: calc(24% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+.reef-outfit--bow {
+  left: calc(var(--hx) - 13% * var(--hs));
+  top: calc(var(--hy) - 16% * var(--hs));
+  width: calc(26% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+.reef-outfit--scarf {
+  left: calc(var(--nx) - 16% * var(--hs));
+  top: calc(var(--ny) - 6% * var(--hs));
+  width: calc(32% * var(--hs));
+  height: calc(12% * var(--hs));
+  transform: rotate(-8deg);
+}
+
+.reef-outfit--star {
+  left: calc(var(--bx) - 8% * var(--bs));
+  top: calc(var(--by) - 11% * var(--bs));
+  width: calc(16% * var(--bs));
+  height: calc(22% * var(--bs));
+}
+
+.reef-outfit--sunglasses {
+  left: calc(var(--ex) - 15% * var(--hs) * var(--ew));
+  top: calc(var(--ey) - 7% * var(--hs));
+  width: calc(30% * var(--hs) * var(--ew));
+  height: calc(14% * var(--hs));
+}
+
+.reef-outfit--party {
+  left: calc(var(--hx) - 8% * var(--hs));
+  top: calc(var(--hy) - 26% * var(--hs));
+  width: calc(16% * var(--hs));
+  height: calc(26% * var(--hs));
+}
+
+.reef-outfit--flower {
+  left: calc(var(--hx) - 10% * var(--hs));
+  top: calc(var(--hy) - 22% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(24% * var(--hs));
+}
+
+.reef-outfit--necklace {
+  left: calc(var(--nx) - 14% * var(--hs));
+  top: calc(var(--ny) - 2% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+.reef-outfit--captain {
+  left: calc(var(--hx) - 15% * var(--hs));
+  top: calc(var(--hy) - 16% * var(--hs));
+  width: calc(30% * var(--hs));
+  height: calc(22% * var(--hs));
+}
+
+.reef-outfit--snorkel {
+  left: calc(var(--ex) - 10% * var(--hs));
+  top: calc(var(--ey) - 20% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(38% * var(--hs));
+}
+
+.reef-outfit--bowtie {
+  left: calc(var(--nx) - 10% * var(--hs));
+  top: calc(var(--ny) - 6% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(12% * var(--hs));
+}
+
+.reef-outfit--halo {
+  left: calc(var(--hx) - 14% * var(--hs));
+  top: calc(var(--hy) - 22% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(14% * var(--hs));
+}
+
+.reef-outfit--backpack {
+  left: calc(var(--kx) - 8% * var(--hs));
+  top: calc(var(--ky) - 10% * var(--hs));
+  width: calc(16% * var(--hs));
+  height: calc(28% * var(--hs));
+}
+
+.reef-outfit--heart {
+  left: calc(var(--bx) - 6% * var(--bs));
+  top: calc(var(--by) - 6% * var(--bs));
+  width: calc(12% * var(--bs));
+  height: calc(12% * var(--bs));
+  transform: rotate(45deg);
+}
+
+.reef-outfit--pirate {
+  left: calc(var(--hx) - 16% * var(--hs));
+  top: calc(var(--hy) - 18% * var(--hs));
+  width: calc(32% * var(--hs));
+  height: calc(22% * var(--hs));
+}
+
+.reef-outfit--vest {
+  left: calc(var(--bx) - 16% * var(--bs));
+  top: calc(var(--by) - 17% * var(--bs));
+  width: calc(32% * var(--bs));
+  height: calc(34% * var(--bs));
+}
+
+.reef-outfit--medal {
+  left: calc(var(--bx) - 7% * var(--bs));
+  top: calc(var(--by) - 4% * var(--bs));
+  width: calc(14% * var(--bs));
+  height: calc(14% * var(--bs));
+}
+
+.reef-outfit--beanie {
+  left: calc(var(--hx) - 13% * var(--hs));
+  top: calc(var(--hy) - 20% * var(--hs));
+  width: calc(26% * var(--hs));
+  height: calc(22% * var(--hs));
+}
+
+.reef-outfit--mask {
+  left: calc(var(--ex) - 16% * var(--hs) * var(--ew));
+  top: calc(var(--ey) - 8% * var(--hs));
+  width: calc(32% * var(--hs) * var(--ew));
+  height: calc(16% * var(--hs));
+}
+
+.reef-outfit--wand {
+  left: calc(var(--hx) - 1% * var(--hs));
+  top: calc(var(--ey) + 2%);
+  right: auto;
+  width: calc(6% * var(--hs));
+  height: calc(30% * var(--hs));
+  transform: rotate(18deg);
+}
+
+/* Tall fish, like a seahorse: hat on the crown, vest down the belly. */
+.reef-wear--tall .reef-outfit--crown,
+.reef-wear--tall .reef-outfit--beanie {
+  left: calc(var(--hx) - 9% * var(--hs));
+  top: calc(var(--hy) - 14% * var(--hs));
+  width: calc(18% * var(--hs));
+  height: calc(14% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--party {
+  left: calc(var(--hx) - 7% * var(--hs));
+  top: calc(var(--hy) - 16% * var(--hs));
+  width: calc(14% * var(--hs));
+  height: calc(16% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--pirate,
+.reef-wear--tall .reef-outfit--captain {
+  left: calc(var(--hx) - 11% * var(--hs));
+  top: calc(var(--hy) - 14% * var(--hs));
+  width: calc(22% * var(--hs));
+  height: calc(16% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--bow,
+.reef-wear--tall .reef-outfit--flower {
+  left: calc(var(--hx) - 9% * var(--hs));
+  top: calc(var(--hy) - 14% * var(--hs));
+  width: calc(18% * var(--hs));
+  height: calc(16% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--halo {
+  left: calc(var(--hx) - 10% * var(--hs));
+  top: calc(var(--hy) - 16% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(10% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--vest {
+  left: calc(var(--bx) - 8% * var(--bs));
+  top: calc(var(--by) - 18% * var(--bs));
+  width: calc(16% * var(--bs));
+  height: calc(38% * var(--bs));
+  border-radius: 0.7rem;
+}
+
+.reef-wear--tall .reef-outfit--scarf {
+  left: calc(var(--nx) - 10% * var(--hs));
+  top: calc(var(--ny) - 5% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(10% * var(--hs));
+  transform: rotate(-8deg);
+}
+
+.reef-wear--tall .reef-outfit--backpack {
+  left: calc(var(--kx) - 7% * var(--hs));
+  top: calc(var(--ky) - 8% * var(--hs));
+  width: calc(14% * var(--hs));
+  height: calc(20% * var(--hs));
+}
+
+.reef-wear--tall .reef-outfit--wand {
+  left: 30%;
+  top: 28%;
+  width: calc(6% * var(--hs));
+  height: calc(22% * var(--hs));
+  transform: rotate(-18deg);
+}
+
+/* Bell shapes, like an octopus or jelly: clothes on the round head. */
+.reef-wear--bell .reef-outfit--crown,
+.reef-wear--bell .reef-outfit--beanie {
+  left: calc(var(--hx) - 15% * var(--hs));
+  top: calc(var(--hy) - 12% * var(--hs));
+  width: calc(30% * var(--hs));
+  height: calc(12% * var(--hs));
+}
+
+.reef-wear--bell .reef-outfit--party {
+  left: calc(var(--hx) - 8% * var(--hs));
+  top: calc(var(--hy) - 18% * var(--hs));
+  width: calc(16% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+.reef-wear--bell .reef-outfit--pirate,
+.reef-wear--bell .reef-outfit--captain {
+  left: calc(var(--hx) - 16% * var(--hs));
+  top: calc(var(--hy) - 12% * var(--hs));
+  width: calc(32% * var(--hs));
+  height: calc(14% * var(--hs));
+}
+
+.reef-wear--bell .reef-outfit--sunglasses,
+.reef-wear--bell .reef-outfit--mask {
+  left: calc(var(--ex) - 14% * var(--hs) * var(--ew));
+  top: calc(var(--ey) - 5% * var(--hs));
+  width: calc(28% * var(--hs) * var(--ew));
+  height: calc(11% * var(--hs));
+}
+
+.reef-wear--bell .reef-outfit--vest {
+  left: calc(var(--bx) - 14% * var(--bs));
+  top: calc(var(--by) - 8% * var(--bs));
+  width: calc(28% * var(--bs));
+  height: calc(16% * var(--bs));
+  border-radius: 40% 40% 48% 48%;
+}
+
+.reef-wear--bell .reef-outfit--backpack {
+  left: calc(var(--kx) - 7% * var(--hs));
+  top: calc(var(--ky) - 8% * var(--hs));
+  width: calc(14% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+.reef-wear--bell .reef-outfit--wand {
+  left: calc(var(--ex) - 8%);
+  top: calc(var(--ey) + 6%);
+  height: calc(22% * var(--hs));
+  transform: rotate(-16deg);
+}
+
+/* A shell is wide. The hat stays small on the head. */
+.reef-wear--shell .reef-outfit--vest {
+  left: calc(var(--bx) - 19% * var(--bs));
+  top: calc(var(--by) - 12% * var(--bs));
+  width: calc(38% * var(--bs));
+  height: calc(24% * var(--bs));
+  border-radius: 46%;
+}
+
+.reef-wear--shell .reef-outfit--backpack {
+  left: calc(var(--kx) - 10% * var(--hs));
+  top: calc(var(--ky) - 8% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(20% * var(--hs));
+}
+
+/* Flat fish, like a ray: a wide low vest across the body. */
+.reef-wear--flat .reef-outfit--crown,
+.reef-wear--flat .reef-outfit--beanie,
+.reef-wear--flat .reef-outfit--pirate,
+.reef-wear--flat .reef-outfit--captain {
+  left: calc(var(--hx) - 10% * var(--hs));
+  top: calc(var(--hy) - 12% * var(--hs));
+  width: calc(20% * var(--hs));
+  height: calc(12% * var(--hs));
+}
+
+.reef-wear--flat .reef-outfit--sunglasses,
+.reef-wear--flat .reef-outfit--mask {
+  left: calc(var(--ex) - 14% * var(--hs));
+  top: calc(var(--ey) - 5% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(10% * var(--hs));
+}
+
+.reef-wear--flat .reef-outfit--vest {
+  left: calc(var(--bx) - 23% * var(--bs));
+  top: calc(var(--by) - 8% * var(--bs));
+  width: calc(46% * var(--bs));
+  height: calc(16% * var(--bs));
+  border-radius: 50%;
+}
+
+.reef-wear--flat .reef-outfit--scarf {
+  left: calc(var(--nx) - 16% * var(--hs));
+  top: calc(var(--ny) - 4% * var(--hs));
+  width: calc(32% * var(--hs));
+  height: calc(8% * var(--hs));
+  transform: rotate(-4deg);
+}
+
+/* Crab eyes sit on top of the shell. */
+.reef-wear--crab .reef-outfit--crown,
+.reef-wear--crab .reef-outfit--beanie,
+.reef-wear--crab .reef-outfit--pirate,
+.reef-wear--crab .reef-outfit--captain {
+  left: calc(var(--hx) - 14% * var(--hs));
+  top: calc(var(--hy) - 14% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(14% * var(--hs));
+}
+
+.reef-wear--crab .reef-outfit--sunglasses,
+.reef-wear--crab .reef-outfit--mask {
+  left: calc(var(--ex) - 17% * var(--hs));
+  top: calc(var(--ey) - 6% * var(--hs));
+  width: calc(34% * var(--hs));
+  height: calc(12% * var(--hs));
+}
+
+.reef-wear--crab .reef-outfit--vest {
+  left: calc(var(--bx) - 18% * var(--bs));
+  top: calc(var(--by) - 9% * var(--bs));
+  width: calc(36% * var(--bs));
+  height: calc(18% * var(--bs));
+  border-radius: 50%;
+}
+
+/* Long skinny fish get a wide, short vest. */
+.reef-wear--long .reef-outfit--vest {
+  left: calc(var(--bx) - 21% * var(--bs));
+  top: calc(var(--by) - 9% * var(--bs));
+  width: calc(42% * var(--bs));
+  height: calc(18% * var(--bs));
+  border-radius: 0.35rem;
+}
+
+.reef-wear--long .reef-outfit--sunglasses,
+.reef-wear--long .reef-outfit--mask {
+  left: calc(var(--ex) - 12% * var(--hs));
+  top: calc(var(--ey) - 5% * var(--hs));
+  width: calc(24% * var(--hs));
+  height: calc(10% * var(--hs));
+}
+
+.reef-wear--long .reef-outfit--scarf {
+  left: calc(var(--nx) - 14% * var(--hs));
+  top: calc(var(--ny) - 4% * var(--hs));
+  width: calc(28% * var(--hs));
+  height: calc(8% * var(--hs));
+  transform: rotate(-6deg);
+}
+
+.reef-wear--long .reef-outfit--backpack {
+  left: calc(var(--kx) - 7% * var(--hs));
+  top: calc(var(--ky) - 8% * var(--hs));
+  width: calc(14% * var(--hs));
+  height: calc(18% * var(--hs));
+}
+
+/* Round fish get a round vest. */
+.reef-wear--round .reef-outfit--vest {
+  left: calc(var(--bx) - 17% * var(--bs));
+  top: calc(var(--by) - 16% * var(--bs));
+  width: calc(34% * var(--bs));
+  height: calc(32% * var(--bs));
+  border-radius: 50%;
 }

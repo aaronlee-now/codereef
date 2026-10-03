@@ -1022,29 +1022,34 @@
     }
 
     var prefix = active.buildingAdvanced ? "Advanced" : "Project";
+    var stepTitle =
+      prefix +
+      " (" +
+      (idx + 1) +
+      "/" +
+      steps.length +
+      "): " +
+      String(step.goal).replace(/^((Project|Advanced)\s+)?[Ss]tep\s+\d+:\s*/, "");
     if (active.taskGoal) {
-      active.taskGoal.textContent =
-        prefix +
-        " (" +
-        (idx + 1) +
-        "/" +
-        steps.length +
-        "): " +
-        String(step.goal).replace(/^((Project|Advanced)\s+)?[Ss]tep\s+\d+:\s*/, "");
+      active.taskGoal.textContent = window.CodeReefGuide
+        ? CodeReefGuide.instruction(stepTitle, step.help || "")
+        : stepTitle;
     }
 
     showNextButton(false);
     renderStepDots();
     setTip(
-      "Build step " +
-        (idx + 1) +
-        " of " +
-        steps.length +
-        ' for "' +
-        (idea ? idea.title : "your project") +
-        '". Press ' +
-        (active.actionLabel || "Run") +
-        " when ready. Tap Help if you need a hint."
+      window.CodeReefGuide
+        ? CodeReefGuide.startHint(stepTitle, step.help || "", active.actionLabel || "Run")
+        : "Build step " +
+            (idx + 1) +
+            " of " +
+            steps.length +
+            ' for "' +
+            (idea ? idea.title : "your project") +
+            '". Press ' +
+            (active.actionLabel || "Run") +
+            " when ready. Tap Help if you need a hint."
     );
 
     if (typeof active.onStepShow === "function") {

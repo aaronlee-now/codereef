@@ -481,7 +481,7 @@ const tasks = (function buildJsTasks() {
   ]);
 
   add(
-    "Prlet two lines — Hello, ocean! then I love JavaScript!",
+    "Print two lines — Hello, ocean! then I love JavaScript!",
     false,
     [L('console.log("I love JavaScript!");')],
     { contains: ["hello, ocean!", "i love javascript!"] },
@@ -489,29 +489,29 @@ const tasks = (function buildJsTasks() {
     'console.log("Hello, ocean!");\nconsole.log("I love JavaScript!");\n'
   );
   add(
-    'Make a variable let fish = "clownfish"; and prlet it.',
+    'Make a variable let fish = "clownfish"; and print it.',
     false,
     [L('let fish = "clownfish";'), L("console.log(fish);")],
     { code: /fish\s*=\s*["']clownfish["']/, line: "clownfish" },
     "clownfish"
   );
   add(
-    "Use a for loop to prlet 1, then 2, then 3.",
+    "Use a for loop to print 1, then 2, then 3.",
     true,
     [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")],
     { code: /for\s*\(/, line: ["1", "2", "3"] },
     "1 then 2 then 3"
   );
-  add("Prlet the number 5.", true, [L("console.log(5);")], { line: "5" }, "5");
+  add("Print the number 5.", true, [L("console.log(5);")], { line: "5" }, "5");
   add(
-    'Make let coral = "reef"; and prlet it.',
+    'Make let coral = "reef"; and print it.',
     false,
     [L('let coral = "reef";'), L("console.log(coral);")],
     { code: /coral\s*=\s*["']reef["']/, line: "reef" },
     "reef"
   );
   add(
-    "Loop to prlet splash three times.",
+    "Loop to print splash three times.",
     true,
     [L("for (let i = 1; i <= 3; i++) {"), L('console.log("splash");', true), L("}")],
     { code: /for\s*\(/, minCount: { line: "splash", n: 3 } },
@@ -519,7 +519,7 @@ const tasks = (function buildJsTasks() {
   );
 
   ["bubble", "wave", "crab", "dolphin", "turtle", "coral", "sand", "shell", "whale", "shark", "starfish", "eel"].forEach(function (word) {
-    add("Prlet the word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
+    add("Print the word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
   });
 
   [
@@ -528,7 +528,7 @@ const tasks = (function buildJsTasks() {
     ["pal", "otter"], ["ride", "wave"], ["team", "pods"], ["gem", "pearl"],
   ].forEach(function (pair) {
     add(
-      'Make ' + pair[0] + ' = "' + pair[1] + '" and prlet it.',
+      'Make ' + pair[0] + ' = "' + pair[1] + '" and print it.',
       false,
       [L('let ' + pair[0] + ' = "' + pair[1] + '";'), L("console.log(" + pair[0] + ");")],
       { code: new RegExp(pair[0] + "\\s*=\\s*[\"']" + pair[1] + "[\"']", "i"), line: pair[1].toLowerCase() },
@@ -537,12 +537,12 @@ const tasks = (function buildJsTasks() {
   });
 
   [["2 + 3", "5"], ["4 + 1", "5"], ["10 - 3", "7"], ["8 - 2", "6"], ["2 * 3", "6"], ["4 * 2", "8"], ["1 + 6", "7"], ["9 - 4", "5"], ["3 * 3", "9"], ["5 + 5", "10"]].forEach(function (row) {
-    add("Prlet the math " + row[0] + ".", true, [L("console.log(" + row[0] + ");")], { line: row[1], code: /console\.log\s*\(/ }, row[1]);
+    add("Print the math " + row[0] + ".", true, [L("console.log(" + row[0] + ");")], { line: row[1], code: /console\.log\s*\(/ }, row[1]);
   });
 
   ["splash", "bubble", "yay", "hi", "wave", "go"].forEach(function (word) {
     add(
-      'Use a loop to prlet "' + word + '" three times.',
+      'Use a loop to print "' + word + '" three times.',
       true,
       [L("for (let i = 1; i <= 3; i++) {"), L('console.log("' + word + '");', true), L("}")],
       { code: /for\s*\(/, minCount: { line: word, n: 3 } },
@@ -551,7 +551,7 @@ const tasks = (function buildJsTasks() {
   });
   [["1", "<=", "3", ["1", "2", "3"]], ["1", "<=", "4", ["1", "2", "3", "4"]], ["0", "<", "3", ["0", "1", "2"]], ["2", "<=", "4", ["2", "3", "4"]], ["1", "<=", "5", ["1", "2", "3", "4", "5"]], ["4", "<=", "6", ["4", "5", "6"]]].forEach(function (row) {
     add(
-      "Use a loop to prlet " + row[3].join(", then ") + ".",
+      "Use a loop to print " + row[3].join(", then ") + ".",
       true,
       [L("for (let i = " + row[0] + "; i " + row[1] + " " + row[2] + "; i++) {"), L("console.log(i);", true), L("}")],
       { code: /for\s*\(/, line: row[3] },
@@ -608,23 +608,23 @@ const tasks = (function buildJsTasks() {
     );
   });
 
-  add("Save a hero name, then use if to prlet found.", true, [L('let hero = "Fin";'), L("console.log(hero);"), L('if (hero == "Fin") {'), L('console.log("found");', true), L("}")], { code: /\bif\b/, line: "found" }, "found");
-  add("Add 1 to a number and prlet it.", true, [L("let waves = 3;"), L("console.log(waves + 1);")], { code: /waves\s*\+\s*1/, line: "4" }, "4");
-  add("Take 2 away from a score and prlet it.", true, [L("let score = 9;"), L("console.log(score - 2);")], { code: /score\s*-\s*2/, line: "7" }, "7");
+  add("Save a hero name, then use if to print found.", true, [L('let hero = "Fin";'), L("console.log(hero);"), L('if (hero == "Fin") {'), L('console.log("found");', true), L("}")], { code: /\bif\b/, line: "found" }, "found");
+  add("Add 1 to a number and print it.", true, [L("let waves = 3;"), L("console.log(waves + 1);")], { code: /waves\s*\+\s*1/, line: "4" }, "4");
+  add("Take 2 away from a score and print it.", true, [L("let score = 9;"), L("console.log(score - 2);")], { code: /score\s*-\s*2/, line: "7" }, "7");
   add("Use a function and a variable together.", true, [L('let pet = "crab";'), L("function show() {"), L('console.log("ready");', true), L("}"), L("show();"), L("console.log(pet);")], { code: /function\s+show\s*\(/, line: ["ready", "crab"] }, "ready and crab");
-  add("Loop 2 times and also prlet a title.", true, [L('console.log("Title");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("go");', true), L("}")], { code: /for\s*\(/, contains: "title", minCount: { line: "go", n: 2 } }, "Title and go go");
-  add("If a score is big, prlet pass.", true, [L("let score = 10;"), L("if (score > 5) {"), L('console.log("pass");', true), L("}"), L("else {"), L('console.log("try");', true), L("}")], { code: /\bif\b/, line: "pass" }, "pass");
+  add("Loop 2 times and also print a title.", true, [L('console.log("Title");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("go");', true), L("}")], { code: /for\s*\(/, contains: "title", minCount: { line: "go", n: 2 } }, "Title and go go");
+  add("If a score is big, print pass.", true, [L("let score = 10;"), L("if (score > 5) {"), L('console.log("pass");', true), L("}"), L("else {"), L('console.log("try");', true), L("}")], { code: /\bif\b/, line: "pass" }, "pass");
   add("Make two functions and run both.", true, [L("function ping() {"), L('console.log("ping");', true), L("}"), L("function pong() {"), L('console.log("pong");', true), L("}"), L("ping();"), L("pong();")], { code: /function\s+ping\s*\(/, line: ["ping", "pong"] }, "ping and pong");
-  add("Prlet a name, then loop the word splash twice.", true, [L('console.log("Fin");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("splash");', true), L("}")], { code: /for\s*\(/, line: "fin", minCount: { line: "splash", n: 2 } }, "Fin and splash");
-  add("Remember two names and prlet both.", true, [L('let one = "crab";'), L('let two = "eel";'), L("console.log(one);"), L("console.log(two);")], { line: ["crab", "eel"] }, "crab and eel");
-  add("Count with a loop from 1 to 2, then prlet done.", true, [L("for (let i = 1; i <= 2; i++) {"), L("console.log(i);", true), L("}"), L('console.log("done");')], { code: /for\s*\(/, line: ["1", "2"], contains: "done" }, "1, 2, and done");
+  add("Print a name, then loop the word splash twice.", true, [L('console.log("Fin");'), L("for (let i = 1; i <= 2; i++) {"), L('console.log("splash");', true), L("}")], { code: /for\s*\(/, line: "fin", minCount: { line: "splash", n: 2 } }, "Fin and splash");
+  add("Remember two names and print both.", true, [L('let one = "crab";'), L('let two = "eel";'), L("console.log(one);"), L("console.log(two);")], { line: ["crab", "eel"] }, "crab and eel");
+  add("Count with a loop from 1 to 2, then print done.", true, [L("for (let i = 1; i <= 2; i++) {"), L("console.log(i);", true), L("}"), L('console.log("done");')], { code: /for\s*\(/, line: ["1", "2"], contains: "done" }, "1, 2, and done");
 
   const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
   let pad = 0;
   while (list.length < 100) {
     const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
     pad += 1;
-    add("Prlet the extra word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
+    add("Print the extra word " + word + ".", false, [L('console.log("' + word + '");')], { contains: word }, word);
   }
   return list;
 })();
@@ -646,78 +646,78 @@ const finalIdeas = [
     id: "story",
     title: "Ocean story",
     blurb: "A long story with a name, math, if, a loop, and a function.",
-    plan: ["Prlet a title and two story lines.", "Save a hero and say hello.", "Count waves, then use if, a loop, and a function."],
+    plan: ["Print a title and two story lines.", "Save a hero and say hello.", "Count waves, then use if, a loop, and a function."],
     steps: buildJsSteps("Project step", [
-      { goal: "Prlet a story title.", fresh: true, lines: [L('console.log("Ocean Story");')], spec: { contains: "ocean story" }, see: "Ocean Story" },
+      { goal: "Print a story title.", fresh: true, lines: [L('console.log("Ocean Story");')], spec: { contains: "ocean story" }, see: "Ocean Story" },
       { goal: "Add a story line.", lines: [L('console.log("A fish swam out.");')], spec: { minLines: 2 }, see: "A fish swam out." },
       { goal: "Add a blue-water line.", lines: [L('console.log("The water was blue.");')], spec: { minLines: 3 }, see: "The water was blue." },
       { goal: "Save the hero name Fin.", lines: [L('let hero = "Fin";')], spec: { code: /hero\s*=\s*["']Fin["']/ }, see: "your old story lines" },
-      { goal: "Prlet the hero name.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "Print the hero name.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
       { goal: "Say hello to the hero.", lines: [L('console.log("Hello " + hero);')], spec: { contains: "hello fin" }, see: "Hello Fin" },
       { goal: "Save the number of waves.", lines: [L("let waves = 3;")], spec: { code: /waves\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Prlet how many waves.", lines: [L("console.log(waves);")], spec: { line: "3" }, see: "3" },
-      { goal: "Prlet one more than the waves.", lines: [L("console.log(waves + 1);")], spec: { line: "4" }, see: "4" },
-      { goal: "If waves are more than 2, prlet big.", lines: [L("if (waves > 2) {"), L('console.log("big");', true), L("}")], spec: { code: /\bif\b/, line: "big" }, see: "big" },
+      { goal: "Print how many waves.", lines: [L("console.log(waves);")], spec: { line: "3" }, see: "3" },
+      { goal: "Print one more than the waves.", lines: [L("console.log(waves + 1);")], spec: { line: "4" }, see: "4" },
+      { goal: "If waves are more than 2, print big.", lines: [L("if (waves > 2) {"), L('console.log("big");', true), L("}")], spec: { code: /\bif\b/, line: "big" }, see: "big" },
       { goal: "Add the other path, else.", lines: [L("else {"), L('console.log("calm");', true), L("}")], spec: { code: /\belse\b/ }, see: "big still, because 3 is more than 2", note: "Click after the } that closes the if." },
       { goal: "Save a friend name.", lines: [L('let friend = "Bubbles";')], spec: { code: /friend\s*=/ }, see: "your old lines" },
-      { goal: "Prlet the friend.", lines: [L("console.log(friend);")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "Loop to prlet 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "Print the friend.", lines: [L("console.log(friend);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Loop to print 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
       { goal: "Make a cheer function.", lines: [L("function cheer() {"), L('console.log("yay");', true), L("}")], spec: { code: /function\s+cheer\s*\(/ }, see: "your old lines" },
       { goal: "Run the cheer function.", lines: [L("cheer();")], spec: { line: "yay" }, see: "yay" },
-      { goal: "Prlet The end.", lines: [L('console.log("The end");')], spec: { contains: "the end" }, see: "The end" },
-      { goal: "Prlet You did it!", lines: [L('console.log("You did it!");')], spec: { contains: "you did it" }, see: "You did it!" },
+      { goal: "Print The end.", lines: [L('console.log("The end");')], spec: { contains: "the end" }, see: "The end" },
+      { goal: "Print You did it!", lines: [L('console.log("You did it!");')], spec: { contains: "you did it" }, see: "You did it!" },
     ]),
   },
   {
     id: "names",
     title: "Fish name generator",
     blurb: "Name two fish, count them, and cheer.",
-    plan: ["Prlet a title and save two names.", "Say hello to each name.", "Count, compare, loop, and cheer."],
+    plan: ["Print a title and save two names.", "Say hello to each name.", "Count, compare, loop, and cheer."],
     steps: buildJsSteps("Project step", [
-      { goal: "Prlet a title.", fresh: true, lines: [L('console.log("Fish Names");')], spec: { contains: "fish names" }, see: "Fish Names" },
+      { goal: "Print a title.", fresh: true, lines: [L('console.log("Fish Names");')], spec: { contains: "fish names" }, see: "Fish Names" },
       { goal: "Save the name Bubbles.", lines: [L('let name = "Bubbles";')], spec: { code: /name\s*=\s*["']Bubbles["']/ }, see: "the title" },
-      { goal: "Prlet the name.", lines: [L("console.log(name);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Print the name.", lines: [L("console.log(name);")], spec: { line: "bubbles" }, see: "Bubbles" },
       { goal: "Say hello to the name.", lines: [L('console.log("Hello " + name);')], spec: { contains: "hello bubbles" }, see: "Hello Bubbles" },
       { goal: "Save a friend name.", lines: [L('let friend = "Coral";')], spec: { code: /friend\s*=\s*["']Coral["']/ }, see: "your old lines" },
-      { goal: "Prlet the friend.", lines: [L("console.log(friend);")], spec: { line: "coral" }, see: "Coral" },
+      { goal: "Print the friend.", lines: [L("console.log(friend);")], spec: { line: "coral" }, see: "Coral" },
       { goal: "Say meet the friend.", lines: [L('console.log("Meet " + friend);')], spec: { contains: "meet coral" }, see: "Meet Coral" },
       { goal: "Save the number 2.", lines: [L("let count = 2;")], spec: { code: /count\s*=\s*2/ }, see: "your old lines" },
-      { goal: "Prlet the count.", lines: [L("console.log(count);")], spec: { line: "2" }, see: "2" },
-      { goal: "Prlet one more than the count.", lines: [L("console.log(count + 1);")], spec: { line: "3" }, see: "3" },
-      { goal: "If count is more than 1, prlet many.", lines: [L("if (count > 1) {"), L('console.log("many");', true), L("}")], spec: { code: /\bif\b/, line: "many" }, see: "many" },
+      { goal: "Print the count.", lines: [L("console.log(count);")], spec: { line: "2" }, see: "2" },
+      { goal: "Print one more than the count.", lines: [L("console.log(count + 1);")], spec: { line: "3" }, see: "3" },
+      { goal: "If count is more than 1, print many.", lines: [L("if (count > 1) {"), L('console.log("many");', true), L("}")], spec: { code: /\bif\b/, line: "many" }, see: "many" },
       { goal: "Add else.", lines: [L("else {"), L('console.log("one");', true), L("}")], spec: { code: /\belse\b/ }, see: "many still", note: "Click after the } that closes the if." },
-      { goal: "Loop two times and prlet hi.", lines: [L("for (let i = 1; i <= 2; i++) {"), L('console.log("hi");', true), L("}")], spec: { code: /for\s*\(/, minCount: { line: "hi", n: 2 } }, see: "hi twice" },
-      { goal: "Prlet both names again.", lines: [L("console.log(name);"), L("console.log(friend);")], spec: { minCount: { line: "bubbles", n: 1 } }, see: "Bubbles and Coral" },
+      { goal: "Loop two times and print hi.", lines: [L("for (let i = 1; i <= 2; i++) {"), L('console.log("hi");', true), L("}")], spec: { code: /for\s*\(/, minCount: { line: "hi", n: 2 } }, see: "hi twice" },
+      { goal: "Print both names again.", lines: [L("console.log(name);"), L("console.log(friend);")], spec: { minCount: { line: "bubbles", n: 1 } }, see: "Bubbles and Coral" },
       { goal: "Make a splash function.", lines: [L("function yay() {"), L('console.log("splash");', true), L("}")], spec: { code: /function\s+yay\s*\(/ }, see: "your old lines" },
       { goal: "Run yay.", lines: [L("yay();")], spec: { line: "splash" }, see: "splash" },
-      { goal: "Prlet All named!", lines: [L('console.log("All named!");')], spec: { contains: "all named" }, see: "All named!" },
-      { goal: "Prlet a goodbye line.", lines: [L('console.log("Bye fish!");')], spec: { contains: "bye fish" }, see: "Bye fish!" },
+      { goal: "Print All named!", lines: [L('console.log("All named!");')], spec: { contains: "all named" }, see: "All named!" },
+      { goal: "Print a goodbye line.", lines: [L('console.log("Bye fish!");')], spec: { contains: "bye fish" }, see: "Bye fish!" },
     ]),
   },
   {
     id: "quiz",
     title: "Mini quiz",
     blurb: "Ask a question, save the answer, and keep a score.",
-    plan: ["Prlet a question and save the answer.", "Use a score and math.", "Use if, a loop, and a function to finish."],
+    plan: ["Print a question and save the answer.", "Use a score and math.", "Use if, a loop, and a function to finish."],
     steps: buildJsSteps("Project step", [
-      { goal: "Prlet Quiz Time.", fresh: true, lines: [L('console.log("Quiz Time");')], spec: { contains: "quiz time" }, see: "Quiz Time" },
-      { goal: "Prlet a question.", lines: [L('console.log("How many arms does a starfish have?");')], spec: { contains: "?" }, see: "the question" },
+      { goal: "Print Quiz Time.", fresh: true, lines: [L('console.log("Quiz Time");')], spec: { contains: "quiz time" }, see: "Quiz Time" },
+      { goal: "Print a question.", lines: [L('console.log("How many arms does a starfish have?");')], spec: { contains: "?" }, see: "the question" },
       { goal: "Save the answer 5.", lines: [L('let answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Prlet the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
-      { goal: "Prlet The answer is plus the answer.", lines: [L('console.log("The answer is " + answer);')], spec: { contains: "the answer is 5" }, see: "The answer is 5" },
+      { goal: "Print the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
+      { goal: "Print The answer is plus the answer.", lines: [L('console.log("The answer is " + answer);')], spec: { contains: "the answer is 5" }, see: "The answer is 5" },
       { goal: "Save let score = 10;.", lines: [L("let score = 10;")], spec: { code: /score\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Prlet the score.", lines: [L("console.log(score);")], spec: { line: "10" }, see: "10" },
-      { goal: "Prlet score minus 2.", lines: [L("console.log(score - 2);")], spec: { line: "8" }, see: "8" },
-      { goal: "If score is more than 5, prlet pass.", lines: [L("if (score > 5) {"), L('console.log("pass");', true), L("}")], spec: { code: /\bif\b/, line: "pass" }, see: "pass" },
+      { goal: "Print the score.", lines: [L("console.log(score);")], spec: { line: "10" }, see: "10" },
+      { goal: "Print score minus 2.", lines: [L("console.log(score - 2);")], spec: { line: "8" }, see: "8" },
+      { goal: "If score is more than 5, print pass.", lines: [L("if (score > 5) {"), L('console.log("pass");', true), L("}")], spec: { code: /\bif\b/, line: "pass" }, see: "pass" },
       { goal: "Add else.", lines: [L("else {"), L('console.log("try again");', true), L("}")], spec: { code: /\belse\b/ }, see: "pass still", note: "Click after the } that closes the if." },
       { goal: "Save let bonus = 1;.", lines: [L("let bonus = 1;")], spec: { code: /bonus\s*=\s*1/ }, see: "your old lines" },
-      { goal: "Prlet the bonus.", lines: [L("console.log(bonus);")], spec: { line: "1" }, see: "1" },
+      { goal: "Print the bonus.", lines: [L("console.log(bonus);")], spec: { line: "1" }, see: "1" },
       { goal: "Loop 1 and 2.", lines: [L("for (let i = 1; i <= 2; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2"] }, see: "1 and 2" },
-      { goal: "Prlet a fact.", lines: [L('console.log("five arms");')], spec: { contains: "five arms" }, see: "five arms" },
-      { goal: "Prlet another fact.", lines: [L('console.log("lives in the sea");')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
+      { goal: "Print a fact.", lines: [L('console.log("five arms");')], spec: { contains: "five arms" }, see: "five arms" },
+      { goal: "Print another fact.", lines: [L('console.log("lives in the sea");')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
       { goal: "Make a done function.", lines: [L("function done() {"), L('console.log("quiz done");', true), L("}")], spec: { code: /function\s+done\s*\(/ }, see: "your old lines" },
       { goal: "Run done.", lines: [L("done();")], spec: { contains: "quiz done" }, see: "quiz done" },
-      { goal: "Prlet You finished the quiz!", lines: [L('console.log("You finished the quiz!");')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+      { goal: "Print You finished the quiz!", lines: [L('console.log("You finished the quiz!");')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
     ]),
   },
 ];
@@ -729,17 +729,17 @@ const advancedIdeas = [
     blurb: "A hero, a counting loop, and a victory function.",
     plan: ["Name the hero.", "Count and loop.", "Finish with a function."],
     steps: buildJsSteps("Advanced step", [
-      { goal: "Prlet Ocean Adventure.", fresh: true, lines: [L('console.log("Ocean Adventure");')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
+      { goal: "Print Ocean Adventure.", fresh: true, lines: [L('console.log("Ocean Adventure");')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
       { goal: "Save hero Fin.", lines: [L('let hero = "Fin";')], spec: { code: /hero\s*=/ }, see: "the title" },
-      { goal: "Prlet the hero.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "Prlet Go plus the hero.", lines: [L('console.log("Go " + hero);')], spec: { contains: "go fin" }, see: "Go Fin" },
+      { goal: "Print the hero.", lines: [L("console.log(hero);")], spec: { line: "fin" }, see: "Fin" },
+      { goal: "Print Go plus the hero.", lines: [L('console.log("Go " + hero);')], spec: { contains: "go fin" }, see: "Go Fin" },
       { goal: "Save let hearts = 3;.", lines: [L("let hearts = 3;")], spec: { code: /hearts\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Prlet hearts.", lines: [L("console.log(hearts);")], spec: { line: "3" }, see: "3" },
-      { goal: "Loop to prlet 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "If hearts are more than 2, prlet strong.", lines: [L("if (hearts > 2) {"), L('console.log("strong");', true), L("}")], spec: { code: /\bif\b/, line: "strong" }, see: "strong" },
+      { goal: "Print hearts.", lines: [L("console.log(hearts);")], spec: { line: "3" }, see: "3" },
+      { goal: "Loop to print 1, 2, 3.", lines: [L("for (let i = 1; i <= 3; i++) {"), L("console.log(i);", true), L("}")], spec: { code: /for\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
+      { goal: "If hearts are more than 2, print strong.", lines: [L("if (hearts > 2) {"), L('console.log("strong");', true), L("}")], spec: { code: /\bif\b/, line: "strong" }, see: "strong" },
       { goal: "Add else.", lines: [L("else {"), L('console.log("rest");', true), L("}")], spec: { code: /\belse\b/ }, see: "strong still", note: "Click after the } that closes the if." },
       { goal: "Save a pal name.", lines: [L('let pal = "Bubbles";')], spec: { code: /pal\s*=/ }, see: "your old lines" },
-      { goal: "Prlet the pal.", lines: [L("console.log(pal);")], spec: { line: "bubbles" }, see: "Bubbles" },
+      { goal: "Print the pal.", lines: [L("console.log(pal);")], spec: { line: "bubbles" }, see: "Bubbles" },
       { goal: "Make win and run it.", lines: [L("function win() {"), L('console.log("You win!");', true), L("}"), L("win();")], spec: { code: /function\s+win\s*\(/, contains: "you win" }, see: "You win!" },
     ]),
   },
@@ -749,36 +749,36 @@ const advancedIdeas = [
     blurb: "A harder question, a score, and a clap function.",
     plan: ["Ask and answer.", "Do score math.", "Clap at the end."],
     steps: buildJsSteps("Advanced step", [
-      { goal: "Prlet Hard Quiz.", fresh: true, lines: [L('console.log("Hard Quiz");')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
-      { goal: "Prlet a math question.", lines: [L('console.log("What is 2 + 3?");')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
+      { goal: "Print Hard Quiz.", fresh: true, lines: [L('console.log("Hard Quiz");')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
+      { goal: "Print a math question.", lines: [L('console.log("What is 2 + 3?");')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
       { goal: "Save answer 5.", lines: [L('let answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Prlet the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
+      { goal: "Print the answer.", lines: [L("console.log(answer);")], spec: { line: "5" }, see: "5" },
       { goal: "Save let points = 10;.", lines: [L("let points = 10;")], spec: { code: /points\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Prlet the points.", lines: [L("console.log(points);")], spec: { line: "10" }, see: "10" },
-      { goal: "Prlet points minus 1.", lines: [L("console.log(points - 1);")], spec: { line: "9" }, see: "9" },
-      { goal: "If points are more than 8, prlet super.", lines: [L("if (points > 8) {"), L('console.log("super");', true), L("}")], spec: { code: /\bif\b/, line: "super" }, see: "super" },
+      { goal: "Print the points.", lines: [L("console.log(points);")], spec: { line: "10" }, see: "10" },
+      { goal: "Print points minus 1.", lines: [L("console.log(points - 1);")], spec: { line: "9" }, see: "9" },
+      { goal: "If points are more than 8, print super.", lines: [L("if (points > 8) {"), L('console.log("super");', true), L("}")], spec: { code: /\bif\b/, line: "super" }, see: "super" },
       { goal: "Add else.", lines: [L("else {"), L('console.log("ok");', true), L("}")], spec: { code: /\belse\b/ }, see: "super still", note: "Click after the } that closes the if." },
       { goal: "Make a clap function.", lines: [L("function clap() {"), L('console.log("clap");', true), L("}")], spec: { code: /function\s+clap\s*\(/ }, see: "your old lines" },
       { goal: "Run clap.", lines: [L("clap();")], spec: { line: "clap" }, see: "clap" },
-      { goal: "Prlet Quiz star!", lines: [L('console.log("Quiz star!");')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+      { goal: "Print Quiz star!", lines: [L('console.log("Quiz star!");')], spec: { contains: "quiz star" }, see: "Quiz star!" },
     ]),
   },
   {
     id: "catalog",
     title: "Creature catalog",
     blurb: "Three animals and a goodbye function.",
-    plan: ["Prlet three animals.", "Save a name and a count.", "Finish the catalog."],
+    plan: ["Print three animals.", "Save a name and a count.", "Finish the catalog."],
     steps: buildJsSteps("Advanced step", [
-      { goal: "Prlet Sea Catalog.", fresh: true, lines: [L('console.log("Sea Catalog");')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
-      { goal: "Prlet crab.", lines: [L('console.log("crab");')], spec: { line: "crab" }, see: "crab" },
-      { goal: "Prlet eel.", lines: [L('console.log("eel");')], spec: { line: "eel" }, see: "eel" },
-      { goal: "Prlet whale.", lines: [L('console.log("whale");')], spec: { line: "whale" }, see: "whale" },
+      { goal: "Print Sea Catalog.", fresh: true, lines: [L('console.log("Sea Catalog");')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
+      { goal: "Print crab.", lines: [L('console.log("crab");')], spec: { line: "crab" }, see: "crab" },
+      { goal: "Print eel.", lines: [L('console.log("eel");')], spec: { line: "eel" }, see: "eel" },
+      { goal: "Print whale.", lines: [L('console.log("whale");')], spec: { line: "whale" }, see: "whale" },
       { goal: "Save first = crab.", lines: [L('let first = "crab";')], spec: { code: /first\s*=\s*["']crab["']/ }, see: "your old lines" },
-      { goal: "Prlet first.", lines: [L("console.log(first);")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
+      { goal: "Print first.", lines: [L("console.log(first);")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
       { goal: "Save let count = 3;.", lines: [L("let count = 3;")], spec: { code: /count\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Prlet the count.", lines: [L("console.log(count);")], spec: { line: "3" }, see: "3" },
+      { goal: "Print the count.", lines: [L("console.log(count);")], spec: { line: "3" }, see: "3" },
       { goal: "Loop the word swim twice.", lines: [L("for (let i = 1; i <= 2; i++) {"), L('console.log("swim");', true), L("}")], spec: { code: /for\s*\(/, minCount: { line: "swim", n: 2 } }, see: "swim twice" },
-      { goal: "If count is 3, prlet full tank.", lines: [L("if (count == 3) {"), L('console.log("full tank");', true), L("}")], spec: { code: /\bif\b/, contains: "full tank" }, see: "full tank" },
+      { goal: "If count is 3, print full tank.", lines: [L("if (count == 3) {"), L('console.log("full tank");', true), L("}")], spec: { code: /\bif\b/, contains: "full tank" }, see: "full tank" },
       { goal: "Add else.", lines: [L("else {"), L('console.log("more");', true), L("}")], spec: { code: /\belse\b/ }, see: "full tank still", note: "Click after the } that closes the if." },
       { goal: "Make bye and run it.", lines: [L("function bye() {"), L('console.log("catalog done");', true), L("}"), L("bye();")], spec: { code: /function\s+bye\s*\(/, contains: "catalog done" }, see: "catalog done" },
     ]),
@@ -847,8 +847,14 @@ function showTask() {
   taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
   nextBtn.textContent = "Next task";
-  taskGoal.textContent = tasks[taskIndex].goal;
-  setTip("Do the task, then press Run. Tap Help if you get stuck.");
+  taskGoal.textContent = window.CodeReefGuide
+    ? CodeReefGuide.instruction(tasks[taskIndex].goal, tasks[taskIndex].help)
+    : tasks[taskIndex].goal;
+  setTip(
+    window.CodeReefGuide
+      ? CodeReefGuide.startHint(tasks[taskIndex].goal, tasks[taskIndex].help, "Run")
+      : "Do the task, then press Run. Tap Help if you get stuck."
+  );
 }
 
 function afterSkillsComplete() {

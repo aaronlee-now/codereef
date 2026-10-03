@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="bxBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef08a"/>
+      <stop offset="0.5" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#a16207"/>
+    </linearGradient>
+    <radialGradient id="bxShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M292 112 L360 86 L332 118 L360 150 Z" fill="#eab308"/>
+    <path d="M108 78 H268 C286 78, 292 96, 292 112 C292 150, 280 168, 260 168 H120 C100 168, 90 150, 96 124 C96 96, 96 78, 108 78Z" fill="url(#bxBody)"/>
+    <path d="M118 120 H250" stroke="#fde047" stroke-width="2" opacity="0.5"/>
+    <path d="M124 78 V168" stroke="#ca8a04" stroke-width="2" opacity="0.35"/>
+    <path d="M250 84 V160" stroke="#ca8a04" stroke-width="2" opacity="0.35"/>
+    <g fill="#171717" stroke="none">
+      <circle cx="150" cy="100" r="6"/><circle cx="186" cy="108" r="5"/><circle cx="220" cy="98" r="6"/>
+      <circle cx="160" cy="136" r="5"/><circle cx="198" cy="142" r="6"/><circle cx="236" cy="132" r="5"/>
+      <circle cx="248" cy="112" r="4"/><circle cx="132" cy="118" r="4"/>
+    </g>
+    <path d="M250 70 C268 46, 286 58, 274 82" fill="#fde047"/>
+    <path d="M140 168 C150 196, 190 196, 200 166" fill="#eab308"/>
+    <ellipse cx="170" cy="100" rx="28" ry="14" fill="url(#bxShine)" stroke="none"/>
+    <circle cx="124" cy="112" r="13" fill="#fff"/>
+    <circle cx="120.9" cy="112.7" r="6.5" fill="#102028" stroke="none"/>
+    <circle cx="118.0" cy="108.4" r="2.3" fill="#fff" stroke="none"/>
+    <path d="M96 118 Q108 128 96 136" fill="none" stroke-width="2.6"/>
+  </g>
+</svg>

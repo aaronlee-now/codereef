@@ -757,11 +757,15 @@ function showTask() {
   nextBtn.textContent = "Next task";
   ensureStarterCode();
   const task = tasks[taskIndex];
-  taskGoal.textContent = task && task.goal ? task.goal : "Task " + (taskIndex + 1);
+  taskGoal.textContent = window.CodeReefGuide
+    ? CodeReefGuide.instruction(task && task.goal ? task.goal : "Task " + (taskIndex + 1), task && task.help)
+    : task && task.goal
+      ? task.goal
+      : "Task " + (taskIndex + 1);
   setTip(
-    task && task.help
-      ? "Do the task, then press Run. Tap Help if you get stuck."
-      : "Do the task, then press Run."
+    window.CodeReefGuide
+      ? CodeReefGuide.startHint(task && task.goal, task && task.help, "Run")
+      : "Do the task, then press Run. Tap Help if you get stuck."
   );
 }
 

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="acBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#334155"/>
+      <stop offset="0.45" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <radialGradient id="acShine" cx="40%" cy="40%" r="45%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M250 108 L360 48 L310 112 L360 176 Z" fill="#fb923c"/>
+    <path d="M268 108 L330 76 L304 112 L330 146 Z" fill="#111827" stroke="none"/>
+    <path d="M70 114 C78 50, 170 34, 268 80 C304 114, 260 184, 160 188 C100 188, 64 158, 70 114Z" fill="url(#acBody)"/>
+    <path d="M78 100 C120 78, 150 96, 140 120 C110 112, 86 112, 78 100Z" fill="#ffedd5"/>
+    <path d="M96 108 C130 96, 150 112, 132 124" fill="#fb923c" stroke="none"/>
+    <path d="M210 96 C236 78, 258 100, 240 128 C214 122, 204 108, 210 96Z" fill="#f97316"/>
+    <path d="M200 150 C230 176, 250 160, 236 140" fill="#fdba74" stroke="none"/>
+    <path d="M150 46 C176 22, 206 36, 190 60" fill="#f97316"/>
+    <path d="M168 164 C184 198, 220 192, 224 160" fill="#ea580c"/>
+    <ellipse cx="150" cy="96" rx="30" ry="14" fill="url(#acShine)" stroke="none"/>
+    <circle cx="112" cy="104" r="14" fill="#fff"/>
+    <circle cx="108.6" cy="104.7" r="7.0" fill="#102028" stroke="none"/>
+    <circle cx="105.6" cy="100.1" r="2.5" fill="#fff" stroke="none"/>
+    <path d="M74 122 Q83.0 132 94 123" fill="none" stroke="#163040" stroke-width="2.6"/>
+  </g>
+</svg>

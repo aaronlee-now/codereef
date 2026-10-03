@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="pyBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fed7aa"/>
+      <stop offset="0.45" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#c2410c"/>
+    </linearGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M36 108 L118 92 L112 124 Z" fill="#fdba74"/>
+    <path d="M108 78 C140 28, 200 36, 188 92 C230 70, 250 130, 200 156 C236 168, 220 210, 168 196 C150 220, 100 206, 118 176 C70 186, 58 130, 100 112 C72 118, 60 90, 100 86 C78 64, 88 48, 108 78Z" fill="url(#pyBody)"/>
+    <path d="M188 170 C240 160, 310 178, 336 200 C300 190, 250 198, 214 180 Z" fill="#ea580c"/>
+    <path d="M320 198 C350 208, 358 184, 332 178" fill="none" stroke="#9a3412" stroke-width="8"/>
+    <g fill="#ffedd5" stroke="#9a3412" stroke-width="1.5">
+      <circle cx="140" cy="78" r="7"/><circle cx="168" cy="70" r="6"/><circle cx="176" cy="104" r="7"/>
+      <circle cx="146" cy="116" r="6"/><circle cx="170" cy="140" r="7"/><circle cx="148" cy="156" r="5"/>
+    </g>
+    <circle cx="124" cy="96" r="12" fill="#fff"/>
+    <circle cx="120" cy="97" r="6" fill="#102028" stroke="none"/>
+    <circle cx="117" cy="93" r="2.2" fill="#fff" stroke="none"/>
+    <path d="M70 112 Q92 124 112 112" fill="none" stroke-width="2.4"/>
+  </g>
+</svg>

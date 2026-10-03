@@ -657,8 +657,14 @@ function showTask() {
   taskBar.classList.remove("is-done", "is-help", "is-project", "is-advanced");
   showNextButton(false);
   nextBtn.textContent = "Next task";
-  taskGoal.textContent = task.goal;
-  setTip("Try the task, then press Go. Need a hint? Tap Help.");
+  taskGoal.textContent = window.CodeReefGuide
+    ? CodeReefGuide.instruction(task.goal, task.help)
+    : task.goal;
+  setTip(
+    window.CodeReefGuide
+      ? CodeReefGuide.startHint(task.goal, task.help, "Go")
+      : "Try the task, then press Go. Need a hint? Tap Help."
+  );
 }
 
 function afterSkillsComplete() {
