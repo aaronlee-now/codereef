@@ -566,8 +566,7 @@ function walletFromSaved(data) {
   };
 }
 
-var ANDREW_MANTA_FLAG = "codereef_grant_manta_andrew";
-var ANDREW_MANTA_REMOVED_FLAG = "codereef_grant_manta_andrew_removed";
+var ANDREW_MANTA_REMOVE_FLAG = "codereef_remove_manta_andrew";
 
 function signedInKidName() {
   var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
@@ -580,16 +579,13 @@ function signedInKidName() {
   return String(user.kidName).trim().toLowerCase();
 }
 
-// If Andrew already got the free Manta Ray, take that one fish back once.
-// A Manta Ray he buys later stays. Coins, other fish, outfits, and decorations stay.
-function takeBackAndrewMantaOnce(wallet) {
+// Take back one gifted Manta Ray the first time Andrew's wallet loads.
+// Other fish, coins, outfits, and decorations stay. This never adds a fish.
+function removeAndrewMantaOnce(wallet) {
   if (signedInKidName() !== "andrew") {
     return wallet;
   }
-  if (!localStorage.getItem(ANDREW_MANTA_FLAG)) {
-    return wallet;
-  }
-  if (localStorage.getItem(ANDREW_MANTA_REMOVED_FLAG)) {
+  if (localStorage.getItem(ANDREW_MANTA_REMOVE_FLAG)) {
     return wallet;
   }
   var have = wallet.fishCounts.manta || 0;
@@ -602,14 +598,14 @@ function takeBackAndrewMantaOnce(wallet) {
     }
     saveWallet(wallet);
   }
-  localStorage.setItem(ANDREW_MANTA_REMOVED_FLAG, "1");
+  localStorage.setItem(ANDREW_MANTA_REMOVE_FLAG, "1");
   return wallet;
 }
 
 function getWallet() {
   var raw = localStorage.getItem(walletKidKey());
   if (!raw) {
-    return takeBackAndrewMantaOnce(emptyWallet());
+    return removeAndrewMantaOnce(emptyWallet());
   }
   try {
     var data = JSON.parse(raw);
@@ -617,7 +613,7 @@ function getWallet() {
     if (loaded.migrated) {
       saveWallet(loaded.wallet);
     }
-    return takeBackAndrewMantaOnce(loaded.wallet);
+    return removeAndrewMantaOnce(loaded.wallet);
   } catch (err) {
     return emptyWallet();
   }
