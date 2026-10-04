@@ -497,6 +497,54 @@ body {
   outline: none;
 }
 
+.auth__text-btn {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--sand);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth__text-btn:hover,
+.auth__text-btn:focus-visible {
+  color: var(--foam);
+  outline: none;
+}
+
+.auth__message--ok {
+  background: rgba(143, 214, 148, 0.2);
+  border-color: rgba(143, 214, 148, 0.55);
+}
+
+textarea.field__input {
+  display: block;
+  min-height: 6.5rem;
+  resize: vertical;
+  line-height: 1.35;
+  font-size: 0.85rem;
+}
+
+.link-panel {
+  margin-top: 0.85rem;
+}
+
+.link-panel[hidden] {
+  display: none;
+}
+
+.settings-card .auth__hint {
+  margin-top: 0;
+}
+
+.settings-card .auth__submit {
+  margin-bottom: 0.85rem;
+}
+
 /* Explore path list */
 .explore {
   width: min(28rem, calc(100% - 2rem));

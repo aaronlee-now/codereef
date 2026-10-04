@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=twopc1" />
+    <link rel="stylesheet" href="style.css?v=link1" />
     <link rel="stylesheet" href="shop.css?v=ultra1" />
   </head>
   <body class="page page--auth">
@@ -48,31 +48,18 @@
         </dl>
       </section>
 
-      <section class="settings-card settings-code" aria-label="Account code">
-        <h2 class="settings-code__title">Account code</h2>
-        <p class="settings-code__hint">
-          Fish and lessons live in this browser. Copy this code to use the same account on another computer.
-          Both computers can stay logged in. A parent should keep the code.
-        </p>
-        <label class="field" for="account-code">
-          <span class="field__label">Copy this code</span>
-          <textarea class="field__input field__code" id="account-code" readonly rows="4"></textarea>
-        </label>
-        <button class="auth__submit" type="button" id="copy-code">Copy code</button>
-        <p class="auth__message auth__message--ok" id="copy-message" hidden></p>
-
-        <div class="settings-code__load">
-          <h3 class="settings-code__title">Put a code in</h3>
-          <p class="settings-code__hint">
-            Paste a code from the other computer. This computer gets that kid's fish and lessons.
-            The other computer keeps its copy.
-          </p>
-          <label class="field" for="load-code">
-            <span class="field__label">Account code</span>
-            <textarea class="field__input field__code" id="load-code" rows="4" autocomplete="off" placeholder="Paste a code"></textarea>
+      <section class="settings-card" aria-label="Another computer">
+        <p class="auth__hint">The other computer gets a copy, and both can stay logged in.</p>
+        <button class="auth__submit" type="button" id="show-link-code">
+          Use this account on another computer
+        </button>
+        <div class="link-panel" id="link-code-panel" hidden>
+          <label class="field" for="link-code">
+            <span class="field__label">Link code</span>
+            <textarea class="field__input" id="link-code" readonly rows="4" spellcheck="false"></textarea>
           </label>
-          <button class="auth__submit" type="button" id="load-code-btn">Put a code in</button>
-          <p class="auth__message" id="load-message" hidden></p>
+          <button class="auth__submit" type="button" id="copy-link-code">Copy the link code</button>
+          <p class="auth__message" id="link-code-message" hidden></p>
         </div>
       </section>
 
@@ -85,8 +72,8 @@
       </nav>
     </main>
 
-    <script src="auth.js?v=twopc1"></script>
+    <script src="auth.js?v=link1"></script>
     <script src="progress.js?v=save2"></script>
-    <script src="settings.js?v=twopc1"></script>
+    <script src="settings.js?v=link2"></script>
   </body>
 </html>
