@@ -60,8 +60,8 @@ function restoreDoneWaitingForNext() {
   }
 }
 
-const starterCode = `System.out.println("Hello, reef!");\n`;
-const projectStarter = `System.out.println("My reef project");\n`;
+const starterCode = `System.out.println("Garden quiet!");\n`;
+const projectStarter = `System.out.println("Garden project");\n`;
 
 function numbered(lines) {
   const parts = [];
@@ -404,169 +404,109 @@ const tasks = (function buildJavaTasks() {
     });
   }
 
-  add("Make Java say Hello, ocean!", true, [L('System.out.println("Hello, ocean!");')], { contains: "hello, ocean!" }, "Hello, ocean!");
-  list[0].help = numbered([
-    "Keep your old code. Do not erase the whole line.",
-    "Click in the code box.",
-    "Click on the word reef.",
-    "Delete the letters r e e f.",
-    "Type the word ocean in that same spot.",
-    'The line should look like this: System.out.println("Hello, ocean!");',
-    "System.out.println means show these words on the screen.",
-    "Type the word System.",
-    "Then type a dot. A dot is this mark: .",
-    "Then type out.",
-    "Then type a dot again.",
-    "Then type println.",
-    "Then type this mark: (",
-    'A quote is this mark: "',
-    "The words Hello, ocean! stay between the quotes.",
-    "Then type this mark: )",
-    "Then type a semicolon. A semicolon is this mark: ;",
-    "The semicolon ends the line.",
-    "Press the Run button. It is at the top.",
-    "You should see Hello, ocean!",
-  ]);
-
-  add(
-    "Print two lines — Hello, ocean! then I love Java!",
-    false,
-    [L('System.out.println("I love Java!");')],
-    { contains: ["hello, ocean!", "i love java!"] },
-    "I love Java!",
-    'System.out.println("Hello, ocean!");\nSystem.out.println("I love Java!");\n'
-  );
-  add(
-    'Make a variable String fish = "clownfish"; and print it.',
-    false,
-    [L('String fish = "clownfish";'), L("System.out.println(fish);")],
-    { code: /fish\s*=\s*["']clownfish["']/, line: "clownfish" },
-    "clownfish"
-  );
-  add(
-    "Use a for loop to print 1, then 2, then 3.",
-    true,
-    [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(i);", true), L("}")],
-    { code: /for\s*\(\s*int/, line: ["1", "2", "3"] },
-    "1 then 2 then 3"
-  );
-  add("Print the number 5.", true, [L("System.out.println(5);")], { line: "5" }, "5");
-  add(
-    'Make String coral = "reef"; and print it.',
-    false,
-    [L('String coral = "reef";'), L("System.out.println(coral);")],
-    { code: /coral\s*=\s*["']reef["']/, line: "reef" },
-    "reef"
-  );
-  add(
-    "Loop to print splash three times.",
-    true,
-    [L("for (int i = 1; i <= 3; i++) {"), L('System.out.println("splash");', true), L("}")],
-    { code: /for\s*\(\s*int/, minCount: { line: "splash", n: 3 } },
-    "splash three times"
-  );
-
-  ["bubble", "wave", "crab", "dolphin", "turtle", "coral", "sand", "shell", "whale", "shark", "starfish", "eel"].forEach(function (word) {
-    add("Print the word " + word + ".", false, [L('System.out.println("' + word + '");')], { contains: word }, word);
-  });
-
-  [
-    ["pet", "crab"], ["boat", "blue"], ["hero", "Fin"], ["snack", "kelp"],
-    ["home", "reef"], ["friend", "Nemo"], ["color", "teal"], ["toy", "shell"],
-    ["pal", "otter"], ["ride", "wave"], ["team", "pods"], ["gem", "pearl"],
-  ].forEach(function (pair) {
-    add(
-      'Make ' + pair[0] + ' = "' + pair[1] + '" and print it.',
-      false,
-      [L('String ' + pair[0] + ' = "' + pair[1] + '";'), L("System.out.println(" + pair[0] + ");")],
-      { code: new RegExp(pair[0] + "\\s*=\\s*[\"']" + pair[1] + "[\"']", "i"), line: pair[1].toLowerCase() },
-      pair[1]
-    );
-  });
-
-  [["2 + 3", "5"], ["4 + 1", "5"], ["10 - 3", "7"], ["8 - 2", "6"], ["2 * 3", "6"], ["4 * 2", "8"], ["1 + 6", "7"], ["9 - 4", "5"], ["3 * 3", "9"], ["5 + 5", "10"]].forEach(function (row) {
-    add("Print the math " + row[0] + ".", true, [L("System.out.println(" + row[0] + ");")], { line: row[1], code: /System\.out\.println\s*\(/ }, row[1]);
-  });
-
-  ["splash", "bubble", "yay", "hi", "wave", "go"].forEach(function (word) {
-    add(
-      'Use a loop to print "' + word + '" three times.',
-      true,
-      [L("for (int i = 1; i <= 3; i++) {"), L('System.out.println("' + word + '");', true), L("}")],
-      { code: /for\s*\(\s*int/, minCount: { line: word, n: 3 } },
-      word + " three times"
-    );
-  });
-  [["1", "<=", "3", ["1", "2", "3"]], ["1", "<=", "4", ["1", "2", "3", "4"]], ["0", "<", "3", ["0", "1", "2"]], ["2", "<=", "4", ["2", "3", "4"]], ["1", "<=", "5", ["1", "2", "3", "4", "5"]], ["4", "<=", "6", ["4", "5", "6"]]].forEach(function (row) {
-    add(
-      "Use a loop to print " + row[3].join(", then ") + ".",
-      true,
-      [L("for (int i = " + row[0] + "; i " + row[1] + " " + row[2] + "; i++) {"), L("System.out.println(i);", true), L("}")],
-      { code: /for\s*\(\s*int/, line: row[3] },
-      row[3].join(" then ")
-    );
-  });
-
-  [["9", ">", "5", "big", "small", "big"], ["1", ">", "5", "big", "small", "small"], ["8", ">", "3", "yes", "no", "yes"], ["2", "<", "4", "low", "high", "low"], ["10", ">", "7", "tall", "short", "tall"], ["0", ">", "2", "hot", "cold", "cold"], ["6", ">", "6", "same", "notyet", "notyet"], ["4", "<", "9", "ok", "nope", "ok"], ["3", ">", "1", "swim", "rest", "swim"], ["5", "<", "5", "up", "down", "down"], ["7", ">", "2", "pass", "try", "pass"], ["1", "<", "1", "a", "b", "b"]].forEach(function (row) {
-    add(
-      "Use if and else so the path prints " + row[5] + ".",
-      true,
-      [L("int score = " + row[0] + ";"), L("if (score " + row[1] + " " + row[2] + ") {"), L('System.out.println("' + row[3] + '");', true), L("}"), L("else {"), L('System.out.println("' + row[4] + '");', true), L("}")],
-      { code: /\bif\b[\s\S]*\belse\b/, line: row[5] },
-      row[5]
-    );
-  });
-
-  ["wave", "splash", "hi", "yay", "wow", "go", "pop"].forEach(function (word) {
-    add(
-      "Make a function " + word + " that prints " + word + ", then run it.",
-      true,
-      [L("void " + word + "() {"), L('System.out.println("' + word + '");', true), L("}"), L(word + "();")],
-      { code: new RegExp("void\\s+" + word + "\\s*\\("), line: word },
-      word
-    );
-  });
-  [["cheer", "reef"], ["greet", "sam"], ["shout", "go"], ["call", "fin"], ["hail", "nemo"], ["sayhi", "otter"]].forEach(function (pair) {
-    add(
-      "Make a function " + pair[0] + " that prints the name you give it.",
-      true,
-      [L("void " + pair[0] + "(name) {"), L("System.out.println(name);", true), L("}"), L(pair[0] + '("' + pair[1] + '");')],
-      { code: new RegExp("void\\s+" + pair[0] + "\\s*\\("), line: pair[1] },
-      pair[1]
-    );
-  });
-
-  [
-    ["Sam", "Hello "], ["Fin", "Go "], ["Nemo", "Hi "], ["Otter", "Meet "],
-    ["Coral", "Hey "], ["Bubbles", "Yay "], ["Reef", "See "], ["Kelp", "Eat "],
-    ["Pearl", "Find "], ["Tide", "Ride "], ["Cove", "Love "], ["Pier", "Near "],
-  ].forEach(function (pair) {
-    add(
-      'Stick "' + pair[1] + '" onto the name ' + pair[0] + ".",
-      true,
-      [L('String name = "' + pair[0] + '";'), L('System.out.println("' + pair[1] + '" + name);')],
-      { contains: (pair[1] + pair[0]).toLowerCase() },
-      pair[1] + pair[0]
-    );
-  });
-
-  add("Save a hero name, then use if to print found.", true, [L('String hero = "Fin";'), L("System.out.println(hero);"), L('if (hero == "Fin") {'), L('System.out.println("found");', true), L("}")], { code: /\bif\b/, line: "found" }, "found");
-  add("Add 1 to a number and print it.", true, [L("int waves = 3;"), L("System.out.println(waves + 1);")], { code: /waves\s*\+\s*1/, line: "4" }, "4");
-  add("Take 2 away from a score and print it.", true, [L("int score = 9;"), L("System.out.println(score - 2);")], { code: /score\s*-\s*2/, line: "7" }, "7");
-  add("Use a function and a variable together.", true, [L('String pet = "crab";'), L("void show() {"), L('System.out.println("ready");', true), L("}"), L("show();"), L("System.out.println(pet);")], { code: /void\s+show\s*\(/, line: ["ready", "crab"] }, "ready and crab");
-  add("Loop 2 times and also print a title.", true, [L('System.out.println("Title");'), L("for (int i = 1; i <= 2; i++) {"), L('System.out.println("go");', true), L("}")], { code: /for\s*\(\s*int/, contains: "title", minCount: { line: "go", n: 2 } }, "Title and go go");
-  add("If a score is big, print pass.", true, [L("int score = 10;"), L("if (score > 5) {"), L('System.out.println("pass");', true), L("}"), L("else {"), L('System.out.println("try");', true), L("}")], { code: /\bif\b/, line: "pass" }, "pass");
-  add("Make two functions and run both.", true, [L("void ping() {"), L('System.out.println("ping");', true), L("}"), L("void pong() {"), L('System.out.println("pong");', true), L("}"), L("ping();"), L("pong();")], { code: /void\s+ping\s*\(/, line: ["ping", "pong"] }, "ping and pong");
-  add("Print a name, then loop the word splash twice.", true, [L('System.out.println("Fin");'), L("for (int i = 1; i <= 2; i++) {"), L('System.out.println("splash");', true), L("}")], { code: /for\s*\(\s*int/, line: "fin", minCount: { line: "splash", n: 2 } }, "Fin and splash");
-  add("Remember two names and print both.", true, [L('String one = "crab";'), L('String two = "eel";'), L("System.out.println(one);"), L("System.out.println(two);")], { line: ["crab", "eel"] }, "crab and eel");
-  add("Count with a loop from 1 to 2, then print done.", true, [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(i);", true), L("}"), L('System.out.println("done");')], { code: /for\s*\(\s*int/, line: ["1", "2"], contains: "done" }, "1, 2, and done");
-
-  const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
-  let pad = 0;
-  while (list.length < 100) {
-    const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
-    pad += 1;
-    add("Print the extra word " + word + ".", false, [L('System.out.println("' + word + '");')], { contains: word }, word);
+  add("Change quiet to busy.", false, [L("System.out.println(\"Garden busy!\");")], { contains: "garden busy!" }, "Garden busy!", "System.out.println(\"Garden busy!\");\n");
+  list[0].help = numbered(["Keep your old code. Do not erase the whole line.","Click in the code box.","Click on the word quiet.","Delete those letters.","Type the new word in that same spot.","The line should look like this: System.out.println(\"Garden busy!\");","System.out.println means show these words on the screen.","A quote is this mark: \"","The words Garden busy! stay between the quotes.","Then type a semicolon. A semicolon is this mark: ;","Press the Run button. It is at the top.","You should see Garden busy!"]);
+  add("Print polyp.", false, [L("System.out.println(\"polyp\");")], { contains: "polyp" }, "polyp");
+  add("Print frond.", false, [L("System.out.println(\"frond\");")], { contains: "frond" }, "frond");
+  add("Print larva.", false, [L("System.out.println(\"larva\");")], { contains: "larva" }, "larva");
+  add("Print bloom.", false, [L("System.out.println(\"bloom\");")], { contains: "bloom" }, "bloom");
+  add("Print the number 4.", true, [L("System.out.println(4);")], { line: "4" }, "4");
+  add("Print the number 7.", true, [L("System.out.println(7);")], { line: "7" }, "7");
+  add("Print the number 11.", true, [L("System.out.println(11);")], { line: "11" }, "11");
+  add("Print two lines about the garden.", true, [L("System.out.println(\"Nia plants a bud.\");"), L("System.out.println(\"The fan sways.\");")], { contains: ["nia plants a bud.","the fan sways."] }, "The fan sways.");
+  add("Print two lines about the garden.", true, [L("System.out.println(\"A polyp opens.\");"), L("System.out.println(\"Fronds tickle fish.\");")], { contains: ["a polyp opens.","fronds tickle fish."] }, "Fronds tickle fish.");
+  add("Print two lines about the garden.", true, [L("System.out.println(\"The garden wakes.\");"), L("System.out.println(\"Buds glow softly.\");")], { contains: ["the garden wakes.","buds glow softly."] }, "Buds glow softly.");
+  add("Remember Nia in plant.", true, [L("String plant = \"Nia\";"), L("System.out.println(plant);")], { line: "nia", code: /plant\s*:?=\s*["']Nia["']/ }, "Nia");
+  add("Remember Sway in fan.", true, [L("String fan = \"Sway\";"), L("System.out.println(fan);")], { line: "sway", code: /fan\s*:?=\s*["']Sway["']/ }, "Sway");
+  add("Remember Pippa in bud.", true, [L("String bud = \"Pippa\";"), L("System.out.println(bud);")], { line: "pippa", code: /bud\s*:?=\s*["']Pippa["']/ }, "Pippa");
+  add("Remember Frond in leaf.", true, [L("String leaf = \"Frond\";"), L("System.out.println(leaf);")], { line: "frond", code: /leaf\s*:?=\s*["']Frond["']/ }, "Frond");
+  add("Remember Lila in pal.", true, [L("String pal = \"Lila\";"), L("System.out.println(pal);")], { line: "lila", code: /pal\s*:?=\s*["']Lila["']/ }, "Lila");
+  add("Remember Reefy in spot.", true, [L("String spot = \"Reefy\";"), L("System.out.println(spot);")], { line: "reefy", code: /spot\s*:?=\s*["']Reefy["']/ }, "Reefy");
+  add("Remember the number 5 in buds.", true, [L("int buds = 5;"), L("System.out.println(buds);")], { line: "5", code: /buds\s*:?=\s*5\b/ }, "5");
+  add("Remember the number 3 in fans.", true, [L("int fans = 3;"), L("System.out.println(fans);")], { line: "3", code: /fans\s*:?=\s*3\b/ }, "3");
+  add("Remember the number 4 in rows.", true, [L("int rows = 4;"), L("System.out.println(rows);")], { line: "4", code: /rows\s*:?=\s*4\b/ }, "4");
+  add("Remember the number 6 in drops.", true, [L("int drops = 6;"), L("System.out.println(drops);")], { line: "6", code: /drops\s*:?=\s*6\b/ }, "6");
+  add("Say Hello to Nia.", true, [L("String who = \"Nia\";"), L("System.out.println(\"Hello \" + who);")], { contains: "hello nia" }, "Hello Nia");
+  add("Say Hi to Sway.", true, [L("String who = \"Sway\";"), L("System.out.println(\"Hi \" + who);")], { contains: "hi sway" }, "Hi Sway");
+  add("Say Hey to Pippa.", true, [L("String who = \"Pippa\";"), L("System.out.println(\"Hey \" + who);")], { contains: "hey pippa" }, "Hey Pippa");
+  add("Say Hello to Frond.", true, [L("String who = \"Frond\";"), L("System.out.println(\"Hello \" + who);")], { contains: "hello frond" }, "Hello Frond");
+  add("Say Hiya to Lila.", true, [L("String who = \"Lila\";"), L("System.out.println(\"Hiya \" + who);")], { contains: "hiya lila" }, "Hiya Lila");
+  add("Print the answer to 2 + 5.", true, [L("System.out.println(2 + 5);")], { line: "7", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "7");
+  add("Print the answer to 9 - 2.", true, [L("System.out.println(9 - 2);")], { line: "7", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "7");
+  add("Print the answer to 3 * 2.", true, [L("System.out.println(3 * 2);")], { line: "6", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "6");
+  add("Print the answer to 8 - 5.", true, [L("System.out.println(8 - 5);")], { line: "3", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "3");
+  add("Print the answer to 1 + 4.", true, [L("System.out.println(1 + 4);")], { line: "5", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "5");
+  add("Print the answer to 4 * 1.", true, [L("System.out.println(4 * 1);")], { line: "4", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "4");
+  add("Start buds at 5, then print buds + 2.", true, [L("int buds = 5;"), L("System.out.println(buds + 2);")], { line: "7", code: /buds\s*\+\s*2/ }, "7");
+  add("Start fans at 3, then print fans - 1.", true, [L("int fans = 3;"), L("System.out.println(fans - 1);")], { line: "2", code: /fans\s*\-\s*1/ }, "2");
+  add("Start rows at 4, then print rows * 2.", true, [L("int rows = 4;"), L("System.out.println(rows * 2);")], { line: "8", code: /rows\s*\*\s*2/ }, "8");
+  add("Start drops at 6, then print drops - 3.", true, [L("int drops = 6;"), L("System.out.println(drops - 3);")], { line: "3", code: /drops\s*\-\s*3/ }, "3");
+  add("Start buds at 1, then print buds + 6.", true, [L("int buds = 1;"), L("System.out.println(buds + 6);")], { line: "7", code: /buds\s*\+\s*6/ }, "7");
+  add("Remember Nia and Sway.", true, [L("String one = \"Nia\";"), L("String two = \"Sway\";"), L("System.out.println(one);"), L("System.out.println(two);")], { line: ["nia","sway"] }, "Nia and Sway");
+  add("Remember Pippa and Frond.", true, [L("String bud = \"Pippa\";"), L("String leaf = \"Frond\";"), L("System.out.println(bud);"), L("System.out.println(leaf);")], { line: ["pippa","frond"] }, "Pippa and Frond");
+  add("Remember Lila and Reefy.", true, [L("String a = \"Lila\";"), L("String b = \"Reefy\";"), L("System.out.println(a);"), L("System.out.println(b);")], { line: ["lila","reefy"] }, "Lila and Reefy");
+  add("Remember Bloom and Polyp.", true, [L("String top = \"Bloom\";"), L("String low = \"Polyp\";"), L("System.out.println(top);"), L("System.out.println(low);")], { line: ["bloom","polyp"] }, "Bloom and Polyp");
+  add("If the number is > 2, print growing.", true, [L("int score = 6;"), L("if (score > 2) {"), L("System.out.println(\"growing\");", true), L("}")], { line: "growing", code: /\bif\b/ }, "growing");
+  add("If the number is > 1, print open.", true, [L("int score = 4;"), L("if (score > 1) {"), L("System.out.println(\"open\");", true), L("}")], { line: "open", code: /\bif\b/ }, "open");
+  add("If the number is < 3, print shut.", true, [L("int score = 1;"), L("if (score < 3) {"), L("System.out.println(\"shut\");", true), L("}")], { line: "shut", code: /\bif\b/ }, "shut");
+  add("If the number is > 4, print tall.", true, [L("int score = 8;"), L("if (score > 4) {"), L("System.out.println(\"tall\");", true), L("}")], { line: "tall", code: /\bif\b/ }, "tall");
+  add("If the number is < 7, print short.", true, [L("int score = 2;"), L("if (score < 7) {"), L("System.out.println(\"short\");", true), L("}")], { line: "short", code: /\bif\b/ }, "short");
+  add("If the number is > 3, print ready.", true, [L("int score = 5;"), L("if (score > 3) {"), L("System.out.println(\"ready\");", true), L("}")], { line: "ready", code: /\bif\b/ }, "ready");
+  add("Use if and else so you print asleep.", true, [L("int score = 1;"), L("if (score > 3) {"), L("System.out.println(\"growing\");", true), L("}"), L("else {"), L("System.out.println(\"asleep\");", true), L("}")], { line: "asleep", code: /\bif\b[\s\S]*\belse\b/ }, "asleep");
+  add("Use if and else so you print bloom.", true, [L("int score = 7;"), L("if (score > 2) {"), L("System.out.println(\"bloom\");", true), L("}"), L("else {"), L("System.out.println(\"bud\");", true), L("}")], { line: "bloom", code: /\bif\b[\s\S]*\belse\b/ }, "bloom");
+  add("Use if and else so you print above.", true, [L("int score = 2;"), L("if (score < 2) {"), L("System.out.println(\"low\");", true), L("}"), L("else {"), L("System.out.println(\"above\");", true), L("}")], { line: "above", code: /\bif\b[\s\S]*\belse\b/ }, "above");
+  add("Use if and else so you print young.", true, [L("int score = 3;"), L("if (score < 6) {"), L("System.out.println(\"young\");", true), L("}"), L("else {"), L("System.out.println(\"old\");", true), L("}")], { line: "young", code: /\bif\b[\s\S]*\belse\b/ }, "young");
+  add("Use if and else so you print closed.", true, [L("int score = 0;"), L("if (score > 2) {"), L("System.out.println(\"yes\");", true), L("}"), L("else {"), L("System.out.println(\"closed\");", true), L("}")], { line: "closed", code: /\bif\b[\s\S]*\belse\b/ }, "closed");
+  add("Use if and else so you print smaller.", true, [L("int score = 4;"), L("if (score > 4) {"), L("System.out.println(\"max\");", true), L("}"), L("else {"), L("System.out.println(\"smaller\");", true), L("}")], { line: "smaller", code: /\bif\b[\s\S]*\belse\b/ }, "smaller");
+  add("Use if and else so you print leafy.", true, [L("int score = 5;"), L("if (score < 9) {"), L("System.out.println(\"leafy\");", true), L("}"), L("else {"), L("System.out.println(\"nope\");", true), L("}")], { line: "leafy", code: /\bif\b[\s\S]*\belse\b/ }, "leafy");
+  add("Use if and else so you print wide.", true, [L("int score = 8;"), L("if (score > 1) {"), L("System.out.println(\"wide\");", true), L("}"), L("else {"), L("System.out.println(\"thin\");", true), L("}")], { line: "wide", code: /\bif\b[\s\S]*\belse\b/ }, "wide");
+  add("Use a loop to print sway 2 times.", true, [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}")], { minCount: { line: "sway", n: 2 }, code: /for\s*\(\s*int/ }, "sway 2 times");
+  add("Use a loop to print sway 3 times.", true, [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(\"sway\");", true), L("}")], { minCount: { line: "sway", n: 3 }, code: /for\s*\(\s*int/ }, "sway 3 times");
+  add("Use a loop to print bloom 2 times.", true, [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"bloom\");", true), L("}")], { minCount: { line: "bloom", n: 2 }, code: /for\s*\(\s*int/ }, "bloom 2 times");
+  add("Use a loop to print sprout 3 times.", true, [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(\"sprout\");", true), L("}")], { minCount: { line: "sprout", n: 3 }, code: /for\s*\(\s*int/ }, "sprout 3 times");
+  add("Use a loop to print root 2 times.", true, [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"root\");", true), L("}")], { minCount: { line: "root", n: 2 }, code: /for\s*\(\s*int/ }, "root 2 times");
+  add("Use a loop to print shade 4 times.", true, [L("for (int i = 1; i <= 4; i++) {"), L("System.out.println(\"shade\");", true), L("}")], { minCount: { line: "shade", n: 4 }, code: /for\s*\(\s*int/ }, "shade 4 times");
+  add("Use a loop to print 4, then 5, then 6, then 7.", true, [L("for (int i = 4; i <= 7; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["4","5","6","7"], code: /for\s*\(\s*int/ }, "4 then 5 then 6 then 7");
+  add("Use a loop to print 9, then 10, then 11.", true, [L("for (int i = 9; i <= 11; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["9","10","11"], code: /for\s*\(\s*int/ }, "9 then 10 then 11");
+  add("Use a loop to print 2.", true, [L("for (int i = 2; i <= 2; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["2"], code: /for\s*\(\s*int/ }, "2");
+  add("Use a loop to print 6, then 7, then 8, then 9.", true, [L("for (int i = 6; i <= 9; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["6","7","8","9"], code: /for\s*\(\s*int/ }, "6 then 7 then 8 then 9");
+  add("Use a loop to print 1, then 2, then 3, then 4.", true, [L("for (int i = 1; i <= 4; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["1","2","3","4"], code: /for\s*\(\s*int/ }, "1 then 2 then 3 then 4");
+  add("Use a loop to print 8.", true, [L("for (int i = 8; i <= 8; i++) {"), L("System.out.println(i);", true), L("}")], { line: ["8"], code: /for\s*\(\s*int/ }, "8");
+  add("Add 1 and 2 from two names.", true, [L("int left = 1;"), L("int right = 2;"), L("System.out.println(left + right);")], { line: "3", code: /left\s*\+\s*right/ }, "3");
+  add("Add 3 and 3 from two names.", true, [L("int left = 3;"), L("int right = 3;"), L("System.out.println(left + right);")], { line: "6", code: /left\s*\+\s*right/ }, "6");
+  add("Add 4 and 4 from two names.", true, [L("int left = 4;"), L("int right = 4;"), L("System.out.println(left + right);")], { line: "8", code: /left\s*\+\s*right/ }, "8");
+  add("Add 2 and 6 from two names.", true, [L("int left = 2;"), L("int right = 6;"), L("System.out.println(left + right);")], { line: "8", code: /left\s*\+\s*right/ }, "8");
+  add("Add 5 and 1 from two names.", true, [L("int left = 5;"), L("int right = 1;"), L("System.out.println(left + right);")], { line: "6", code: /left\s*\+\s*right/ }, "6");
+  add("Add 7 and 2 from two names.", true, [L("int left = 7;"), L("int right = 2;"), L("System.out.println(left + right);")], { line: "9", code: /left\s*\+\s*right/ }, "9");
+  add("Make a recipe sway that prints sway.", true, [L("void sway() {"), L("System.out.println(\"sway\");", true), L("}"), L("sway();")], { line: "sway", code: /void\s+sway\s*\(/ }, "sway");
+  add("Make a recipe bloom that prints bloom.", true, [L("void bloom() {"), L("System.out.println(\"bloom\");", true), L("}"), L("bloom();")], { line: "bloom", code: /void\s+bloom\s*\(/ }, "bloom");
+  add("Make a recipe sprout that prints sprout.", true, [L("void sprout() {"), L("System.out.println(\"sprout\");", true), L("}"), L("sprout();")], { line: "sprout", code: /void\s+sprout\s*\(/ }, "sprout");
+  add("Make a recipe unfurl that prints unfurl.", true, [L("void unfurl() {"), L("System.out.println(\"unfurl\");", true), L("}"), L("unfurl();")], { line: "unfurl", code: /void\s+unfurl\s*\(/ }, "unfurl");
+  add("Make a recipe root that prints root.", true, [L("void root() {"), L("System.out.println(\"root\");", true), L("}"), L("root();")], { line: "root", code: /void\s+root\s*\(/ }, "root");
+  add("Make a recipe shade that prints shade.", true, [L("void shade() {"), L("System.out.println(\"shade\");", true), L("}"), L("shade();")], { line: "shade", code: /void\s+shade\s*\(/ }, "shade");
+  add("Make callnia print the name you give it.", true, [L("void callnia(name) {"), L("System.out.println(name);", true), L("}"), L("callnia(\"Nia\");")], { line: "nia", code: /void\s+callnia\s*\(/ }, "Nia");
+  add("Make callsway print the name you give it.", true, [L("void callsway(name) {"), L("System.out.println(name);", true), L("}"), L("callsway(\"Sway\");")], { line: "sway", code: /void\s+callsway\s*\(/ }, "Sway");
+  add("Make callpippa print the name you give it.", true, [L("void callpippa(name) {"), L("System.out.println(name);", true), L("}"), L("callpippa(\"Pippa\");")], { line: "pippa", code: /void\s+callpippa\s*\(/ }, "Pippa");
+  add("Make calllila print the name you give it.", true, [L("void calllila(name) {"), L("System.out.println(name);", true), L("}"), L("calllila(\"Lila\");")], { line: "lila", code: /void\s+calllila\s*\(/ }, "Lila");
+  add("Make callreefy print the name you give it.", true, [L("void callreefy(name) {"), L("System.out.println(name);", true), L("}"), L("callreefy(\"Reefy\");")], { line: "reefy", code: /void\s+callreefy\s*\(/ }, "Reefy");
+  add("Save a score, then print growing when it is big.", true, [L("int score = 6;"), L("if (score > 2) {"), L("System.out.println(\"growing\");", true), L("}"), L("else {"), L("System.out.println(\"asleep\");", true), L("}")], { line: "growing", code: /\bif\b/ }, "growing");
+  add("Print Garden log, then loop sway twice.", true, [L("System.out.println(\"Garden log\");"), L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}")], { contains: "garden log", minCount: { line: "sway", n: 2 }, code: /for\s*\(\s*int/ }, "Garden log and sway");
+  add("Remember two names, Nia and Sway.", true, [L("String one = \"Nia\";"), L("String two = \"Sway\";"), L("System.out.println(one);"), L("System.out.println(two);")], { line: ["nia","sway"] }, "Nia and Sway");
+  add("Take 4 away from 12.", true, [L("int bag = 12;"), L("System.out.println(bag - 4);")], { line: "8", code: /bag\s*-\s*4/ }, "8");
+  add("Run a recipe, then print polyp.", true, [L("String pet = \"polyp\";"), L("void sway() {"), L("System.out.println(\"swayed\");", true), L("}"), L("sway();"), L("System.out.println(pet);")], { line: ["swayed","polyp"], code: /void\s+sway\s*\(/ }, "swayed and polyp");
+  add("Count 1 then 2, then print garden done.", true, [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(i);", true), L("}"), L("System.out.println(\"garden done\");")], { contains: "garden done", line: ["1","2"], code: /for\s*\(\s*int/ }, "1, 2, and garden done");
+  add("Use else so a tiny score prints asleep.", true, [L("int score = 1;"), L("if (score > 5) {"), L("System.out.println(\"growing\");", true), L("}"), L("else {"), L("System.out.println(\"asleep\");", true), L("}")], { line: "asleep", code: /\belse\b/ }, "asleep");
+  add("Make two recipes, sway and bloom.", true, [L("void sway() {"), L("System.out.println(\"swayed\");", true), L("}"), L("sway();"), L("void bloom() {"), L("System.out.println(\"bloomed\");", true), L("}"), L("bloom();")], { line: ["swayed","bloomed"], code: /void\s+sway\s*\(/ }, "swayed and bloomed");
+  add("Greet Nia, then print a big score.", true, [L("String who = \"Nia\";"), L("System.out.println(\"Hello \" + who);"), L("int score = 8;"), L("if (score > 3) {"), L("System.out.println(\"growing\");", true), L("}"), L("else {"), L("System.out.println(\"asleep\");", true), L("}")], { contains: "hello nia", line: "growing" }, "Hello Nia");
+  add("Add 2 to buds, then loop sway.", true, [L("int buds = 5;"), L("System.out.println(buds + 2);"), L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}")], { line: "7", minCount: { line: "sway", n: 2 }, code: /for\s*\(\s*int/ }, "7");
+  add("Give callnia the name Nia.", true, [L("void callnia(name) {"), L("System.out.println(name);", true), L("}"), L("callnia(\"Nia\");")], { line: "nia", code: /void\s+callnia\s*\(/ }, "Nia");
+  add("Count 1, 2, 3, then print garden done.", true, [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(i);", true), L("}"), L("System.out.println(\"garden done\");")], { contains: "garden done", line: ["1","2","3"], code: /for\s*\(\s*int/ }, "1, 2, 3, and garden done");
+  add("If Nia is the hero, print planted.", true, [L("String hero = \"Nia\";"), L("System.out.println(hero);"), L("if (hero == \"Nia\") {"), L("System.out.println(\"planted\");", true), L("}")], { line: "planted", code: /\bif\b/ }, "planted");
+  add("Mix a name, if, a loop, and a recipe.", true, [L("System.out.println(\"Garden log\");"), L("String hero = \"Nia\";"), L("System.out.println(hero);"), L("if (hero == \"Nia\") {"), L("System.out.println(\"planted\");", true), L("}"), L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}"), L("void bloom() {"), L("System.out.println(\"bloomed\");", true), L("}"), L("bloom();")], { line: ["nia","planted","bloomed"], minCount: { line: "sway", n: 2 }, code: /void\s+bloom\s*\(/ }, "planted and bloomed");
+  add("Take 4 from 12, then print growing.", true, [L("int bag = 12;"), L("System.out.println(bag - 4);"), L("if (bag > 4) {"), L("System.out.println(\"growing\");", true), L("}")], { line: ["8","growing"], code: /\bif\b/ }, "growing");
+  add("Print Nia, then loop sway three times.", true, [L("System.out.println(\"Nia\");"), L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(\"sway\");", true), L("}")], { line: "nia", minCount: { line: "sway", n: 3 }, code: /for\s*\(\s*int/ }, "Nia and sway");
+  if (list.length !== 100) {
+    throw new Error("expected 100 tasks, got " + list.length);
   }
   return list;
 })();
@@ -586,147 +526,128 @@ function buildJavaSteps(prefix, rows) {
 const finalIdeas = [
   {
     id: "story",
-    title: "Ocean story",
-    blurb: "A long story with a name, math, if, a loop, and a function.",
-    plan: ["Print a title and two story lines.", "Save a hero and say hello.", "Count waves, then use if, a loop, and a function."],
+    title: "Garden Tale",
+    blurb: "A coral-garden story with a name, a number, and if.",
+    plan: ["Print the tale.","Remember Nia.","Choose a path."],
     steps: buildJavaSteps("Project step", [
-      { goal: "Print a story title.", fresh: true, lines: [L('System.out.println("Ocean Story");')], spec: { contains: "ocean story" }, see: "Ocean Story" },
-      { goal: "Add a story line.", lines: [L('System.out.println("A fish swam out.");')], spec: { minLines: 2 }, see: "A fish swam out." },
-      { goal: "Add a blue-water line.", lines: [L('System.out.println("The water was blue.");')], spec: { minLines: 3 }, see: "The water was blue." },
-      { goal: "Save the hero name Fin.", lines: [L('String hero = "Fin";')], spec: { code: /hero\s*=\s*["']Fin["']/ }, see: "your old story lines" },
-      { goal: "Print the hero name.", lines: [L("System.out.println(hero);")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "Say hello to the hero.", lines: [L('System.out.println("Hello " + hero);')], spec: { contains: "hello fin" }, see: "Hello Fin" },
-      { goal: "Save the number of waves.", lines: [L("int waves = 3;")], spec: { code: /waves\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Print how many waves.", lines: [L("System.out.println(waves);")], spec: { line: "3" }, see: "3" },
-      { goal: "Print one more than the waves.", lines: [L("System.out.println(waves + 1);")], spec: { line: "4" }, see: "4" },
-      { goal: "If waves are more than 2, print big.", lines: [L("if (waves > 2) {"), L('System.out.println("big");', true), L("}")], spec: { code: /\bif\b/, line: "big" }, see: "big" },
-      { goal: "Add the other path, else.", lines: [L("else {"), L('System.out.println("calm");', true), L("}")], spec: { code: /\belse\b/ }, see: "big still, because 3 is more than 2", note: "Click after the } that closes the if." },
-      { goal: "Save a friend name.", lines: [L('String friend = "Bubbles";')], spec: { code: /friend\s*=/ }, see: "your old lines" },
-      { goal: "Print the friend.", lines: [L("System.out.println(friend);")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "Loop to print 1, 2, 3.", lines: [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(i);", true), L("}")], spec: { code: /for\s*\(\s*int/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "Make a cheer function.", lines: [L("void cheer() {"), L('System.out.println("yay");', true), L("}")], spec: { code: /void\s+cheer\s*\(/ }, see: "your old lines" },
-      { goal: "Run the cheer function.", lines: [L("cheer();")], spec: { line: "yay" }, see: "yay" },
-      { goal: "Print The end.", lines: [L('System.out.println("The end");')], spec: { contains: "the end" }, see: "The end" },
-      { goal: "Print You did it!", lines: [L('System.out.println("You did it!");')], spec: { contains: "you did it" }, see: "You did it!" },
+      { goal: "Print Garden Tale.", fresh: true, lines: [L("System.out.println(\"Garden Tale\");")], spec: { contains: "garden tale" }, see: "Garden Tale" },
+      { goal: "Add the line Nia plants a bud..", fresh: false, lines: [L("System.out.println(\"Nia plants a bud.\");")], spec: { contains: "nia plants a bud." }, see: "Nia plants a bud." },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"The fan sways.\");")], spec: { contains: "the fan sways." }, see: "The fan sways." },
+      { goal: "Remember the name Nia.", fresh: false, lines: [L("String hero = \"Nia\";")], spec: { code: /hero\s*:?=\s*["']Nia["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "nia" }, see: "Nia" },
+      { goal: "Say Hello to the name.", fresh: false, lines: [L("System.out.println(\"Hello \" + hero);")], spec: { contains: "hello nia" }, see: "Hello Nia" },
+      { goal: "Remember the number 5.", fresh: false, lines: [L("int buds = 5;")], spec: { code: /buds\s*:?=\s*5\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(buds);")], spec: { line: "5" }, see: "5" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(buds + 1);")], spec: { line: "6" }, see: "6" },
+      { goal: "If the number is big, print growing.", fresh: false, lines: [L("if (buds > 4) {"), L("System.out.println(\"growing\");", true), L("}")], spec: { line: "growing", code: /\bif\b/ }, see: "growing" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"asleep\");", true), L("}")], spec: { code: /\belse\b/ }, see: "growing still", note: "Click after the line that prints growing." },
+      { goal: "Loop sway twice.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}")], spec: { minCount: { line: "sway", n: 2 }, code: /for\s*\(\s*int/ }, see: "sway twice" }
     ]),
   },
   {
     id: "names",
-    title: "Fish name generator",
-    blurb: "Name two fish, count them, and cheer.",
-    plan: ["Print a title and save two names.", "Say hello to each name.", "Count, compare, loop, and cheer."],
+    title: "Bud Names",
+    blurb: "Name the plants and count the rows.",
+    plan: ["Print a title.","Save a name.","Add else."],
     steps: buildJavaSteps("Project step", [
-      { goal: "Print a title.", fresh: true, lines: [L('System.out.println("Fish Names");')], spec: { contains: "fish names" }, see: "Fish Names" },
-      { goal: "Save the name Bubbles.", lines: [L('String name = "Bubbles";')], spec: { code: /name\s*=\s*["']Bubbles["']/ }, see: "the title" },
-      { goal: "Print the name.", lines: [L("System.out.println(name);")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "Say hello to the name.", lines: [L('System.out.println("Hello " + name);')], spec: { contains: "hello bubbles" }, see: "Hello Bubbles" },
-      { goal: "Save a friend name.", lines: [L('String friend = "Coral";')], spec: { code: /friend\s*=\s*["']Coral["']/ }, see: "your old lines" },
-      { goal: "Print the friend.", lines: [L("System.out.println(friend);")], spec: { line: "coral" }, see: "Coral" },
-      { goal: "Say meet the friend.", lines: [L('System.out.println("Meet " + friend);')], spec: { contains: "meet coral" }, see: "Meet Coral" },
-      { goal: "Save the number 2.", lines: [L("int count = 2;")], spec: { code: /count\s*=\s*2/ }, see: "your old lines" },
-      { goal: "Print the count.", lines: [L("System.out.println(count);")], spec: { line: "2" }, see: "2" },
-      { goal: "Print one more than the count.", lines: [L("System.out.println(count + 1);")], spec: { line: "3" }, see: "3" },
-      { goal: "If count is more than 1, print many.", lines: [L("if (count > 1) {"), L('System.out.println("many");', true), L("}")], spec: { code: /\bif\b/, line: "many" }, see: "many" },
-      { goal: "Add else.", lines: [L("else {"), L('System.out.println("one");', true), L("}")], spec: { code: /\belse\b/ }, see: "many still", note: "Click after the } that closes the if." },
-      { goal: "Loop two times and print hi.", lines: [L("for (int i = 1; i <= 2; i++) {"), L('System.out.println("hi");', true), L("}")], spec: { code: /for\s*\(\s*int/, minCount: { line: "hi", n: 2 } }, see: "hi twice" },
-      { goal: "Print both names again.", lines: [L("System.out.println(name);"), L("System.out.println(friend);")], spec: { minCount: { line: "bubbles", n: 1 } }, see: "Bubbles and Coral" },
-      { goal: "Make a splash function.", lines: [L("void yay() {"), L('System.out.println("splash");', true), L("}")], spec: { code: /void\s+yay\s*\(/ }, see: "your old lines" },
-      { goal: "Run yay.", lines: [L("yay();")], spec: { line: "splash" }, see: "splash" },
-      { goal: "Print All named!", lines: [L('System.out.println("All named!");')], spec: { contains: "all named" }, see: "All named!" },
-      { goal: "Print a goodbye line.", lines: [L('System.out.println("Bye fish!");')], spec: { contains: "bye fish" }, see: "Bye fish!" },
+      { goal: "Print Bud Names.", fresh: true, lines: [L("System.out.println(\"Bud Names\");")], spec: { contains: "bud names" }, see: "Bud Names" },
+      { goal: "Add the line Sway likes current..", fresh: false, lines: [L("System.out.println(\"Sway likes current.\");")], spec: { contains: "sway likes current." }, see: "Sway likes current." },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"Pippa is a bud.\");")], spec: { contains: "pippa is a bud." }, see: "Pippa is a bud." },
+      { goal: "Remember the name Sway.", fresh: false, lines: [L("String hero = \"Sway\";")], spec: { code: /hero\s*:?=\s*["']Sway["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "sway" }, see: "Sway" },
+      { goal: "Say Hi to the name.", fresh: false, lines: [L("System.out.println(\"Hi \" + hero);")], spec: { contains: "hi sway" }, see: "Hi Sway" },
+      { goal: "Remember the number 4.", fresh: false, lines: [L("int rows = 4;")], spec: { code: /rows\s*:?=\s*4\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(rows);")], spec: { line: "4" }, see: "4" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(rows + 1);")], spec: { line: "5" }, see: "5" },
+      { goal: "If the number is big, print tall.", fresh: false, lines: [L("if (rows > 3) {"), L("System.out.println(\"tall\");", true), L("}")], spec: { line: "tall", code: /\bif\b/ }, see: "tall" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"short\");", true), L("}")], spec: { code: /\belse\b/ }, see: "tall still", note: "Click after the line that prints tall." },
+      { goal: "Loop bloom twice.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"bloom\");", true), L("}")], spec: { minCount: { line: "bloom", n: 2 }, code: /for\s*\(\s*int/ }, see: "bloom twice" }
     ]),
   },
   {
     id: "quiz",
-    title: "Mini quiz",
-    blurb: "Ask a question, save the answer, and keep a score.",
-    plan: ["Print a question and save the answer.", "Use a score and math.", "Use if, a loop, and a function to finish."],
+    title: "Garden Quiz",
+    blurb: "A garden quiz with a score.",
+    plan: ["Ask a question.","Save a score.","Print the path."],
     steps: buildJavaSteps("Project step", [
-      { goal: "Print Quiz Time.", fresh: true, lines: [L('System.out.println("Quiz Time");')], spec: { contains: "quiz time" }, see: "Quiz Time" },
-      { goal: "Print a question.", lines: [L('System.out.println("How many arms does a starfish have?");')], spec: { contains: "?" }, see: "the question" },
-      { goal: "Save the answer 5.", lines: [L('String answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Print the answer.", lines: [L("System.out.println(answer);")], spec: { line: "5" }, see: "5" },
-      { goal: "Print The answer is plus the answer.", lines: [L('System.out.println("The answer is " + answer);')], spec: { contains: "the answer is 5" }, see: "The answer is 5" },
-      { goal: "Save int score = 10;.", lines: [L("int score = 10;")], spec: { code: /score\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Print the score.", lines: [L("System.out.println(score);")], spec: { line: "10" }, see: "10" },
-      { goal: "Print score minus 2.", lines: [L("System.out.println(score - 2);")], spec: { line: "8" }, see: "8" },
-      { goal: "If score is more than 5, print pass.", lines: [L("if (score > 5) {"), L('System.out.println("pass");', true), L("}")], spec: { code: /\bif\b/, line: "pass" }, see: "pass" },
-      { goal: "Add else.", lines: [L("else {"), L('System.out.println("try again");', true), L("}")], spec: { code: /\belse\b/ }, see: "pass still", note: "Click after the } that closes the if." },
-      { goal: "Save int bonus = 1;.", lines: [L("int bonus = 1;")], spec: { code: /bonus\s*=\s*1/ }, see: "your old lines" },
-      { goal: "Print the bonus.", lines: [L("System.out.println(bonus);")], spec: { line: "1" }, see: "1" },
-      { goal: "Loop 1 and 2.", lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(i);", true), L("}")], spec: { code: /for\s*\(\s*int/, line: ["1", "2"] }, see: "1 and 2" },
-      { goal: "Print a fact.", lines: [L('System.out.println("five arms");')], spec: { contains: "five arms" }, see: "five arms" },
-      { goal: "Print another fact.", lines: [L('System.out.println("lives in the sea");')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
-      { goal: "Make a done function.", lines: [L("void done() {"), L('System.out.println("quiz done");', true), L("}")], spec: { code: /void\s+done\s*\(/ }, see: "your old lines" },
-      { goal: "Run done.", lines: [L("done();")], spec: { contains: "quiz done" }, see: "quiz done" },
-      { goal: "Print You finished the quiz!", lines: [L('System.out.println("You finished the quiz!");')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+      { goal: "Print Garden Quiz.", fresh: true, lines: [L("System.out.println(\"Garden Quiz\");")], spec: { contains: "garden quiz" }, see: "Garden Quiz" },
+      { goal: "Add the line What opens at dawn?.", fresh: false, lines: [L("System.out.println(\"What opens at dawn?\");")], spec: { contains: "what opens at dawn?" }, see: "What opens at dawn?" },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"A polyp does.\");")], spec: { contains: "a polyp does." }, see: "A polyp does." },
+      { goal: "Remember the name Pippa.", fresh: false, lines: [L("String hero = \"Pippa\";")], spec: { code: /hero\s*:?=\s*["']Pippa["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "pippa" }, see: "Pippa" },
+      { goal: "Say Hey to the name.", fresh: false, lines: [L("System.out.println(\"Hey \" + hero);")], spec: { contains: "hey pippa" }, see: "Hey Pippa" },
+      { goal: "Remember the number 3.", fresh: false, lines: [L("int score = 3;")], spec: { code: /score\s*:?=\s*3\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(score);")], spec: { line: "3" }, see: "3" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(score + 1);")], spec: { line: "4" }, see: "4" },
+      { goal: "If the number is big, print open.", fresh: false, lines: [L("if (score > 2) {"), L("System.out.println(\"open\");", true), L("}")], spec: { line: "open", code: /\bif\b/ }, see: "open" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"shut\");", true), L("}")], spec: { code: /\belse\b/ }, see: "open still", note: "Click after the line that prints open." },
+      { goal: "Loop sprout twice.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sprout\");", true), L("}")], spec: { minCount: { line: "sprout", n: 2 }, code: /for\s*\(\s*int/ }, see: "sprout twice" }
     ]),
-  },
+  }
 ];
 
 const advancedIdeas = [
   {
     id: "adventure",
-    title: "Ocean adventure",
-    blurb: "A hero, a counting loop, and a victory function.",
-    plan: ["Name the hero.", "Count and loop.", "Finish with a function."],
+    title: "Bloom Adventure",
+    blurb: "A harder garden path with a loop and a recipe.",
+    plan: ["Name the bloom.","Test the score.","Sway and bloom."],
     steps: buildJavaSteps("Advanced step", [
-      { goal: "Print Ocean Adventure.", fresh: true, lines: [L('System.out.println("Ocean Adventure");')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
-      { goal: "Save hero Fin.", lines: [L('String hero = "Fin";')], spec: { code: /hero\s*=/ }, see: "the title" },
-      { goal: "Print the hero.", lines: [L("System.out.println(hero);")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "Print Go plus the hero.", lines: [L('System.out.println("Go " + hero);')], spec: { contains: "go fin" }, see: "Go Fin" },
-      { goal: "Save int hearts = 3;.", lines: [L("int hearts = 3;")], spec: { code: /hearts\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Print hearts.", lines: [L("System.out.println(hearts);")], spec: { line: "3" }, see: "3" },
-      { goal: "Loop to print 1, 2, 3.", lines: [L("for (int i = 1; i <= 3; i++) {"), L("System.out.println(i);", true), L("}")], spec: { code: /for\s*\(\s*int/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "If hearts are more than 2, print strong.", lines: [L("if (hearts > 2) {"), L('System.out.println("strong");', true), L("}")], spec: { code: /\bif\b/, line: "strong" }, see: "strong" },
-      { goal: "Add else.", lines: [L("else {"), L('System.out.println("rest");', true), L("}")], spec: { code: /\belse\b/ }, see: "strong still", note: "Click after the } that closes the if." },
-      { goal: "Save a pal name.", lines: [L('String pal = "Bubbles";')], spec: { code: /pal\s*=/ }, see: "your old lines" },
-      { goal: "Print the pal.", lines: [L("System.out.println(pal);")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "Make win and run it.", lines: [L("void win() {"), L('System.out.println("You win!");', true), L("}"), L("win();")], spec: { code: /void\s+win\s*\(/, contains: "you win" }, see: "You win!" },
+      { goal: "Print Bloom Adventure.", fresh: true, lines: [L("System.out.println(\"Bloom Adventure\");")], spec: { contains: "bloom adventure" }, see: "Bloom Adventure" },
+      { goal: "Add the line Fronds tickle fish..", fresh: false, lines: [L("System.out.println(\"Fronds tickle fish.\");")], spec: { contains: "fronds tickle fish." }, see: "Fronds tickle fish." },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"The rows are full.\");")], spec: { contains: "the rows are full." }, see: "The rows are full." },
+      { goal: "Remember the name Frond.", fresh: false, lines: [L("String hero = \"Frond\";")], spec: { code: /hero\s*:?=\s*["']Frond["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "frond" }, see: "Frond" },
+      { goal: "Say Hello to the name.", fresh: false, lines: [L("System.out.println(\"Hello \" + hero);")], spec: { contains: "hello frond" }, see: "Hello Frond" },
+      { goal: "Remember the number 3.", fresh: false, lines: [L("int fans = 3;")], spec: { code: /fans\s*:?=\s*3\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(fans);")], spec: { line: "3" }, see: "3" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(fans + 1);")], spec: { line: "4" }, see: "4" },
+      { goal: "If the number is big, print wide.", fresh: false, lines: [L("if (fans > 2) {"), L("System.out.println(\"wide\");", true), L("}")], spec: { line: "wide", code: /\bif\b/ }, see: "wide" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"thin\");", true), L("}")], spec: { code: /\belse\b/ }, see: "wide still", note: "Click after the line that prints wide." },
+      { goal: "Loop sway twice, then run a recipe.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"sway\");", true), L("}"), L("void bloom() {"), L("System.out.println(\"bloomed\");", true), L("}"), L("bloom();")], spec: { line: "bloomed", minCount: { line: "sway", n: 2 }, code: /void\s+bloom\s*\(/ }, see: "bloomed" }
     ]),
   },
   {
     id: "scorequiz",
-    title: "Score quiz",
-    blurb: "A harder question, a score, and a clap function.",
-    plan: ["Ask and answer.", "Do score math.", "Clap at the end."],
+    title: "Polyp Quiz",
+    blurb: "A harder polyp quiz with a recipe.",
+    plan: ["Print the quiz.","Add a score.","Sprout at the end."],
     steps: buildJavaSteps("Advanced step", [
-      { goal: "Print Hard Quiz.", fresh: true, lines: [L('System.out.println("Hard Quiz");')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
-      { goal: "Print a math question.", lines: [L('System.out.println("What is 2 + 3?");')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
-      { goal: "Save answer 5.", lines: [L('String answer = "5";')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Print the answer.", lines: [L("System.out.println(answer);")], spec: { line: "5" }, see: "5" },
-      { goal: "Save int points = 10;.", lines: [L("int points = 10;")], spec: { code: /points\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Print the points.", lines: [L("System.out.println(points);")], spec: { line: "10" }, see: "10" },
-      { goal: "Print points minus 1.", lines: [L("System.out.println(points - 1);")], spec: { line: "9" }, see: "9" },
-      { goal: "If points are more than 8, print super.", lines: [L("if (points > 8) {"), L('System.out.println("super");', true), L("}")], spec: { code: /\bif\b/, line: "super" }, see: "super" },
-      { goal: "Add else.", lines: [L("else {"), L('System.out.println("ok");', true), L("}")], spec: { code: /\belse\b/ }, see: "super still", note: "Click after the } that closes the if." },
-      { goal: "Make a clap function.", lines: [L("void clap() {"), L('System.out.println("clap");', true), L("}")], spec: { code: /void\s+clap\s*\(/ }, see: "your old lines" },
-      { goal: "Run clap.", lines: [L("clap();")], spec: { line: "clap" }, see: "clap" },
-      { goal: "Print Quiz star!", lines: [L('System.out.println("Quiz star!");')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+      { goal: "Print Polyp Quiz.", fresh: true, lines: [L("System.out.println(\"Polyp Quiz\");")], spec: { contains: "polyp quiz" }, see: "Polyp Quiz" },
+      { goal: "Add the line How many rows?.", fresh: false, lines: [L("System.out.println(\"How many rows?\");")], spec: { contains: "how many rows?" }, see: "How many rows?" },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"Count the buds.\");")], spec: { contains: "count the buds." }, see: "Count the buds." },
+      { goal: "Remember the name Lila.", fresh: false, lines: [L("String hero = \"Lila\";")], spec: { code: /hero\s*:?=\s*["']Lila["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "lila" }, see: "Lila" },
+      { goal: "Say Hi to the name.", fresh: false, lines: [L("System.out.println(\"Hi \" + hero);")], spec: { contains: "hi lila" }, see: "Hi Lila" },
+      { goal: "Remember the number 6.", fresh: false, lines: [L("int points = 6;")], spec: { code: /points\s*:?=\s*6\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(points);")], spec: { line: "6" }, see: "6" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(points + 1);")], spec: { line: "7" }, see: "7" },
+      { goal: "If the number is big, print pass.", fresh: false, lines: [L("if (points > 5) {"), L("System.out.println(\"pass\");", true), L("}")], spec: { line: "pass", code: /\bif\b/ }, see: "pass" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"miss\");", true), L("}")], spec: { code: /\belse\b/ }, see: "pass still", note: "Click after the line that prints pass." },
+      { goal: "Loop shade twice, then run a recipe.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"shade\");", true), L("}"), L("void sprout() {"), L("System.out.println(\"sprouted\");", true), L("}"), L("sprout();")], spec: { line: "sprouted", minCount: { line: "shade", n: 2 }, code: /void\s+sprout\s*\(/ }, see: "sprouted" }
     ]),
   },
   {
     id: "catalog",
-    title: "Creature catalog",
-    blurb: "Three animals and a goodbye function.",
-    plan: ["Print three animals.", "Save a name and a count.", "Finish the catalog."],
+    title: "Garden Catalog",
+    blurb: "Catalog the plants, then loop.",
+    plan: ["Name the plants.","Count them.","Run a recipe."],
     steps: buildJavaSteps("Advanced step", [
-      { goal: "Print Sea Catalog.", fresh: true, lines: [L('System.out.println("Sea Catalog");')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
-      { goal: "Print crab.", lines: [L('System.out.println("crab");')], spec: { line: "crab" }, see: "crab" },
-      { goal: "Print eel.", lines: [L('System.out.println("eel");')], spec: { line: "eel" }, see: "eel" },
-      { goal: "Print whale.", lines: [L('System.out.println("whale");')], spec: { line: "whale" }, see: "whale" },
-      { goal: "Save first = crab.", lines: [L('String first = "crab";')], spec: { code: /first\s*=\s*["']crab["']/ }, see: "your old lines" },
-      { goal: "Print first.", lines: [L("System.out.println(first);")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
-      { goal: "Save int count = 3;.", lines: [L("int count = 3;")], spec: { code: /count\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Print the count.", lines: [L("System.out.println(count);")], spec: { line: "3" }, see: "3" },
-      { goal: "Loop the word swim twice.", lines: [L("for (int i = 1; i <= 2; i++) {"), L('System.out.println("swim");', true), L("}")], spec: { code: /for\s*\(\s*int/, minCount: { line: "swim", n: 2 } }, see: "swim twice" },
-      { goal: "If count is 3, print full tank.", lines: [L("if (count == 3) {"), L('System.out.println("full tank");', true), L("}")], spec: { code: /\bif\b/, contains: "full tank" }, see: "full tank" },
-      { goal: "Add else.", lines: [L("else {"), L('System.out.println("more");', true), L("}")], spec: { code: /\belse\b/ }, see: "full tank still", note: "Click after the } that closes the if." },
-      { goal: "Make bye and run it.", lines: [L("void bye() {"), L('System.out.println("catalog done");', true), L("}"), L("bye();")], spec: { code: /void\s+bye\s*\(/, contains: "catalog done" }, see: "catalog done" },
+      { goal: "Print Garden Catalog.", fresh: true, lines: [L("System.out.println(\"Garden Catalog\");")], spec: { contains: "garden catalog" }, see: "Garden Catalog" },
+      { goal: "Add the line Polyp..", fresh: false, lines: [L("System.out.println(\"Polyp.\");")], spec: { contains: "polyp." }, see: "Polyp." },
+      { goal: "Add one more line.", fresh: false, lines: [L("System.out.println(\"Frond.\");")], spec: { contains: "frond." }, see: "Frond." },
+      { goal: "Remember the name Reefy.", fresh: false, lines: [L("String hero = \"Reefy\";")], spec: { code: /hero\s*:?=\s*["']Reefy["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("System.out.println(hero);")], spec: { line: "reefy" }, see: "Reefy" },
+      { goal: "Say Hello to the name.", fresh: false, lines: [L("System.out.println(\"Hello \" + hero);")], spec: { contains: "hello reefy" }, see: "Hello Reefy" },
+      { goal: "Remember the number 4.", fresh: false, lines: [L("int count = 4;")], spec: { code: /count\s*:?=\s*4\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("System.out.println(count);")], spec: { line: "4" }, see: "4" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("System.out.println(count + 1);")], spec: { line: "5" }, see: "5" },
+      { goal: "If the number is big, print full.", fresh: false, lines: [L("if (count > 3) {"), L("System.out.println(\"full\");", true), L("}")], spec: { line: "full", code: /\bif\b/ }, see: "full" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else {"), L("System.out.println(\"more\");", true), L("}")], spec: { code: /\belse\b/ }, see: "full still", note: "Click after the line that prints full." },
+      { goal: "Loop root twice, then run a recipe.", fresh: false, lines: [L("for (int i = 1; i <= 2; i++) {"), L("System.out.println(\"root\");", true), L("}"), L("void shade() {"), L("System.out.println(\"shaded\");", true), L("}"), L("shade();")], spec: { line: "shaded", minCount: { line: "root", n: 2 }, code: /void\s+shade\s*\(/ }, see: "shaded" }
     ]),
-  },
+  }
 ];
-
 
 function normalizeOut(text) {
   return String(text || "")

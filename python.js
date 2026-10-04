@@ -19,10 +19,10 @@ if (typeof CodeReefProgress !== "undefined") {
   CodeReefProgress.rememberLastPath(PATH_KEY);
 }
 
-const starterCode = `print("Hello, reef!")
+const starterCode = `print("Hello, puddle!")
 `;
 
-const projectStarter = `print("My reef project")
+const projectStarter = `print("Tide pool project")
 `;
 
 function snapshotProgress() {
@@ -451,7 +451,6 @@ function stepCheck(spec) {
 
 const tasks = (function buildPythonTasks() {
   const list = [];
-
   function add(goal, fresh, lines, spec, see, sample, note) {
     list.push({
       goal: "Task " + (list.length + 1) + ": " + goal,
@@ -463,380 +462,110 @@ const tasks = (function buildPythonTasks() {
     });
   }
 
-  add(
-    "Make Python say Hello, ocean!",
-    true,
-    [L('print("Hello, ocean!")')],
-    { contains: "hello, ocean!" },
-    "Hello, ocean!",
-    'print("Hello, ocean!")\n',
-    "You can also keep the old line and only change the word reef to ocean."
-  );
-  list[0].help = numbered([
-    "Keep your old code. Do not erase the whole line.",
-    "Click in the code box.",
-    "Click on the word reef.",
-    "Delete the letters r e e f.",
-    "Type the word ocean in that same spot.",
-    'The line should look like this: print("Hello, ocean!")',
-    "print means show these words on the screen.",
-    "Type the word print.",
-    "Then type this mark: (",
-    'A quote is this mark: "',
-    "The words Hello, ocean! stay between the quotes.",
-    "Then type this mark: )",
-    "Press the Run button. It is at the top.",
-    "You should see Hello, ocean!",
-  ]);
-
-  add(
-    "Print two lines — Hello, ocean! then I love Python!",
-    false,
-    [L('print("I love Python!")')],
-    { contains: ["hello, ocean!", "i love python!"] },
-    "I love Python!",
-    'print("Hello, ocean!")\nprint("I love Python!")\n'
-  );
-
-  add(
-    'Make a variable fish = "clownfish" and print it.',
-    false,
-    [L('fish = "clownfish"'), L("print(fish)")],
-    { code: /fish\s*=\s*["']clownfish["']/, line: "clownfish" },
-    "clownfish"
-  );
-
-  add(
-    "Use a for loop to print 1, then 2, then 3.",
-    true,
-    [L("for i in range(1, 4):"), L("print(i)", true)],
-    { code: /for\s+\w+\s+in\s+range\s*\(/, line: ["1", "2", "3"] },
-    "1 then 2 then 3"
-  );
-
-  add(
-    "Print the number 5.",
-    true,
-    [L("print(5)")],
-    { line: "5" },
-    "5"
-  );
-
-  add(
-    'Make coral = "reef" and print it.',
-    false,
-    [L('coral = "reef"'), L("print(coral)")],
-    { code: /coral\s*=\s*["']reef["']/, line: "reef" },
-    "reef"
-  );
-
-  add(
-    "Loop to print splash three times.",
-    true,
-    [L("for i in range(3):"), L('print("splash")', true)],
-    { code: /for\s+\w+\s+in\s+range\s*\(/, minCount: { line: "splash", n: 3 } },
-    "splash three times"
-  );
-
-  const printWords = [
-    "bubble",
-    "wave",
-    "crab",
-    "dolphin",
-    "turtle",
-    "coral",
-    "sand",
-    "shell",
-    "whale",
-    "shark",
-    "starfish",
-    "eel",
-  ];
-  printWords.forEach(function (word) {
-    add(
-      "Print the word " + word + ".",
-      false,
-      [L('print("' + word + '")')],
-      { contains: word },
-      word
-    );
-  });
-
-  const varPairs = [
-    ["pet", "crab"],
-    ["boat", "blue"],
-    ["hero", "Fin"],
-    ["snack", "kelp"],
-    ["home", "reef"],
-    ["friend", "Nemo"],
-    ["color", "teal"],
-    ["toy", "shell"],
-    ["pal", "otter"],
-    ["ride", "wave"],
-    ["team", "pods"],
-    ["gem", "pearl"],
-  ];
-  varPairs.forEach(function (pair) {
-    add(
-      'Make ' + pair[0] + ' = "' + pair[1] + '" and print it.',
-      false,
-      [L(pair[0] + ' = "' + pair[1] + '"'), L("print(" + pair[0] + ")")],
-      {
-        code: new RegExp(pair[0] + "\\s*=\\s*[\"']" + pair[1] + "[\"']", "i"),
-        line: pair[1].toLowerCase(),
-      },
-      pair[1]
-    );
-  });
-
-  const mathRows = [
-    ["2 + 3", "5"],
-    ["4 + 1", "5"],
-    ["10 - 3", "7"],
-    ["8 - 2", "6"],
-    ["2 * 3", "6"],
-    ["4 * 2", "8"],
-    ["1 + 6", "7"],
-    ["9 - 4", "5"],
-    ["3 * 3", "9"],
-    ["5 + 5", "10"],
-  ];
-  mathRows.forEach(function (row) {
-    add(
-      "Print the math " + row[0] + ".",
-      true,
-      [L("print(" + row[0] + ")")],
-      { line: row[1], code: /print\s*\(/ },
-      row[1]
-    );
-  });
-
-  const loopWords = ["splash", "bubble", "yay", "hi", "wave", "go"];
-  loopWords.forEach(function (word) {
-    add(
-      'Use a loop to print "' + word + '" three times.',
-      true,
-      [L("for i in range(3):"), L('print("' + word + '")', true)],
-      { code: /for\s+\w+\s+in\s+range\s*\(/, minCount: { line: word, n: 3 } },
-      word + " three times"
-    );
-  });
-  const numberLoops = [
-    ["1, 4", ["1", "2", "3"]],
-    ["1, 5", ["1", "2", "3", "4"]],
-    ["0, 3", ["0", "1", "2"]],
-    ["2, 5", ["2", "3", "4"]],
-    ["1, 6", ["1", "2", "3", "4", "5"]],
-    ["4, 7", ["4", "5", "6"]],
-  ];
-  numberLoops.forEach(function (row) {
-    add(
-      "Use a loop to print " + row[1].join(", then ") + ".",
-      true,
-      [L("for i in range(" + row[0] + "):"), L("print(i)", true)],
-      { code: /for\s+\w+\s+in\s+range\s*\(/, line: row[1] },
-      row[1].join(" then ")
-    );
-  });
-
-  const ifRows = [
-    ["9", ">", "5", "big", "small", "big"],
-    ["1", ">", "5", "big", "small", "small"],
-    ["8", ">", "3", "yes", "no", "yes"],
-    ["2", "<", "4", "low", "high", "low"],
-    ["10", ">", "7", "tall", "short", "tall"],
-    ["0", ">", "2", "hot", "cold", "cold"],
-    ["6", ">", "6", "same", "notyet", "notyet"],
-    ["4", "<", "9", "ok", "nope", "ok"],
-    ["3", ">", "1", "swim", "rest", "swim"],
-    ["5", "<", "5", "up", "down", "down"],
-    ["7", ">", "2", "pass", "try", "pass"],
-    ["1", "<", "1", "a", "b", "b"],
-  ];
-  ifRows.forEach(function (row) {
-    add(
-      "Use if and else so the path prints " + row[5] + ".",
-      true,
-      [
-        L("score = " + row[0]),
-        L("if score " + row[1] + " " + row[2] + ":"),
-        L('print("' + row[3] + '")', true),
-        L("else:"),
-        L('print("' + row[4] + '")', true),
-      ],
-      { code: /\bif\b[\s\S]*\belse\b/, line: row[5] },
-      row[5]
-    );
-  });
-
-  const listRows = [
-    ["crab", "eel"],
-    ["whale", "shark"],
-    ["sand", "shell"],
-    ["blue", "teal"],
-    ["fin", "bubbles"],
-    ["kelp", "coral"],
-  ];
-  listRows.forEach(function (pair) {
-    add(
-      'Make a list pets and print the first word "' + pair[0] + '".',
-      true,
-      [L('pets = ["' + pair[0] + '", "' + pair[1] + '"]'), L("print(pets[0])")],
-      { code: /\[\s*["']/, line: pair[0] },
-      pair[0]
-    );
-    add(
-      "Loop through the list and print both " + pair[0] + " and " + pair[1] + ".",
-      true,
-      [
-        L('pets = ["' + pair[0] + '", "' + pair[1] + '"]'),
-        L("for pet in pets:"),
-        L("print(pet)", true),
-      ],
-      { code: /for\s+\w+\s+in\s+pets\s*:/, line: [pair[0], pair[1]] },
-      pair[0] + " and " + pair[1]
-    );
-  });
-
-  const fnWords = ["wave", "splash", "hi", "yay", "wow", "go", "pop"];
-  fnWords.forEach(function (word) {
-    add(
-      "Make a function " + word + " that prints " + word + ", then run it.",
-      true,
-      [L("def " + word + "():"), L('print("' + word + '")', true), L(word + "()")],
-      { code: new RegExp("def\\s+" + word + "\\s*\\("), line: word },
-      word
-    );
-  });
-  const fnArgs = [
-    ["cheer", "reef"],
-    ["greet", "sam"],
-    ["shout", "go"],
-    ["call", "fin"],
-    ["hail", "nemo"],
-    ["sayhi", "otter"],
-  ];
-  fnArgs.forEach(function (pair) {
-    add(
-      "Make a function " + pair[0] + " that prints the name you give it.",
-      true,
-      [
-        L("def " + pair[0] + "(name):"),
-        L("print(name)", true),
-        L(pair[0] + '("' + pair[1] + '")'),
-      ],
-      { code: new RegExp("def\\s+" + pair[0] + "\\s*\\("), line: pair[1] },
-      pair[1]
-    );
-  });
-
-  add(
-    "Save a hero name, then use if to print found.",
-    true,
-    [
-      L('hero = "Fin"'),
-      L("print(hero)"),
-      L('if hero == "Fin":'),
-      L('print("found")', true),
-    ],
-    { code: /\bif\b/, line: "found" },
-    "found"
-  );
-  add(
-    "Add 1 to a number variable and print it.",
-    true,
-    [L("waves = 3"), L("print(waves + 1)")],
-    { code: /waves\s*\+\s*1/, line: "4" },
-    "4"
-  );
-  add(
-    "Stick a hello onto a name.",
-    true,
-    [L('name = "Sam"'), L('print("Hello " + name)')],
-    { contains: "hello sam" },
-    "Hello Sam"
-  );
-  add(
-    "Print the second word in a list. Spot 1 is the second word.",
-    true,
-    [L('pets = ["crab", "eel"]'), L("print(pets[1])")],
-    { code: /pets\s*\[\s*1\s*\]/, line: "eel" },
-    "eel"
-  );
-  add(
-    "Use a function and a variable together.",
-    true,
-    [
-      L('pet = "crab"'),
-      L("def show():"),
-      L('print("ready")', true),
-      L("show()"),
-      L("print(pet)"),
-    ],
-    { code: /def\s+show\s*\(/, line: ["ready", "crab"] },
-    "ready and crab"
-  );
-  add(
-    "Loop 2 times and also print a title.",
-    true,
-    [L('print("Title")'), L("for i in range(2):"), L('print("go")', true)],
-    { code: /for\s+\w+\s+in\s+range\s*\(/, contains: "title", minCount: { line: "go", n: 2 } },
-    "Title and go go"
-  );
-  add(
-    "If a score is big, print pass.",
-    true,
-    [L("score = 10"), L("if score > 5:"), L('print("pass")', true), L("else:"), L('print("try")', true)],
-    { code: /\bif\b/, line: "pass" },
-    "pass"
-  );
-  add(
-    "Take 2 away from a score and print it.",
-    true,
-    [L("score = 9"), L("print(score - 2)")],
-    { code: /score\s*-\s*2/, line: "7" },
-    "7"
-  );
-  add(
-    "Print every animal in a list of three.",
-    true,
-    [
-      L('animals = ["crab", "eel", "whale"]'),
-      L("for animal in animals:"),
-      L("print(animal)", true),
-    ],
-    { code: /for\s+\w+\s+in\s+animals\s*:/, line: ["crab", "eel", "whale"] },
-    "crab, eel, and whale"
-  );
-  add(
-    "Make two functions and run both.",
-    true,
-    [
-      L("def ping():"),
-      L('print("ping")', true),
-      L("def pong():"),
-      L('print("pong")', true),
-      L("ping()"),
-      L("pong()"),
-    ],
-    { code: /def\s+ping\s*\(/, line: ["ping", "pong"] },
-    "ping and pong"
-  );
-
-  const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
-  let pad = 0;
-  while (list.length < 100) {
-    const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
-    pad += 1;
-    add(
-      "Print the extra word " + word + ".",
-      false,
-      [L('print("' + word + '")')],
-      { contains: word },
-      word
-    );
+  add("Change puddle to pool.", false, [L("print(\"Hello, pool!\")")], { contains: "hello, pool!" }, "Hello, pool!", "print(\"Hello, pool!\")\n");
+  list[0].help = numbered(["Keep your old code. Do not erase the whole line.","Click in the code box.","Click on the word puddle.","Delete those letters.","Type the new word in that same spot.","The line should look like this: print(\"Hello, pool!\")","print means show these words on the screen.","A quote is this mark: \"","The words Hello, pool! stay between the quotes.","Press the Run button. It is at the top.","You should see Hello, pool!"]);
+  add("Print anemone.", false, [L("print(\"anemone\")")], { contains: "anemone" }, "anemone");
+  add("Print hermit.", false, [L("print(\"hermit\")")], { contains: "hermit" }, "hermit");
+  add("Print limpet.", false, [L("print(\"limpet\")")], { contains: "limpet" }, "limpet");
+  add("Print barnacle.", false, [L("print(\"barnacle\")")], { contains: "barnacle" }, "barnacle");
+  add("Print the number 2.", true, [L("print(2)")], { line: "2" }, "2");
+  add("Print the number 4.", true, [L("print(4)")], { line: "4" }, "4");
+  add("Print the number 8.", true, [L("print(8)")], { line: "8" }, "8");
+  add("Print two lines about the pool.", true, [L("print(\"Pip sat still.\")"), L("print(\"A snail slid by.\")")], { contains: ["pip sat still.","a snail slid by."] }, "A snail slid by.");
+  add("Print two lines about the pool.", true, [L("print(\"The pool is warm.\")"), L("print(\"Moss likes shade.\")")], { contains: ["the pool is warm.","moss likes shade."] }, "Moss likes shade.");
+  add("Print two lines about the pool.", true, [L("print(\"Barnacles hold on.\")"), L("print(\"The tide returns.\")")], { contains: ["barnacles hold on.","the tide returns."] }, "The tide returns.");
+  add("Remember Pip in pet.", true, [L("pet = \"Pip\""), L("print(pet)")], { line: "pip", code: /pet\s*:?=\s*["']Pip["']/ }, "Pip");
+  add("Remember Moss in pal.", true, [L("pal = \"Moss\""), L("print(pal)")], { line: "moss", code: /pal\s*:?=\s*["']Moss["']/ }, "Moss");
+  add("Remember Pebble in rock.", true, [L("rock = \"Pebble\""), L("print(rock)")], { line: "pebble", code: /rock\s*:?=\s*["']Pebble["']/ }, "Pebble");
+  add("Remember Barni in buddy.", true, [L("buddy = \"Barni\""), L("print(buddy)")], { line: "barni", code: /buddy\s*:?=\s*["']Barni["']/ }, "Barni");
+  add("Remember Snail in snail.", true, [L("snail = \"Snail\""), L("print(snail)")], { line: "snail", code: /snail\s*:?=\s*["']Snail["']/ }, "Snail");
+  add("Remember Limpet in home.", true, [L("home = \"Limpet\""), L("print(home)")], { line: "limpet", code: /home\s*:?=\s*["']Limpet["']/ }, "Limpet");
+  add("Remember the number 3 in shells.", true, [L("shells = 3"), L("print(shells)")], { line: "3", code: /shells\s*:?=\s*3\b/ }, "3");
+  add("Remember the number 2 in crabs.", true, [L("crabs = 2"), L("print(crabs)")], { line: "2", code: /crabs\s*:?=\s*2\b/ }, "2");
+  add("Remember the number 5 in steps.", true, [L("steps = 5"), L("print(steps)")], { line: "5", code: /steps\s*:?=\s*5\b/ }, "5");
+  add("Remember the number 4 in drops.", true, [L("drops = 4"), L("print(drops)")], { line: "4", code: /drops\s*:?=\s*4\b/ }, "4");
+  add("Say Hi to Pip.", true, [L("who = \"Pip\""), L("print(\"Hi \" + who)")], { contains: "hi pip" }, "Hi Pip");
+  add("Say Hey to Moss.", true, [L("who = \"Moss\""), L("print(\"Hey \" + who)")], { contains: "hey moss" }, "Hey Moss");
+  add("Say Hello to Pebble.", true, [L("who = \"Pebble\""), L("print(\"Hello \" + who)")], { contains: "hello pebble" }, "Hello Pebble");
+  add("Say Yo to Barni.", true, [L("who = \"Barni\""), L("print(\"Yo \" + who)")], { contains: "yo barni" }, "Yo Barni");
+  add("Say Hiya to Snail.", true, [L("who = \"Snail\""), L("print(\"Hiya \" + who)")], { contains: "hiya snail" }, "Hiya Snail");
+  add("Print the answer to 1 + 1.", true, [L("print(1 + 1)")], { line: "2", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "2");
+  add("Print the answer to 2 + 2.", true, [L("print(2 + 2)")], { line: "4", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "4");
+  add("Print the answer to 5 - 1.", true, [L("print(5 - 1)")], { line: "4", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "4");
+  add("Print the answer to 3 * 2.", true, [L("print(3 * 2)")], { line: "6", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "6");
+  add("Print the answer to 8 - 3.", true, [L("print(8 - 3)")], { line: "5", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "5");
+  add("Print the answer to 4 + 4.", true, [L("print(4 + 4)")], { line: "8", code: /print\s*\(|console\.log\s*\(|fmt\.Println\s*\(|System\.out\.println\s*\(|cout\s*<</ }, "8");
+  add("Start shells at 3, then print shells + 1.", true, [L("shells = 3"), L("print(shells + 1)")], { line: "4", code: /shells\s*\+\s*1/ }, "4");
+  add("Start crabs at 2, then print crabs + 2.", true, [L("crabs = 2"), L("print(crabs + 2)")], { line: "4", code: /crabs\s*\+\s*2/ }, "4");
+  add("Start steps at 5, then print steps - 1.", true, [L("steps = 5"), L("print(steps - 1)")], { line: "4", code: /steps\s*\-\s*1/ }, "4");
+  add("Start drops at 4, then print drops * 2.", true, [L("drops = 4"), L("print(drops * 2)")], { line: "8", code: /drops\s*\*\s*2/ }, "8");
+  add("Start shells at 6, then print shells - 2.", true, [L("shells = 6"), L("print(shells - 2)")], { line: "4", code: /shells\s*\-\s*2/ }, "4");
+  add("Remember Pip and Moss.", true, [L("one = \"Pip\""), L("two = \"Moss\""), L("print(one)"), L("print(two)")], { line: ["pip","moss"] }, "Pip and Moss");
+  add("Remember Pebble and Barni.", true, [L("left = \"Pebble\""), L("right = \"Barni\""), L("print(left)"), L("print(right)")], { line: ["pebble","barni"] }, "Pebble and Barni");
+  add("Remember Snail and Limpet.", true, [L("a = \"Snail\""), L("b = \"Limpet\""), L("print(a)"), L("print(b)")], { line: ["snail","limpet"] }, "Snail and Limpet");
+  add("Remember Anemone and Urchin.", true, [L("top = \"Anemone\""), L("low = \"Urchin\""), L("print(top)"), L("print(low)")], { line: ["anemone","urchin"] }, "Anemone and Urchin");
+  add("If the number is > 4, print deep.", true, [L("score = 9"), L("if score > 4:"), L("print(\"deep\")", true)], { line: "deep", code: /\bif\b/ }, "deep");
+  add("If the number is > 2, print warm.", true, [L("score = 6"), L("if score > 2:"), L("print(\"warm\")", true)], { line: "warm", code: /\bif\b/ }, "warm");
+  add("If the number is < 3, print tiny.", true, [L("score = 1"), L("if score < 3:"), L("print(\"tiny\")", true)], { line: "tiny", code: /\bif\b/ }, "tiny");
+  add("If the number is > 7, print full.", true, [L("score = 8"), L("if score > 7:"), L("print(\"full\")", true)], { line: "full", code: /\bif\b/ }, "full");
+  add("If the number is < 9, print low.", true, [L("score = 3"), L("if score < 9:"), L("print(\"low\")", true)], { line: "low", code: /\bif\b/ }, "low");
+  add("If the number is > 1, print high.", true, [L("score = 10"), L("if score > 1:"), L("print(\"high\")", true)], { line: "high", code: /\bif\b/ }, "high");
+  add("Use if and else so you print shallow.", true, [L("score = 1"), L("if score > 5:"), L("print(\"deep\")", true), L("else:"), L("print(\"shallow\")", true)], { line: "shallow", code: /\bif\b[\s\S]*\belse\b/ }, "shallow");
+  add("Use if and else so you print splashy.", true, [L("score = 8"), L("if score > 3:"), L("print(\"splashy\")", true), L("else:"), L("print(\"calm\")", true)], { line: "splashy", code: /\bif\b[\s\S]*\belse\b/ }, "splashy");
+  add("Use if and else so you print over.", true, [L("score = 2"), L("if score < 2:"), L("print(\"under\")", true), L("else:"), L("print(\"over\")", true)], { line: "over", code: /\bif\b[\s\S]*\belse\b/ }, "over");
+  add("Use if and else so you print little.", true, [L("score = 4"), L("if score < 6:"), L("print(\"little\")", true), L("else:"), L("print(\"big\")", true)], { line: "little", code: /\bif\b[\s\S]*\belse\b/ }, "little");
+  add("Use if and else so you print nope.", true, [L("score = 0"), L("if score > 0:"), L("print(\"yes\")", true), L("else:"), L("print(\"nope\")", true)], { line: "nope", code: /\bif\b[\s\S]*\belse\b/ }, "nope");
+  add("Use if and else so you print notyet.", true, [L("score = 7"), L("if score > 7:"), L("print(\"same\")", true), L("else:"), L("print(\"notyet\")", true)], { line: "notyet", code: /\bif\b[\s\S]*\belse\b/ }, "notyet");
+  add("Use if and else so you print ok.", true, [L("score = 5"), L("if score < 8:"), L("print(\"ok\")", true), L("else:"), L("print(\"no\")", true)], { line: "ok", code: /\bif\b[\s\S]*\belse\b/ }, "ok");
+  add("Use if and else so you print swim.", true, [L("score = 3"), L("if score > 1:"), L("print(\"swim\")", true), L("else:"), L("print(\"rest\")", true)], { line: "swim", code: /\bif\b[\s\S]*\belse\b/ }, "swim");
+  add("Use a loop to print drip 2 times.", true, [L("for i in range(2):"), L("print(\"drip\")", true)], { minCount: { line: "drip", n: 2 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "drip 2 times");
+  add("Use a loop to print drip 3 times.", true, [L("for i in range(3):"), L("print(\"drip\")", true)], { minCount: { line: "drip", n: 3 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "drip 3 times");
+  add("Use a loop to print bubble 2 times.", true, [L("for i in range(2):"), L("print(\"bubble\")", true)], { minCount: { line: "bubble", n: 2 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "bubble 2 times");
+  add("Use a loop to print peek 3 times.", true, [L("for i in range(3):"), L("print(\"peek\")", true)], { minCount: { line: "peek", n: 3 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "peek 3 times");
+  add("Use a loop to print tide 2 times.", true, [L("for i in range(2):"), L("print(\"tide\")", true)], { minCount: { line: "tide", n: 2 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "tide 2 times");
+  add("Use a loop to print pool 4 times.", true, [L("for i in range(4):"), L("print(\"pool\")", true)], { minCount: { line: "pool", n: 4 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "pool 4 times");
+  add("Use a loop to print 1, then 2.", true, [L("for i in range(1, 3):"), L("print(i)", true)], { line: ["1","2"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "1 then 2");
+  add("Use a loop to print 1, then 2, then 3.", true, [L("for i in range(1, 4):"), L("print(i)", true)], { line: ["1","2","3"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "1 then 2 then 3");
+  add("Use a loop to print 0, then 1, then 2.", true, [L("for i in range(0, 3):"), L("print(i)", true)], { line: ["0","1","2"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "0 then 1 then 2");
+  add("Use a loop to print 2, then 3, then 4.", true, [L("for i in range(2, 5):"), L("print(i)", true)], { line: ["2","3","4"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "2 then 3 then 4");
+  add("Use a loop to print 4, then 5, then 6.", true, [L("for i in range(4, 7):"), L("print(i)", true)], { line: ["4","5","6"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "4 then 5 then 6");
+  add("Use a loop to print 1, then 2, then 3, then 4.", true, [L("for i in range(1, 5):"), L("print(i)", true)], { line: ["1","2","3","4"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "1 then 2 then 3 then 4");
+  add("Make a list and print the first word anemone.", true, [L("pets = [\"anemone\", \"limpet\"]"), L("print(pets[0])")], { line: "anemone", code: /\[\s*["']/ }, "anemone");
+  add("Print both hermit and barnacle from a list.", true, [L("pets = [\"hermit\", \"barnacle\"]"), L("for pet in pets:"), L("print(pet)", true)], { line: ["hermit","barnacle"], code: /for\s+\w+\s+in\s+pets\s*:/ }, "hermit and barnacle");
+  add("Make a list and print the first word pebble.", true, [L("pets = [\"pebble\", \"snail\"]"), L("print(pets[0])")], { line: "pebble", code: /\[\s*["']/ }, "pebble");
+  add("Print both urchin and sponge from a list.", true, [L("pets = [\"urchin\", \"sponge\"]"), L("for pet in pets:"), L("print(pet)", true)], { line: ["urchin","sponge"], code: /for\s+\w+\s+in\s+pets\s*:/ }, "urchin and sponge");
+  add("Make a list and print the first word moss.", true, [L("pets = [\"moss\", \"pip\"]"), L("print(pets[0])")], { line: "moss", code: /\[\s*["']/ }, "moss");
+  add("Print both tide and pool from a list.", true, [L("pets = [\"tide\", \"pool\"]"), L("for pet in pets:"), L("print(pet)", true)], { line: ["tide","pool"], code: /for\s+\w+\s+in\s+pets\s*:/ }, "tide and pool");
+  add("Make a recipe drip that prints drip.", true, [L("def drip():"), L("print(\"drip\")", true), L("drip()")], { line: "drip", code: /def\s+drip\s*\(/ }, "drip");
+  add("Make a recipe peek that prints peek.", true, [L("def peek():"), L("print(\"peek\")", true), L("peek()")], { line: "peek", code: /def\s+peek\s*\(/ }, "peek");
+  add("Make a recipe nest that prints nest.", true, [L("def nest():"), L("print(\"nest\")", true), L("nest()")], { line: "nest", code: /def\s+nest\s*\(/ }, "nest");
+  add("Make a recipe hide that prints hide.", true, [L("def hide():"), L("print(\"hide\")", true), L("hide()")], { line: "hide", code: /def\s+hide\s*\(/ }, "hide");
+  add("Make a recipe glow that prints glow.", true, [L("def glow():"), L("print(\"glow\")", true), L("glow()")], { line: "glow", code: /def\s+glow\s*\(/ }, "glow");
+  add("Make a recipe rest that prints rest.", true, [L("def rest():"), L("print(\"rest\")", true), L("rest()")], { line: "rest", code: /def\s+rest\s*\(/ }, "rest");
+  add("Make callpip print the name you give it.", true, [L("def callpip(who):"), L("print(who)", true), L("callpip(\"Pip\")")], { line: "pip", code: /def\s+callpip\s*\(/ }, "Pip");
+  add("Make callmoss print the name you give it.", true, [L("def callmoss(who):"), L("print(who)", true), L("callmoss(\"Moss\")")], { line: "moss", code: /def\s+callmoss\s*\(/ }, "Moss");
+  add("Make callpebble print the name you give it.", true, [L("def callpebble(who):"), L("print(who)", true), L("callpebble(\"Pebble\")")], { line: "pebble", code: /def\s+callpebble\s*\(/ }, "Pebble");
+  add("Make callbarni print the name you give it.", true, [L("def callbarni(who):"), L("print(who)", true), L("callbarni(\"Barni\")")], { line: "barni", code: /def\s+callbarni\s*\(/ }, "Barni");
+  add("Make callsail print the name you give it.", true, [L("def callsail(who):"), L("print(who)", true), L("callsail(\"Snail\")")], { line: "snail", code: /def\s+callsail\s*\(/ }, "Snail");
+  add("Save a score, then print deep when it is big.", true, [L("score = 9"), L("if score > 4:"), L("print(\"deep\")", true), L("else:"), L("print(\"shallow\")", true)], { line: "deep", code: /\bif\b/ }, "deep");
+  add("Print Pool log, then loop drip twice.", true, [L("print(\"Pool log\")"), L("for i in range(2):"), L("print(\"drip\")", true)], { contains: "pool log", minCount: { line: "drip", n: 2 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "Pool log and drip");
+  add("Remember two names, Pip and Moss.", true, [L("one = \"Pip\""), L("two = \"Moss\""), L("print(one)"), L("print(two)")], { line: ["pip","moss"] }, "Pip and Moss");
+  add("Print the second list word, limpet.", true, [L("pets = [\"anemone\", \"limpet\"]"), L("print(pets[1])")], { line: "limpet", code: /pets\s*\[\s*1\s*\]/ }, "limpet");
+  add("Run a recipe, then print anemone.", true, [L("pet = \"anemone\""), L("def peek():"), L("print(\"peeked\")", true), L("peek()"), L("print(pet)")], { line: ["peeked","anemone"], code: /def\s+peek\s*\(/ }, "peeked and anemone");
+  add("Count 1 then 2, then print pool done.", true, [L("for i in range(1, 3):"), L("print(i)", true), L("print(\"pool done\")")], { contains: "pool done", line: ["1","2"], code: /for\s+\w+\s+in\s+range\s*\(/ }, "1, 2, and pool done");
+  add("Use else so a tiny score prints shallow.", true, [L("score = 1"), L("if score > 5:"), L("print(\"deep\")", true), L("else:"), L("print(\"shallow\")", true)], { line: "shallow", code: /\belse\b/ }, "shallow");
+  add("Make two recipes, peek and hide.", true, [L("def peek():"), L("print(\"peeked\")", true), L("peek()"), L("def hide():"), L("print(\"hidden\")", true), L("hide()")], { line: ["peeked","hidden"], code: /def\s+peek\s*\(/ }, "peeked and hidden");
+  add("Loop the list anemone and limpet.", true, [L("pets = [\"anemone\", \"limpet\"]"), L("for pet in pets:"), L("print(pet)", true)], { line: ["anemone","limpet"], code: /for\s+\w+\s+in\s+pets\s*:/ }, "anemone and limpet");
+  add("Add 2 to shells, then loop drip.", true, [L("shells = 3"), L("print(shells + 2)"), L("for i in range(2):"), L("print(\"drip\")", true)], { line: "5", minCount: { line: "drip", n: 2 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "5");
+  add("Give callpip the name Pip.", true, [L("def callpip(who):"), L("print(who)", true), L("callpip(\"Pip\")")], { line: "pip", code: /def\s+callpip\s*\(/ }, "Pip");
+  add("Print every animal: anemone, limpet, urchin.", true, [L("animals = [\"anemone\", \"limpet\", \"urchin\"]"), L("for animal in animals:"), L("print(animal)", true)], { line: ["anemone","limpet","urchin"], code: /for\s+\w+\s+in\s+animals\s*:/ }, "anemone, limpet, urchin");
+  add("If Pip is the hero, print found.", true, [L("hero = \"Pip\""), L("print(hero)"), L("if hero == \"Pip\":"), L("print(\"found\")", true)], { line: "found", code: /\bif\b/ }, "found");
+  add("Mix a name, if, a loop, and a recipe.", true, [L("print(\"Pool log\")"), L("hero = \"Pip\""), L("print(hero)"), L("if hero == \"Pip\":"), L("print(\"found\")", true), L("for i in range(2):"), L("print(\"drip\")", true), L("def hide():"), L("print(\"hidden\")", true), L("hide()")], { line: ["pip","found","hidden"], minCount: { line: "drip", n: 2 }, code: /def\s+hide\s*\(/ }, "found and hidden");
+  add("Take 2 from 9, then print deep.", true, [L("bag = 9"), L("print(bag - 2)"), L("if bag > 2:"), L("print(\"deep\")", true)], { line: ["7","deep"], code: /\bif\b/ }, "deep");
+  add("Print Pip, then loop drip three times.", true, [L("print(\"Pip\")"), L("for i in range(3):"), L("print(\"drip\")", true)], { line: "pip", minCount: { line: "drip", n: 3 }, code: /for\s+\w+\s+in\s+range\s*\(/ }, "Pip and drip");
+  if (list.length !== 100) {
+    throw new Error("expected 100 tasks, got " + list.length);
   }
-
   return list;
 })();
 
@@ -855,160 +584,128 @@ function buildPySteps(prefix, rows) {
 const finalIdeas = [
   {
     id: "story",
-    title: "Ocean story",
-    blurb: "A long story that uses words, a name, math, if, a list, and a function.",
-    plan: [
-      "Print a title and two story lines.",
-      "Save a hero name and say hello.",
-      "Count waves with a number.",
-      "Use if, a list, and a function to finish.",
-    ],
+    title: "Pool Tale",
+    blurb: "A tide-pool story with a name, a number, and if.",
+    plan: ["Print the tale.","Remember Pip.","Choose a path."],
     steps: buildPySteps("Project step", [
-      { goal: "Print a story title.", fresh: true, lines: [L('print("Ocean Story")')], spec: { contains: "ocean story" }, see: "Ocean Story" },
-      { goal: "Add a story line.", lines: [L('print("A fish swam out.")')], spec: { minLines: 2 }, see: "A fish swam out." },
-      { goal: "Add a blue-water line.", lines: [L('print("The water was blue.")')], spec: { minLines: 3 }, see: "The water was blue." },
-      { goal: "Save the hero name Fin.", lines: [L('hero = "Fin"')], spec: { code: /hero\s*=\s*["']Fin["']/ }, see: "your old story lines" },
-      { goal: "Print the hero name.", lines: [L("print(hero)")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "Say hello to the hero.", lines: [L('print("Hello " + hero)')], spec: { contains: "hello fin" }, see: "Hello Fin" },
-      { goal: "Save the number of waves.", lines: [L("waves = 3")], spec: { code: /waves\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Print how many waves.", lines: [L("print(waves)")], spec: { line: "3" }, see: "3" },
-      { goal: "Print one more than the waves.", lines: [L("print(waves + 1)")], spec: { code: /waves\s*\+\s*1/, line: "4" }, see: "4" },
-      { goal: "If waves are more than 2, print big.", lines: [L("if waves > 2:"), L('print("big")', true)], spec: { code: /\bif\b/, line: "big" }, see: "big" },
-      { goal: "Add the other path, else.", lines: [L("else:"), L('print("calm")', true)], spec: { code: /\belse\b/ }, see: "big still, because 3 is more than 2", note: "Click at the end of the line print(\"big\")." },
-      { goal: "Make a list of two pets.", lines: [L('pets = ["crab", "eel"]')], spec: { code: /\[\s*["']crab["']/ }, see: "your old lines" },
-      { goal: "Print the first pet.", lines: [L("print(pets[0])")], spec: { code: /pets\s*\[\s*0\s*\]/, line: "crab" }, see: "crab" },
-      { goal: "Print every pet with a loop.", lines: [L("for pet in pets:"), L("print(pet)", true)], spec: { code: /for\s+\w+\s+in\s+pets\s*:/, line: "eel" }, see: "eel" },
-      { goal: "Make a cheer function.", lines: [L("def cheer():"), L('print("yay")', true)], spec: { code: /def\s+cheer\s*\(/ }, see: "your old lines. Nothing new prints until you run cheer." },
-      { goal: "Run the cheer function.", lines: [L("cheer()")], spec: { line: "yay" }, see: "yay" },
-      { goal: "Print The end.", lines: [L('print("The end")')], spec: { contains: "the end" }, see: "The end" },
-      { goal: "Print You did it!", lines: [L('print("You did it!")')], spec: { contains: "you did it" }, see: "You did it!" },
+      { goal: "Print Pool Tale.", fresh: true, lines: [L("print(\"Pool Tale\")")], spec: { contains: "pool tale" }, see: "Pool Tale" },
+      { goal: "Add the line Pip sat in the pool..", fresh: false, lines: [L("print(\"Pip sat in the pool.\")")], spec: { contains: "pip sat in the pool." }, see: "Pip sat in the pool." },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"A snail slid past.\")")], spec: { contains: "a snail slid past." }, see: "A snail slid past." },
+      { goal: "Remember the name Pip.", fresh: false, lines: [L("hero = \"Pip\"")], spec: { code: /hero\s*:?=\s*["']Pip["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "pip" }, see: "Pip" },
+      { goal: "Say Hi to the name.", fresh: false, lines: [L("print(\"Hi \" + hero)")], spec: { contains: "hi pip" }, see: "Hi Pip" },
+      { goal: "Remember the number 3.", fresh: false, lines: [L("shells = 3")], spec: { code: /shells\s*:?=\s*3\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(shells)")], spec: { line: "3" }, see: "3" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(shells + 1)")], spec: { line: "4" }, see: "4" },
+      { goal: "If the number is big, print deep.", fresh: false, lines: [L("if shells > 2:"), L("print(\"deep\")", true)], spec: { line: "deep", code: /\bif\b/ }, see: "deep" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"shallow\")", true)], spec: { code: /\belse\b/ }, see: "deep still", note: "Click after the line that prints deep." },
+      { goal: "Make a list and print both words.", fresh: false, lines: [L("pets = [\"anemone\", \"limpet\"]"), L("for pet in pets:"), L("print(pet)", true)], spec: { line: "limpet", code: /for\s+\w+\s+in\s+pets\s*:/ }, see: "limpet" }
     ]),
   },
   {
     id: "names",
-    title: "Fish name generator",
-    blurb: "Name two fish, count them, and print the whole list.",
-    plan: [
-      "Print a title and save two names.",
-      "Say hello to each name.",
-      "Count, compare, list, and cheer.",
-    ],
+    title: "Shell Names",
+    blurb: "Name two pool friends and count shells.",
+    plan: ["Print a title.","Save a name.","Add else."],
     steps: buildPySteps("Project step", [
-      { goal: "Print a title.", fresh: true, lines: [L('print("Fish Names")')], spec: { contains: "fish names" }, see: "Fish Names" },
-      { goal: "Save the name Bubbles.", lines: [L('name = "Bubbles"')], spec: { code: /name\s*=\s*["']Bubbles["']/ }, see: "the title" },
-      { goal: "Print the name.", lines: [L("print(name)")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "Say hello to the name.", lines: [L('print("Hello " + name)')], spec: { contains: "hello bubbles" }, see: "Hello Bubbles" },
-      { goal: "Save a friend name.", lines: [L('friend = "Coral"')], spec: { code: /friend\s*=\s*["']Coral["']/ }, see: "your old lines" },
-      { goal: "Print the friend.", lines: [L("print(friend)")], spec: { line: "coral" }, see: "Coral" },
-      { goal: "Say meet the friend.", lines: [L('print("Meet " + friend)')], spec: { contains: "meet coral" }, see: "Meet Coral" },
-      { goal: "Save the number 2.", lines: [L("count = 2")], spec: { code: /count\s*=\s*2/ }, see: "your old lines" },
-      { goal: "Print the count.", lines: [L("print(count)")], spec: { line: "2" }, see: "2" },
-      { goal: "Print one more than the count.", lines: [L("print(count + 1)")], spec: { line: "3" }, see: "3" },
-      { goal: "If count is more than 1, print many.", lines: [L("if count > 1:"), L('print("many")', true)], spec: { code: /\bif\b/, line: "many" }, see: "many" },
-      { goal: "Add else for the other path.", lines: [L("else:"), L('print("one")', true)], spec: { code: /\belse\b/ }, see: "many still", note: "Click at the end of print(\"many\")." },
-      { goal: "Make a list of both names.", lines: [L('names = ["Bubbles", "Coral"]')], spec: { code: /\[\s*["']Bubbles["']/ }, see: "your old lines" },
-      { goal: "Print the first list name.", lines: [L("print(names[0])")], spec: { code: /names\s*\[\s*0\s*\]/ }, see: "Bubbles" },
-      { goal: "Loop over the names.", lines: [L("for fish in names:"), L("print(fish)", true)], spec: { code: /for\s+\w+\s+in\s+names\s*:/, line: "coral" }, see: "Coral" },
-      { goal: "Make a splash function.", lines: [L("def yay():"), L('print("splash")', true)], spec: { code: /def\s+yay\s*\(/ }, see: "your old lines" },
-      { goal: "Run yay.", lines: [L("yay()")], spec: { minCount: { line: "splash", n: 1 } }, see: "splash" },
-      { goal: "Print All named!", lines: [L('print("All named!")')], spec: { contains: "all named" }, see: "All named!" },
+      { goal: "Print Shell Names.", fresh: true, lines: [L("print(\"Shell Names\")")], spec: { contains: "shell names" }, see: "Shell Names" },
+      { goal: "Add the line Moss likes shade..", fresh: false, lines: [L("print(\"Moss likes shade.\")")], spec: { contains: "moss likes shade." }, see: "Moss likes shade." },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"Barni sticks tight.\")")], spec: { contains: "barni sticks tight." }, see: "Barni sticks tight." },
+      { goal: "Remember the name Moss.", fresh: false, lines: [L("hero = \"Moss\"")], spec: { code: /hero\s*:?=\s*["']Moss["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "moss" }, see: "Moss" },
+      { goal: "Say Hey to the name.", fresh: false, lines: [L("print(\"Hey \" + hero)")], spec: { contains: "hey moss" }, see: "Hey Moss" },
+      { goal: "Remember the number 2.", fresh: false, lines: [L("crabs = 2")], spec: { code: /crabs\s*:?=\s*2\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(crabs)")], spec: { line: "2" }, see: "2" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(crabs + 1)")], spec: { line: "3" }, see: "3" },
+      { goal: "If the number is big, print many.", fresh: false, lines: [L("if crabs > 1:"), L("print(\"many\")", true)], spec: { line: "many", code: /\bif\b/ }, see: "many" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"few\")", true)], spec: { code: /\belse\b/ }, see: "many still", note: "Click after the line that prints many." },
+      { goal: "Make a list and print both words.", fresh: false, lines: [L("pets = [\"pebble\", \"snail\"]"), L("for pet in pets:"), L("print(pet)", true)], spec: { line: "snail", code: /for\s+\w+\s+in\s+pets\s*:/ }, see: "snail" }
     ]),
   },
   {
     id: "quiz",
-    title: "Mini quiz",
-    blurb: "Ask a question, save the answer, and keep a score.",
-    plan: [
-      "Print a question and save the answer.",
-      "Use a score and math.",
-      "Use if, a list, and a function to finish.",
-    ],
+    title: "Pool Quiz",
+    blurb: "A tiny pool quiz with a score.",
+    plan: ["Ask a question.","Save a score.","Print the path."],
     steps: buildPySteps("Project step", [
-      { goal: "Print Quiz Time.", fresh: true, lines: [L('print("Quiz Time")')], spec: { contains: "quiz time" }, see: "Quiz Time" },
-      { goal: "Print a question.", lines: [L('print("How many arms does a starfish have?")')], spec: { contains: "?" }, see: "the question" },
-      { goal: "Save the answer 5.", lines: [L('answer = "5"')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Print the answer.", lines: [L("print(answer)")], spec: { line: "5" }, see: "5" },
-      { goal: "Print The answer is plus the answer.", lines: [L('print("The answer is " + answer)')], spec: { contains: "the answer is 5" }, see: "The answer is 5" },
-      { goal: "Save score = 10.", lines: [L("score = 10")], spec: { code: /score\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Print the score.", lines: [L("print(score)")], spec: { line: "10" }, see: "10" },
-      { goal: "Print score minus 2.", lines: [L("print(score - 2)")], spec: { line: "8" }, see: "8" },
-      { goal: "If score is more than 5, print pass.", lines: [L("if score > 5:"), L('print("pass")', true)], spec: { code: /\bif\b/, line: "pass" }, see: "pass" },
-      { goal: "Add else.", lines: [L("else:"), L('print("try again")', true)], spec: { code: /\belse\b/ }, see: "pass still", note: "Click at the end of print(\"pass\")." },
-      { goal: "Save bonus = 1.", lines: [L("bonus = 1")], spec: { code: /bonus\s*=\s*1/ }, see: "your old lines" },
-      { goal: "Print the bonus.", lines: [L("print(bonus)")], spec: { line: "1" }, see: "1" },
-      { goal: "Make a list of two facts.", lines: [L('facts = ["five arms", "lives in the sea"]')], spec: { code: /facts\s*=\s*\[/ }, see: "your old lines" },
-      { goal: "Print fact spot 1.", lines: [L("print(facts[1])")], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
-      { goal: "Loop over the facts.", lines: [L("for fact in facts:"), L("print(fact)", true)], spec: { code: /for\s+\w+\s+in\s+facts\s*:/, contains: "five arms" }, see: "five arms" },
-      { goal: "Make a done function.", lines: [L("def done():"), L('print("quiz done")', true)], spec: { code: /def\s+done\s*\(/ }, see: "your old lines" },
-      { goal: "Run done.", lines: [L("done()")], spec: { contains: "quiz done" }, see: "quiz done" },
-      { goal: "Print You finished the quiz!", lines: [L('print("You finished the quiz!")')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+      { goal: "Print Pool Quiz.", fresh: true, lines: [L("print(\"Pool Quiz\")")], spec: { contains: "pool quiz" }, see: "Pool Quiz" },
+      { goal: "Add the line How many arms on a star?.", fresh: false, lines: [L("print(\"How many arms on a star?\")")], spec: { contains: "how many arms on a star?" }, see: "How many arms on a star?" },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"Five is the answer.\")")], spec: { contains: "five is the answer." }, see: "Five is the answer." },
+      { goal: "Remember the name Star.", fresh: false, lines: [L("hero = \"Star\"")], spec: { code: /hero\s*:?=\s*["']Star["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "star" }, see: "Star" },
+      { goal: "Say Hello to the name.", fresh: false, lines: [L("print(\"Hello \" + hero)")], spec: { contains: "hello star" }, see: "Hello Star" },
+      { goal: "Remember the number 5.", fresh: false, lines: [L("score = 5")], spec: { code: /score\s*:?=\s*5\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(score)")], spec: { line: "5" }, see: "5" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(score + 1)")], spec: { line: "6" }, see: "6" },
+      { goal: "If the number is big, print right.", fresh: false, lines: [L("if score > 4:"), L("print(\"right\")", true)], spec: { line: "right", code: /\bif\b/ }, see: "right" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"try\")", true)], spec: { code: /\belse\b/ }, see: "right still", note: "Click after the line that prints right." },
+      { goal: "Make a list and print both words.", fresh: false, lines: [L("pets = [\"urchin\", \"sponge\"]"), L("for pet in pets:"), L("print(pet)", true)], spec: { line: "sponge", code: /for\s+\w+\s+in\s+pets\s*:/ }, see: "sponge" }
     ]),
-  },
+  }
 ];
 
 const advancedIdeas = [
   {
     id: "adventure",
-    title: "Ocean adventure",
-    blurb: "A hero, a loop of waves, a list, and a victory function.",
-    plan: ["Name the hero.", "Count and loop.", "Finish with a list and a function."],
+    title: "Hermit Adventure",
+    blurb: "A harder pool adventure with a loop and a recipe.",
+    plan: ["Name the hermit.","Test the score.","Loop and cheer."],
     steps: buildPySteps("Advanced step", [
-      { goal: "Print Ocean Adventure.", fresh: true, lines: [L('print("Ocean Adventure")')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
-      { goal: "Save hero Fin.", lines: [L('hero = "Fin"')], spec: { code: /hero\s*=\s*["']/ }, see: "the title" },
-      { goal: "Print the hero.", lines: [L("print(hero)")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "Print Go plus the hero.", lines: [L('print("Go " + hero)')], spec: { contains: "go fin" }, see: "Go Fin" },
-      { goal: "Save hearts = 3.", lines: [L("hearts = 3")], spec: { code: /hearts\s*=\s*3/ }, see: "your old lines" },
-      { goal: "Print hearts.", lines: [L("print(hearts)")], spec: { line: "3" }, see: "3" },
-      { goal: "Loop to print 1, 2, 3.", lines: [L("for i in range(1, 4):"), L("print(i)", true)], spec: { code: /for\s+\w+\s+in\s+range\s*\(/, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "If hearts are more than 2, print strong.", lines: [L("if hearts > 2:"), L('print("strong")', true)], spec: { code: /\bif\b/, line: "strong" }, see: "strong" },
-      { goal: "Add else.", lines: [L("else:"), L('print("rest")', true)], spec: { code: /\belse\b/ }, see: "strong still", note: "Click at the end of print(\"strong\")." },
-      { goal: "Make a crew list.", lines: [L('crew = ["Fin", "Bubbles"]')], spec: { code: /crew\s*=\s*\[/ }, see: "your old lines" },
-      { goal: "Loop over the crew.", lines: [L("for pal in crew:"), L("print(pal)", true)], spec: { code: /for\s+\w+\s+in\s+crew\s*:/, line: "bubbles" }, see: "Bubbles" },
-      { goal: "Make win and run it.", lines: [L("def win():"), L('print("You win!")', true), L("win()")], spec: { code: /def\s+win\s*\(/, contains: "you win" }, see: "You win!" },
+      { goal: "Print Hermit Adventure.", fresh: true, lines: [L("print(\"Hermit Adventure\")")], spec: { contains: "hermit adventure" }, see: "Hermit Adventure" },
+      { goal: "Add the line The shell is too small..", fresh: false, lines: [L("print(\"The shell is too small.\")")], spec: { contains: "the shell is too small." }, see: "The shell is too small." },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"Pip finds a new one.\")")], spec: { contains: "pip finds a new one." }, see: "Pip finds a new one." },
+      { goal: "Remember the name Hermit.", fresh: false, lines: [L("hero = \"Hermit\"")], spec: { code: /hero\s*:?=\s*["']Hermit["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "hermit" }, see: "Hermit" },
+      { goal: "Say Hi to the name.", fresh: false, lines: [L("print(\"Hi \" + hero)")], spec: { contains: "hi hermit" }, see: "Hi Hermit" },
+      { goal: "Remember the number 4.", fresh: false, lines: [L("steps = 4")], spec: { code: /steps\s*:?=\s*4\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(steps)")], spec: { line: "4" }, see: "4" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(steps + 1)")], spec: { line: "5" }, see: "5" },
+      { goal: "If the number is big, print go.", fresh: false, lines: [L("if steps > 3:"), L("print(\"go\")", true)], spec: { line: "go", code: /\bif\b/ }, see: "go" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"stay\")", true)], spec: { code: /\belse\b/ }, see: "go still", note: "Click after the line that prints go." },
+      { goal: "Loop drip twice, then run a recipe.", fresh: false, lines: [L("for i in range(2):"), L("print(\"drip\")", true), L("def peek():"), L("print(\"peeked\")", true), L("peek()")], spec: { line: "peeked", minCount: { line: "drip", n: 2 }, code: /def\s+peek\s*\(/ }, see: "peeked" }
     ]),
   },
   {
     id: "scorequiz",
-    title: "Score quiz",
-    blurb: "A harder question, a score, and a clap function.",
-    plan: ["Ask and answer.", "Do score math.", "Clap at the end."],
+    title: "Urchin Quiz",
+    blurb: "A harder quiz that loops and runs a recipe.",
+    plan: ["Print the quiz.","Add a score.","Finish with a recipe."],
     steps: buildPySteps("Advanced step", [
-      { goal: "Print Hard Quiz.", fresh: true, lines: [L('print("Hard Quiz")')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
-      { goal: "Print a math question.", lines: [L('print("What is 2 + 3?")')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
-      { goal: "Save answer 5.", lines: [L('answer = "5"')], spec: { code: /answer\s*=\s*["']5["']/ }, see: "your old lines" },
-      { goal: "Print the answer.", lines: [L("print(answer)")], spec: { line: "5" }, see: "5" },
-      { goal: "Save points = 10.", lines: [L("points = 10")], spec: { code: /points\s*=\s*10/ }, see: "your old lines" },
-      { goal: "Print the points.", lines: [L("print(points)")], spec: { line: "10" }, see: "10" },
-      { goal: "Print points minus 1.", lines: [L("print(points - 1)")], spec: { line: "9" }, see: "9" },
-      { goal: "If points are more than 8, print super.", lines: [L("if points > 8:"), L('print("super")', true)], spec: { code: /\bif\b/, line: "super" }, see: "super" },
-      { goal: "Add else.", lines: [L("else:"), L('print("ok")', true)], spec: { code: /\belse\b/ }, see: "super still", note: "Click at the end of print(\"super\")." },
-      { goal: "Make a clap function.", lines: [L("def clap():"), L('print("clap")', true)], spec: { code: /def\s+clap\s*\(/ }, see: "your old lines" },
-      { goal: "Run clap.", lines: [L("clap()")], spec: { line: "clap" }, see: "clap" },
-      { goal: "Print Quiz star!", lines: [L('print("Quiz star!")')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+      { goal: "Print Urchin Quiz.", fresh: true, lines: [L("print(\"Urchin Quiz\")")], spec: { contains: "urchin quiz" }, see: "Urchin Quiz" },
+      { goal: "Add the line Urchins wear spines..", fresh: false, lines: [L("print(\"Urchins wear spines.\")")], spec: { contains: "urchins wear spines." }, see: "Urchins wear spines." },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"Do not step on one.\")")], spec: { contains: "do not step on one." }, see: "Do not step on one." },
+      { goal: "Remember the name Urchin.", fresh: false, lines: [L("hero = \"Urchin\"")], spec: { code: /hero\s*:?=\s*["']Urchin["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "urchin" }, see: "Urchin" },
+      { goal: "Say Hey to the name.", fresh: false, lines: [L("print(\"Hey \" + hero)")], spec: { contains: "hey urchin" }, see: "Hey Urchin" },
+      { goal: "Remember the number 6.", fresh: false, lines: [L("points = 6")], spec: { code: /points\s*:?=\s*6\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(points)")], spec: { line: "6" }, see: "6" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(points + 1)")], spec: { line: "7" }, see: "7" },
+      { goal: "If the number is big, print pass.", fresh: false, lines: [L("if points > 5:"), L("print(\"pass\")", true)], spec: { line: "pass", code: /\bif\b/ }, see: "pass" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"miss\")", true)], spec: { code: /\belse\b/ }, see: "pass still", note: "Click after the line that prints pass." },
+      { goal: "Loop pool twice, then run a recipe.", fresh: false, lines: [L("for i in range(2):"), L("print(\"pool\")", true), L("def hide():"), L("print(\"hidden\")", true), L("hide()")], spec: { line: "hidden", minCount: { line: "pool", n: 2 }, code: /def\s+hide\s*\(/ }, see: "hidden" }
     ]),
   },
   {
     id: "catalog",
-    title: "Creature catalog",
-    blurb: "Three animals, a list, and a goodbye function.",
-    plan: ["Print three animals.", "Put them in a list.", "Finish the catalog."],
+    title: "Pool Catalog",
+    blurb: "Catalog pool animals, then loop and cheer.",
+    plan: ["List animals.","Count them.","Run a recipe."],
     steps: buildPySteps("Advanced step", [
-      { goal: "Print Sea Catalog.", fresh: true, lines: [L('print("Sea Catalog")')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
-      { goal: "Print crab.", lines: [L('print("crab")')], spec: { line: "crab" }, see: "crab" },
-      { goal: "Print eel.", lines: [L('print("eel")')], spec: { line: "eel" }, see: "eel" },
-      { goal: "Print whale.", lines: [L('print("whale")')], spec: { line: "whale" }, see: "whale" },
-      { goal: "Save first = crab.", lines: [L('first = "crab"')], spec: { code: /first\s*=\s*["']crab["']/ }, see: "your old lines" },
-      { goal: "Print first.", lines: [L("print(first)")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
-      { goal: "Make an animals list.", lines: [L('animals = ["crab", "eel", "whale"]')], spec: { code: /animals\s*=\s*\[/ }, see: "your old lines" },
-      { goal: "Print list spot 2.", lines: [L("print(animals[2])")], spec: { code: /animals\s*\[\s*2\s*\]/ }, see: "whale" },
-      { goal: "Loop over the animals.", lines: [L("for animal in animals:"), L("print(animal)", true)], spec: { code: /for\s+\w+\s+in\s+animals\s*:/ }, see: "crab, eel, and whale again" },
-      { goal: "Save count = 3.", lines: [L("count = 3")], spec: { code: /count\s*=\s*3/ }, see: "your old lines" },
-      { goal: "If count is 3, print full tank.", lines: [L("if count == 3:"), L('print("full tank")', true)], spec: { code: /\bif\b/, contains: "full tank" }, see: "full tank" },
-      { goal: "Make bye and run it.", lines: [L("def bye():"), L('print("catalog done")', true), L("bye()")], spec: { code: /def\s+bye\s*\(/, contains: "catalog done" }, see: "catalog done" },
+      { goal: "Print Pool Catalog.", fresh: true, lines: [L("print(\"Pool Catalog\")")], spec: { contains: "pool catalog" }, see: "Pool Catalog" },
+      { goal: "Add the line Anemone..", fresh: false, lines: [L("print(\"Anemone.\")")], spec: { contains: "anemone." }, see: "Anemone." },
+      { goal: "Add one more line.", fresh: false, lines: [L("print(\"Limpet.\")")], spec: { contains: "limpet." }, see: "Limpet." },
+      { goal: "Remember the name Sponge.", fresh: false, lines: [L("hero = \"Sponge\"")], spec: { code: /hero\s*:?=\s*["']Sponge["']/ }, see: "your old lines" },
+      { goal: "Print the name.", fresh: false, lines: [L("print(hero)")], spec: { line: "sponge" }, see: "Sponge" },
+      { goal: "Say Hello to the name.", fresh: false, lines: [L("print(\"Hello \" + hero)")], spec: { contains: "hello sponge" }, see: "Hello Sponge" },
+      { goal: "Remember the number 3.", fresh: false, lines: [L("count = 3")], spec: { code: /count\s*:?=\s*3\b/ }, see: "your old lines" },
+      { goal: "Print that number.", fresh: false, lines: [L("print(count)")], spec: { line: "3" }, see: "3" },
+      { goal: "Print one more than that number.", fresh: false, lines: [L("print(count + 1)")], spec: { line: "4" }, see: "4" },
+      { goal: "If the number is big, print full.", fresh: false, lines: [L("if count > 2:"), L("print(\"full\")", true)], spec: { line: "full", code: /\bif\b/ }, see: "full" },
+      { goal: "Add the other path, else.", fresh: false, lines: [L("else:"), L("print(\"more\")", true)], spec: { code: /\belse\b/ }, see: "full still", note: "Click after the line that prints full." },
+      { goal: "Loop glow twice, then run a recipe.", fresh: false, lines: [L("for i in range(2):"), L("print(\"glow\")", true), L("def rest():"), L("print(\"rested\")", true), L("rest()")], spec: { line: "rested", minCount: { line: "glow", n: 2 }, code: /def\s+rest\s*\(/ }, see: "rested" }
     ]),
-  },
+  }
 ];
-
 
 function normalizeOut(text) {
   return String(text || "")

@@ -787,7 +787,8 @@ function itemsInSection(list, name) {
 }
 
 function renderRaritySections(list, addCard) {
-  var sections = typeof RARITY_SECTIONS !== "undefined" ? RARITY_SECTIONS : ["Ultra", "Common"];
+  var sections = typeof RARITY_SECTIONS !== "undefined" ? RARITY_SECTIONS.slice() : ["Ultra", "Common"];
+  sections.reverse();
   var s;
   var i;
   for (s = 0; s < sections.length; s += 1) {

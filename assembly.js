@@ -60,8 +60,8 @@ function restoreDoneWaitingForNext() {
   }
 }
 
-const starterCode = `PRINT "Hello, reef!"\n`;
-const projectStarter = `PRINT "My reef project"\n`;
+const starterCode = `PRINT "Chest shut!"\n`;
+const projectStarter = `PRINT "Chest project"\n`;
 
 const dialectTip =
   "This is reef assembly — training wheels that feel like real Assembly, " +
@@ -263,67 +263,108 @@ const tasks = (function buildAsmTasks() {
       lines: lines,
     });
   }
-
-  add('Make Assembly say Hello, ocean!', true, [L('PRINT "Hello, ocean!"')], { contains: "hello, ocean!" }, "Hello, ocean!");
-  list[0].help = numbered([
-    "Keep your old code. Do not erase the whole line.",
-    "Click in the code box.",
-    "Click on the word reef.",
-    "Delete the letters r e e f.",
-    "Type the word ocean in that same spot.",
-    'The line should look like this: PRINT "Hello, ocean!"',
-    "PRINT means show these words on the screen.",
-    "Type the word PRINT.",
-    "Then type a space.",
-    'A quote is this mark: "',
-    "Type a quote, then Hello, ocean!, then a quote.",
-    "Press the Run button. It is at the top.",
-    "You should see Hello, ocean!",
-  ]);
-  add("Print two lines — Hello, ocean! then I love Assembly!", false, [L('PRINT "I love Assembly!"')], { contains: ["hello, ocean!", "i love assembly!"] }, "I love Assembly!", 'PRINT "Hello, ocean!"\nPRINT "I love Assembly!"\n');
-  add('MOV clownfish into a name, then PRINT it.', false, [L('MOV fish, "clownfish"'), L("PRINT fish")], { code: /MOV\s+fish\s*,\s*["']clownfish["']/i, line: "clownfish" }, "clownfish");
-  add("Use REPEAT to print 1, then 2, then 3.", true, [L("MOV R1, 1"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, "1 then 2 then 3");
-  add("PRINT the number 5.", true, [L("MOV R1, 5"), L("PRINT R1")], { line: "5", code: /MOV\s+R1\s*,\s*5/i }, "5");
-  add('MOV coral to "reef", then PRINT it.', false, [L('MOV coral, "reef"'), L("PRINT coral")], { code: /MOV\s+coral\s*,\s*["']reef["']/i, line: "reef" }, "reef");
-  add("REPEAT to PRINT splash three times.", true, [L("REPEAT 3"), L('PRINT "splash"', true), L("END")], { code: /REPEAT\s+3/i, minCount: { line: "splash", n: 3 } }, "splash three times");
-
-  ["bubble", "wave", "crab", "dolphin", "turtle", "coral", "sand", "shell", "whale", "shark", "starfish", "eel"].forEach(function (word) {
-    add("PRINT the word " + word + ".", false, [L('PRINT "' + word + '"')], { contains: word }, word);
-  });
-  [["pet", "crab"], ["boat", "blue"], ["hero", "Fin"], ["snack", "kelp"], ["home", "reef"], ["friend", "Nemo"], ["color", "teal"], ["toy", "shell"], ["pal", "otter"], ["ride", "wave"], ["team", "pods"], ["gem", "pearl"]].forEach(function (pair) {
-    add('MOV ' + pair[1] + " into " + pair[0] + " and PRINT it.", false, [L('MOV ' + pair[0] + ', "' + pair[1] + '"'), L("PRINT " + pair[0])], { code: new RegExp("MOV\\s+" + pair[0] + "\\s*,\\s*[\"']" + pair[1] + "[\"']", "i"), line: pair[1].toLowerCase() }, pair[1]);
-  });
-  [[2, 3, "5"], [4, 1, "5"], [1, 6, "7"], [3, 3, "6"], [5, 5, "10"], [8, 2, "10"], [6, 2, "8"], [9, 1, "10"], [2, 2, "4"], [7, 2, "9"]].forEach(function (row) {
-    add("ADD " + row[1] + " onto " + row[0] + " and PRINT the box.", true, [L("MOV R1, " + row[0]), L("ADD R1, " + row[1]), L("PRINT R1")], { code: /ADD\s+R1/i, line: row[2] }, row[2]);
-  });
-  ["splash", "bubble", "yay", "hi", "wave", "go"].forEach(function (word) {
-    add('REPEAT to PRINT "' + word + '" three times.', true, [L("REPEAT 3"), L('PRINT "' + word + '"', true), L("END")], { code: /REPEAT\s+3/i, minCount: { line: word, n: 3 } }, word + " three times");
-  });
-  [[1, 3], [2, 3], [0, 4], [4, 3], [5, 2], [8, 3]].forEach(function (row) {
-    const expect = [];
-    for (let n = row[0]; n < row[0] + row[1]; n += 1) expect.push(String(n));
-    add("REPEAT to count " + expect.join(", then ") + ".", true, [L("MOV R1, " + row[0]), L("REPEAT " + row[1]), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { code: new RegExp("REPEAT\\s+" + row[1], "i"), line: expect }, expect.join(" then "));
-  });
-  for (let n = 1; n <= 8; n += 1) {
-    add("Start at " + n + ", ADD 2, and PRINT the box.", true, [L("MOV R1, " + n), L("ADD R1, 2"), L("PRINT R1")], { code: /ADD\s+R1\s*,\s*2/i, line: String(n + 2) }, String(n + 2));
-  }
-  for (let n = 2; n <= 6; n += 1) {
-    add("REPEAT the word pop " + n + " times.", true, [L("REPEAT " + n), L('PRINT "pop"', true), L("END")], { code: new RegExp("REPEAT\\s+" + n, "i"), minCount: { line: "pop", n: n } }, "pop " + n + " times");
-  }
-  add("Save two names and PRINT both.", true, [L('MOV one, "crab"'), L('MOV two, "eel"'), L("PRINT one"), L("PRINT two")], { line: ["crab", "eel"] }, "crab and eel");
-  add("ADD twice, then PRINT.", true, [L("MOV R1, 1"), L("ADD R1, 2"), L("ADD R1, 3"), L("PRINT R1")], { code: /ADD\s+R1\s*,\s*3/i, line: "6" }, "6");
-  add("PRINT a title, then REPEAT hi twice.", true, [L('PRINT "Title"'), L("REPEAT 2"), L('PRINT "hi"', true), L("END")], { code: /REPEAT\s+2/i, contains: "title", minCount: { line: "hi", n: 2 } }, "Title and hi hi");
-  add("Count 1 and 2, then PRINT done.", true, [L("MOV R1, 1"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END"), L('PRINT "done"')], { code: /REPEAT/i, line: ["1", "2"], contains: "done" }, "1, 2, and done");
-  add("Use two boxes, R1 and R2.", true, [L("MOV R1, 4"), L("MOV R2, 6"), L("PRINT R1"), L("PRINT R2")], { line: ["4", "6"] }, "4 and 6");
-  add("ADD 1 three times with REPEAT.", true, [L("MOV R1, 0"), L("REPEAT 3"), L("ADD R1, 1", true), L("PRINT R1", true), L("END")], { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, "1 then 2 then 3");
-
-  const padWords = ["pearl", "kelp", "otter", "foam", "tide", "cove", "pier", "gull", "dune", "mist"];
-  let pad = 0;
-  while (list.length < 100) {
-    const word = padWords[pad % padWords.length] + (pad >= padWords.length ? String(pad) : "");
-    pad += 1;
-    add("PRINT the extra word " + word + ".", false, [L('PRINT "' + word + '"')], { contains: word }, word);
-  }
+  add("Change shut to open.", false, [L("PRINT \"Chest open!\"")], { contains: "chest open!" }, "Chest open!", "PRINT \"Chest open!\"\n");
+  list[0].help = numbered(["Keep your old code. Do not erase the whole line.","Click in the code box.","Click on the word shut.","Delete those letters.","Type the new word in that same spot.","The line should look like this: PRINT \"Chest open!\"","PRINT means show these words on the screen.","Type the word PRINT.","Then type a space.","A quote is this mark: \"","The words Chest open! stay between the quotes.","Press the Run button. It is at the top.","You should see Chest open!"]);
+  add("PRINT coin.", false, [L("PRINT \"coin\"")], { contains: "coin" }, "coin");
+  add("PRINT map.", false, [L("PRINT \"map\"")], { contains: "map" }, "map");
+  add("PRINT key.", false, [L("PRINT \"key\"")], { contains: "key" }, "key");
+  add("PRINT gem.", false, [L("PRINT \"gem\"")], { contains: "gem" }, "gem");
+  add("PRINT flag.", false, [L("PRINT \"flag\"")], { contains: "flag" }, "flag");
+  add("Save 2 in R1 and PRINT it.", true, [L("MOV R1, 2"), L("PRINT R1")], { line: "2", code: /MOV\s+R1\s*,\s*2\b/i }, "2");
+  add("Save 6 in R1 and PRINT it.", true, [L("MOV R1, 6"), L("PRINT R1")], { line: "6", code: /MOV\s+R1\s*,\s*6\b/i }, "6");
+  add("Save 9 in R1 and PRINT it.", true, [L("MOV R1, 9"), L("PRINT R1")], { line: "9", code: /MOV\s+R1\s*,\s*9\b/i }, "9");
+  add("PRINT two treasure lines.", true, [L("PRINT \"The map is old.\""), L("PRINT \"A key waits.\"")], { contains: ["the map is old.","a key waits."] }, "A key waits.");
+  add("PRINT two treasure lines.", true, [L("PRINT \"Coins clink.\""), L("PRINT \"The flag flaps.\"")], { contains: ["coins clink.","the flag flaps."] }, "The flag flaps.");
+  add("PRINT two treasure lines.", true, [L("PRINT \"Gem sits inside.\""), L("PRINT \"The chest is ready.\"")], { contains: ["gem sits inside.","the chest is ready."] }, "The chest is ready.");
+  add("MOV Coin into label and PRINT it.", true, [L("MOV label, \"Coin\""), L("PRINT label")], { line: "coin", code: /MOV\s+label\s*,\s*["']Coin["']/i }, "Coin");
+  add("MOV Map into spot and PRINT it.", true, [L("MOV spot, \"Map\""), L("PRINT spot")], { line: "map", code: /MOV\s+spot\s*,\s*["']Map["']/i }, "Map");
+  add("MOV Key into tool and PRINT it.", true, [L("MOV tool, \"Key\""), L("PRINT tool")], { line: "key", code: /MOV\s+tool\s*,\s*["']Key["']/i }, "Key");
+  add("MOV Gem into prize and PRINT it.", true, [L("MOV prize, \"Gem\""), L("PRINT prize")], { line: "gem", code: /MOV\s+prize\s*,\s*["']Gem["']/i }, "Gem");
+  add("MOV Flag into mark and PRINT it.", true, [L("MOV mark, \"Flag\""), L("PRINT mark")], { line: "flag", code: /MOV\s+mark\s*,\s*["']Flag["']/i }, "Flag");
+  add("MOV Dot into pal and PRINT it.", true, [L("MOV pal, \"Dot\""), L("PRINT pal")], { line: "dot", code: /MOV\s+pal\s*,\s*["']Dot["']/i }, "Dot");
+  add("MOV Skiff into boat and PRINT it.", true, [L("MOV boat, \"Skiff\""), L("PRINT boat")], { line: "skiff", code: /MOV\s+boat\s*,\s*["']Skiff["']/i }, "Skiff");
+  add("MOV Cove into cave and PRINT it.", true, [L("MOV cave, \"Cove\""), L("PRINT cave")], { line: "cove", code: /MOV\s+cave\s*,\s*["']Cove["']/i }, "Cove");
+  add("MOV 1 into R1 and PRINT the box.", true, [L("MOV R1, 1"), L("PRINT R1")], { line: "1", code: /MOV\s+R1\s*,\s*1\b/i }, "1");
+  add("MOV 4 into R1 and PRINT the box.", true, [L("MOV R1, 4"), L("PRINT R1")], { line: "4", code: /MOV\s+R1\s*,\s*4\b/i }, "4");
+  add("MOV 7 into R1 and PRINT the box.", true, [L("MOV R1, 7"), L("PRINT R1")], { line: "7", code: /MOV\s+R1\s*,\s*7\b/i }, "7");
+  add("MOV 3 into R1 and PRINT the box.", true, [L("MOV R1, 3"), L("PRINT R1")], { line: "3", code: /MOV\s+R1\s*,\s*3\b/i }, "3");
+  add("MOV 8 into R1 and PRINT the box.", true, [L("MOV R1, 8"), L("PRINT R1")], { line: "8", code: /MOV\s+R1\s*,\s*8\b/i }, "8");
+  add("MOV 5 into R1 and PRINT the box.", true, [L("MOV R1, 5"), L("PRINT R1")], { line: "5", code: /MOV\s+R1\s*,\s*5\b/i }, "5");
+  add("ADD 3 onto 2 and PRINT the box.", true, [L("MOV R1, 2"), L("ADD R1, 3"), L("PRINT R1")], { line: "5", code: /ADD\s+R1\s*,\s*3\b/i }, "5");
+  add("ADD 4 onto 4 and PRINT the box.", true, [L("MOV R1, 4"), L("ADD R1, 4"), L("PRINT R1")], { line: "8", code: /ADD\s+R1\s*,\s*4\b/i }, "8");
+  add("ADD 6 onto 1 and PRINT the box.", true, [L("MOV R1, 1"), L("ADD R1, 6"), L("PRINT R1")], { line: "7", code: /ADD\s+R1\s*,\s*6\b/i }, "7");
+  add("ADD 2 onto 5 and PRINT the box.", true, [L("MOV R1, 5"), L("ADD R1, 2"), L("PRINT R1")], { line: "7", code: /ADD\s+R1\s*,\s*2\b/i }, "7");
+  add("ADD 3 onto 3 and PRINT the box.", true, [L("MOV R1, 3"), L("ADD R1, 3"), L("PRINT R1")], { line: "6", code: /ADD\s+R1\s*,\s*3\b/i }, "6");
+  add("ADD 1 onto 8 and PRINT the box.", true, [L("MOV R1, 8"), L("ADD R1, 1"), L("PRINT R1")], { line: "9", code: /ADD\s+R1\s*,\s*1\b/i }, "9");
+  add("ADD 3 onto 6 and PRINT the box.", true, [L("MOV R1, 6"), L("ADD R1, 3"), L("PRINT R1")], { line: "9", code: /ADD\s+R1\s*,\s*3\b/i }, "9");
+  add("ADD 2 onto 2 and PRINT the box.", true, [L("MOV R1, 2"), L("ADD R1, 2"), L("PRINT R1")], { line: "4", code: /ADD\s+R1\s*,\s*2\b/i }, "4");
+  add("ADD 3 onto 7 and PRINT the box.", true, [L("MOV R1, 7"), L("ADD R1, 3"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*3\b/i }, "10");
+  add("ADD 1 onto 1 and PRINT the box.", true, [L("MOV R1, 1"), L("ADD R1, 1"), L("PRINT R1")], { line: "2", code: /ADD\s+R1\s*,\s*1\b/i }, "2");
+  add("Start at 3, ADD 1, and PRINT.", true, [L("MOV R1, 3"), L("ADD R1, 1"), L("PRINT R1")], { line: "4", code: /ADD\s+R1/i }, "4");
+  add("Start at 5, ADD 2, and PRINT.", true, [L("MOV R1, 5"), L("ADD R1, 2"), L("PRINT R1")], { line: "7", code: /ADD\s+R1/i }, "7");
+  add("Start at 2, ADD 4, and PRINT.", true, [L("MOV R1, 2"), L("ADD R1, 4"), L("PRINT R1")], { line: "6", code: /ADD\s+R1/i }, "6");
+  add("Start at 6, ADD 1, and PRINT.", true, [L("MOV R1, 6"), L("ADD R1, 1"), L("PRINT R1")], { line: "7", code: /ADD\s+R1/i }, "7");
+  add("Start at 4, ADD 3, and PRINT.", true, [L("MOV R1, 4"), L("ADD R1, 3"), L("PRINT R1")], { line: "7", code: /ADD\s+R1/i }, "7");
+  add("Start at 1, ADD 5, and PRINT.", true, [L("MOV R1, 1"), L("ADD R1, 5"), L("PRINT R1")], { line: "6", code: /ADD\s+R1/i }, "6");
+  add("Use two boxes. PRINT 4 and coin.", true, [L("MOV R1, 4"), L("MOV label, \"coin\""), L("PRINT R1"), L("PRINT label")], { line: ["4","coin"] }, "4 and coin");
+  add("Use two boxes. PRINT 6 and map.", true, [L("MOV R2, 6"), L("MOV label, \"map\""), L("PRINT R2"), L("PRINT label")], { line: ["6","map"] }, "6 and map");
+  add("Use two boxes. PRINT 1 and key.", true, [L("MOV R1, 1"), L("MOV label, \"key\""), L("PRINT R1"), L("PRINT label")], { line: ["1","key"] }, "1 and key");
+  add("Use two boxes. PRINT 8 and gem.", true, [L("MOV R2, 8"), L("MOV label, \"gem\""), L("PRINT R2"), L("PRINT label")], { line: ["8","gem"] }, "8 and gem");
+  add("Use two boxes. PRINT 3 and flag.", true, [L("MOV R1, 3"), L("MOV label, \"flag\""), L("PRINT R1"), L("PRINT label")], { line: ["3","flag"] }, "3 and flag");
+  add("Use two boxes. PRINT 2 and dot.", true, [L("MOV R2, 2"), L("MOV label, \"dot\""), L("PRINT R2"), L("PRINT label")], { line: ["2","dot"] }, "2 and dot");
+  add("REPEAT clink 2 times.", true, [L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], { minCount: { line: "clink", n: 2 }, code: /REPEAT\s+2\b/i }, "clink 2 times");
+  add("REPEAT clink 3 times.", true, [L("REPEAT 3"), L("PRINT \"clink\"", true), L("END")], { minCount: { line: "clink", n: 3 }, code: /REPEAT\s+3\b/i }, "clink 3 times");
+  add("REPEAT jingle 2 times.", true, [L("REPEAT 2"), L("PRINT \"jingle\"", true), L("END")], { minCount: { line: "jingle", n: 2 }, code: /REPEAT\s+2\b/i }, "jingle 2 times");
+  add("REPEAT jingle 4 times.", true, [L("REPEAT 4"), L("PRINT \"jingle\"", true), L("END")], { minCount: { line: "jingle", n: 4 }, code: /REPEAT\s+4\b/i }, "jingle 4 times");
+  add("REPEAT spark 2 times.", true, [L("REPEAT 2"), L("PRINT \"spark\"", true), L("END")], { minCount: { line: "spark", n: 2 }, code: /REPEAT\s+2\b/i }, "spark 2 times");
+  add("REPEAT spark 3 times.", true, [L("REPEAT 3"), L("PRINT \"spark\"", true), L("END")], { minCount: { line: "spark", n: 3 }, code: /REPEAT\s+3\b/i }, "spark 3 times");
+  add("REPEAT hooray 2 times.", true, [L("REPEAT 2"), L("PRINT \"hooray\"", true), L("END")], { minCount: { line: "hooray", n: 2 }, code: /REPEAT\s+2\b/i }, "hooray 2 times");
+  add("REPEAT hooray 3 times.", true, [L("REPEAT 3"), L("PRINT \"hooray\"", true), L("END")], { minCount: { line: "hooray", n: 3 }, code: /REPEAT\s+3\b/i }, "hooray 3 times");
+  add("REPEAT shine 2 times.", true, [L("REPEAT 2"), L("PRINT \"shine\"", true), L("END")], { minCount: { line: "shine", n: 2 }, code: /REPEAT\s+2\b/i }, "shine 2 times");
+  add("REPEAT shine 4 times.", true, [L("REPEAT 4"), L("PRINT \"shine\"", true), L("END")], { minCount: { line: "shine", n: 4 }, code: /REPEAT\s+4\b/i }, "shine 4 times");
+  add("Count 1, then 2 with REPEAT.", true, [L("MOV R1, 1"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["1","2"], code: /REPEAT\s+2\b/i }, "1 then 2");
+  add("Count 1, then 2, then 3 with REPEAT.", true, [L("MOV R1, 1"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["1","2","3"], code: /REPEAT\s+3\b/i }, "1 then 2 then 3");
+  add("Count 2, then 3, then 4 with REPEAT.", true, [L("MOV R1, 2"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["2","3","4"], code: /REPEAT\s+3\b/i }, "2 then 3 then 4");
+  add("Count 0, then 1, then 2 with REPEAT.", true, [L("MOV R1, 0"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["0","1","2"], code: /REPEAT\s+3\b/i }, "0 then 1 then 2");
+  add("Count 4, then 5, then 6 with REPEAT.", true, [L("MOV R1, 4"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["4","5","6"], code: /REPEAT\s+3\b/i }, "4 then 5 then 6");
+  add("Count 5, then 6 with REPEAT.", true, [L("MOV R1, 5"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["5","6"], code: /REPEAT\s+2\b/i }, "5 then 6");
+  add("Count 3, then 4, then 5, then 6 with REPEAT.", true, [L("MOV R1, 3"), L("REPEAT 4"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["3","4","5","6"], code: /REPEAT\s+4\b/i }, "3 then 4 then 5 then 6");
+  add("Count 6, then 7, then 8 with REPEAT.", true, [L("MOV R1, 6"), L("REPEAT 3"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["6","7","8"], code: /REPEAT\s+3\b/i }, "6 then 7 then 8");
+  add("Count 2, then 3, then 4, then 5 with REPEAT.", true, [L("MOV R1, 2"), L("REPEAT 4"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["2","3","4","5"], code: /REPEAT\s+4\b/i }, "2 then 3 then 4 then 5");
+  add("Count 1, then 2, then 3, then 4 with REPEAT.", true, [L("MOV R1, 1"), L("REPEAT 4"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["1","2","3","4"], code: /REPEAT\s+4\b/i }, "1 then 2 then 3 then 4");
+  add("Count 8, then 9 with REPEAT.", true, [L("MOV R1, 8"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["8","9"], code: /REPEAT\s+2\b/i }, "8 then 9");
+  add("Count 0, then 1, then 2, then 3 with REPEAT.", true, [L("MOV R1, 0"), L("REPEAT 4"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], { line: ["0","1","2","3"], code: /REPEAT\s+4\b/i }, "0 then 1 then 2 then 3");
+  add("ADD twice, then PRINT 6.", true, [L("MOV R1, 1"), L("ADD R1, 2"), L("ADD R1, 3"), L("PRINT R1")], { line: "6", code: /ADD\s+R1/i }, "6");
+  add("ADD twice, then PRINT 6.", true, [L("MOV R1, 2"), L("ADD R1, 2"), L("ADD R1, 2"), L("PRINT R1")], { line: "6", code: /ADD\s+R1/i }, "6");
+  add("ADD twice, then PRINT 6.", true, [L("MOV R1, 4"), L("ADD R1, 1"), L("ADD R1, 1"), L("PRINT R1")], { line: "6", code: /ADD\s+R1/i }, "6");
+  add("ADD twice, then PRINT 7.", true, [L("MOV R1, 3"), L("ADD R1, 3"), L("ADD R1, 1"), L("PRINT R1")], { line: "7", code: /ADD\s+R1/i }, "7");
+  add("ADD twice, then PRINT 9.", true, [L("MOV R1, 5"), L("ADD R1, 2"), L("ADD R1, 2"), L("PRINT R1")], { line: "9", code: /ADD\s+R1/i }, "9");
+  add("ADD twice, then PRINT 7.", true, [L("MOV R1, 1"), L("ADD R1, 4"), L("ADD R1, 2"), L("PRINT R1")], { line: "7", code: /ADD\s+R1/i }, "7");
+  add("ADD twice, then PRINT 10.", true, [L("MOV R1, 6"), L("ADD R1, 1"), L("ADD R1, 3"), L("PRINT R1")], { line: "10", code: /ADD\s+R1/i }, "10");
+  add("ADD twice, then PRINT 9.", true, [L("MOV R1, 2"), L("ADD R1, 3"), L("ADD R1, 4"), L("PRINT R1")], { line: "9", code: /ADD\s+R1/i }, "9");
+  add("PRINT Chest log, then REPEAT clink.", true, [L("PRINT \"Chest log\""), L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], { contains: "chest log", minCount: { line: "clink", n: 2 }, code: /REPEAT/i }, "Chest log");
+  add("PRINT Map log, then REPEAT spark.", true, [L("PRINT \"Map log\""), L("REPEAT 2"), L("PRINT \"spark\"", true), L("END")], { contains: "map log", minCount: { line: "spark", n: 2 }, code: /REPEAT/i }, "Map log");
+  add("PRINT Key log, then REPEAT jingle.", true, [L("PRINT \"Key log\""), L("REPEAT 3"), L("PRINT \"jingle\"", true), L("END")], { contains: "key log", minCount: { line: "jingle", n: 3 }, code: /REPEAT/i }, "Key log");
+  add("PRINT Gem log, then REPEAT shine.", true, [L("PRINT \"Gem log\""), L("REPEAT 2"), L("PRINT \"shine\"", true), L("END")], { contains: "gem log", minCount: { line: "shine", n: 2 }, code: /REPEAT/i }, "Gem log");
+  add("PRINT Flag log, then REPEAT hooray.", true, [L("PRINT \"Flag log\""), L("REPEAT 2"), L("PRINT \"hooray\"", true), L("END")], { contains: "flag log", minCount: { line: "hooray", n: 2 }, code: /REPEAT/i }, "Flag log");
+  add("PRINT Coin log, then REPEAT clink.", true, [L("PRINT \"Coin log\""), L("REPEAT 3"), L("PRINT \"clink\"", true), L("END")], { contains: "coin log", minCount: { line: "clink", n: 3 }, code: /REPEAT/i }, "Coin log");
+  add("PRINT Cave log, then REPEAT spark.", true, [L("PRINT \"Cave log\""), L("REPEAT 3"), L("PRINT \"spark\"", true), L("END")], { contains: "cave log", minCount: { line: "spark", n: 3 }, code: /REPEAT/i }, "Cave log");
+  add("PRINT Dot log, then REPEAT shine.", true, [L("PRINT \"Dot log\""), L("REPEAT 3"), L("PRINT \"shine\"", true), L("END")], { contains: "dot log", minCount: { line: "shine", n: 3 }, code: /REPEAT/i }, "Dot log");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 4"), L("MOV R2, 6"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("ADD box R2 onto R1 and PRINT 7.", true, [L("MOV R1, 2"), L("MOV R2, 5"), L("ADD R1, R2"), L("PRINT R1")], { line: "7", code: /ADD\s+R1\s*,\s*R2/i }, "7");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 3"), L("MOV R2, 7"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("ADD box R2 onto R1 and PRINT 9.", true, [L("MOV R1, 1"), L("MOV R2, 8"), L("ADD R1, R2"), L("PRINT R1")], { line: "9", code: /ADD\s+R1\s*,\s*R2/i }, "9");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 5"), L("MOV R2, 5"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 8"), L("MOV R2, 2"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 6"), L("MOV R2, 4"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("ADD box R2 onto R1 and PRINT 10.", true, [L("MOV R1, 9"), L("MOV R2, 1"), L("ADD R1, R2"), L("PRINT R1")], { line: "10", code: /ADD\s+R1\s*,\s*R2/i }, "10");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Treasure end\""), L("MOV one, \"Coin\""), L("MOV two, \"Map\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], { contains: "treasure end", line: ["coin","map"], minCount: { line: "clink", n: 2 } }, "Treasure end");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Cave end\""), L("MOV one, \"Key\""), L("MOV two, \"Gem\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"spark\"", true), L("END")], { contains: "cave end", line: ["key","gem"], minCount: { line: "spark", n: 2 } }, "Cave end");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Ship end\""), L("MOV one, \"Flag\""), L("MOV two, \"Dot\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"jingle\"", true), L("END")], { contains: "ship end", line: ["flag","dot"], minCount: { line: "jingle", n: 2 } }, "Ship end");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Lock end\""), L("MOV one, \"Skiff\""), L("MOV two, \"Cove\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"shine\"", true), L("END")], { contains: "lock end", line: ["skiff","cove"], minCount: { line: "shine", n: 2 } }, "Lock end");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Prize end\""), L("MOV one, \"Gem\""), L("MOV two, \"Coin\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"hooray\"", true), L("END")], { contains: "prize end", line: ["gem","coin"], minCount: { line: "hooray", n: 2 } }, "Prize end");
+  add("Mix a title, two names, and a REPEAT.", true, [L("PRINT \"Last chest\""), L("MOV one, \"Map\""), L("MOV two, \"Key\""), L("PRINT one"), L("PRINT two"), L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], { contains: "last chest", line: ["map","key"], minCount: { line: "clink", n: 2 } }, "Last chest");
+  if (list.length !== 100) throw new Error("expected 100 tasks, got " + list.length);
   return list;
 })();
 
@@ -342,145 +383,127 @@ function buildAsmSteps(prefix, rows) {
 const finalIdeas = [
   {
     id: "story",
-    title: "Ocean story",
-    blurb: "A long story using PRINT, MOV, ADD, and REPEAT.",
-    plan: ["Print a title and two lines.", "Save a hero name.", "Count with ADD and REPEAT."],
+    title: "Chest tale",
+    blurb: "A treasure story using PRINT, MOV, ADD, and REPEAT.",
+    plan: ["Print a title.","Save a name.","Count with ADD."],
     steps: buildAsmSteps("Project step", [
-      { goal: "PRINT a story title.", fresh: true, lines: [L('PRINT "Ocean Story"')], spec: { contains: "ocean story" }, see: "Ocean Story" },
-      { goal: "Add a story line.", lines: [L('PRINT "A fish swam out."')], spec: { minLines: 2 }, see: "A fish swam out." },
-      { goal: "Add a blue-water line.", lines: [L('PRINT "The water was blue."')], spec: { minLines: 3 }, see: "The water was blue." },
-      { goal: "MOV the hero name Fin.", lines: [L('MOV hero, "Fin"')], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
-      { goal: "PRINT the hero.", lines: [L("PRINT hero")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "PRINT Hello.", lines: [L('PRINT "Hello"')], spec: { line: "hello" }, see: "Hello" },
-      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
-      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
-      { goal: "ADD 1 to R1 and PRINT it.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { code: /ADD\s+R1\s*,\s*1/i, line: "4" }, see: "4" },
-      { goal: "PRINT the word big.", lines: [L('PRINT "big"')], spec: { line: "big" }, see: "big" },
-      { goal: "MOV a friend name.", lines: [L('MOV friend, "Bubbles"')], spec: { code: /MOV\s+friend/i }, see: "your old lines" },
-      { goal: "PRINT the friend.", lines: [L("PRINT friend")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "REPEAT to print 1, 2, 3.", lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { code: /REPEAT\s+3/i, line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "PRINT yay.", lines: [L('PRINT "yay"')], spec: { line: "yay" }, see: "yay" },
-      { goal: "REPEAT splash twice.", lines: [L("REPEAT 2"), L('PRINT "splash"', true), L("END")], spec: { minCount: { line: "splash", n: 2 } }, see: "splash twice" },
-      { goal: "PRINT The end.", lines: [L('PRINT "The end"')], spec: { contains: "the end" }, see: "The end" },
-      { goal: "PRINT You did it!", lines: [L('PRINT "You did it!"')], spec: { contains: "you did it" }, see: "You did it!" },
-      { goal: "PRINT a star line.", lines: [L('PRINT "star"')], spec: { line: "star" }, see: "star" },
+      { goal: "PRINT Chest Tale.", fresh: true, lines: [L("PRINT \"Chest Tale\"")], spec: { contains: "chest tale" }, see: "Chest Tale" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"The lock clicks.\"")], spec: { contains: "the lock clicks." }, see: "The lock clicks." },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"A coin rolls out.\"")], spec: { contains: "a coin rolls out." }, see: "A coin rolls out." },
+      { goal: "MOV the name Dot.", fresh: false, lines: [L("MOV hero, \"Dot\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "dot" }, see: "Dot" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 3 into R1.", fresh: false, lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "4", code: /ADD\s+R1\s*,\s*1/i }, see: "4" },
+      { goal: "PRINT open.", fresh: false, lines: [L("PRINT \"open\"")], spec: { line: "open" }, see: "open" },
+      { goal: "REPEAT clink twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], spec: { minCount: { line: "clink", n: 2 } }, see: "clink twice" },
+      { goal: "PRINT The end.", fresh: false, lines: [L("PRINT \"The end\"")], spec: { contains: "the end" }, see: "The end" }
     ]),
   },
   {
     id: "names",
-    title: "Fish name generator",
-    blurb: "Store two fish names and count them.",
-    plan: ["Print a title.", "MOV two names.", "ADD and REPEAT."],
+    title: "Treasure names",
+    blurb: "Name the loot and count it.",
+    plan: ["Print a title.","MOV a name.","REPEAT a cheer."],
     steps: buildAsmSteps("Project step", [
-      { goal: "PRINT a title.", fresh: true, lines: [L('PRINT "Fish Names"')], spec: { contains: "fish names" }, see: "Fish Names" },
-      { goal: "MOV Bubbles into name.", lines: [L('MOV name, "Bubbles"')], spec: { code: /MOV\s+name/i }, see: "the title" },
-      { goal: "PRINT the name.", lines: [L("PRINT name")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "PRINT Hello.", lines: [L('PRINT "Hello"')], spec: { line: "hello" }, see: "Hello" },
-      { goal: "MOV Coral into friend.", lines: [L('MOV friend, "Coral"')], spec: { code: /MOV\s+friend/i }, see: "your old lines" },
-      { goal: "PRINT the friend.", lines: [L("PRINT friend")], spec: { line: "coral" }, see: "Coral" },
-      { goal: "PRINT Meet.", lines: [L('PRINT "Meet"')], spec: { line: "meet" }, see: "Meet" },
-      { goal: "MOV 2 into R1.", lines: [L("MOV R1, 2")], spec: { code: /MOV\s+R1\s*,\s*2/i }, see: "your old lines" },
-      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "2" }, see: "2" },
-      { goal: "ADD 1 and PRINT.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "3" }, see: "3" },
-      { goal: "PRINT many.", lines: [L('PRINT "many"')], spec: { line: "many" }, see: "many" },
-      { goal: "PRINT one.", lines: [L('PRINT "one"')], spec: { line: "one" }, see: "one" },
-      { goal: "REPEAT hi twice.", lines: [L("REPEAT 2"), L('PRINT "hi"', true), L("END")], spec: { minCount: { line: "hi", n: 2 } }, see: "hi twice" },
-      { goal: "PRINT both names again.", lines: [L("PRINT name"), L("PRINT friend")], spec: { line: "coral" }, see: "Coral" },
-      { goal: "PRINT splash.", lines: [L('PRINT "splash"')], spec: { line: "splash" }, see: "splash" },
-      { goal: "REPEAT go twice.", lines: [L("REPEAT 2"), L('PRINT "go"', true), L("END")], spec: { minCount: { line: "go", n: 2 } }, see: "go twice" },
-      { goal: "PRINT All named!", lines: [L('PRINT "All named!"')], spec: { contains: "all named" }, see: "All named!" },
-      { goal: "PRINT Bye fish!", lines: [L('PRINT "Bye fish!"')], spec: { contains: "bye fish" }, see: "Bye fish!" },
+      { goal: "PRINT Treasure Names.", fresh: true, lines: [L("PRINT \"Treasure Names\"")], spec: { contains: "treasure names" }, see: "Treasure Names" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"Coin is first.\"")], spec: { contains: "coin is first." }, see: "Coin is first." },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"Map is next.\"")], spec: { contains: "map is next." }, see: "Map is next." },
+      { goal: "MOV the name Skiff.", fresh: false, lines: [L("MOV hero, \"Skiff\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "skiff" }, see: "Skiff" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 2 into R1.", fresh: false, lines: [L("MOV R1, 2")], spec: { code: /MOV\s+R1\s*,\s*2\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "2" }, see: "2" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "3", code: /ADD\s+R1\s*,\s*1/i }, see: "3" },
+      { goal: "PRINT found.", fresh: false, lines: [L("PRINT \"found\"")], spec: { line: "found" }, see: "found" },
+      { goal: "REPEAT spark twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"spark\"", true), L("END")], spec: { minCount: { line: "spark", n: 2 } }, see: "spark twice" },
+      { goal: "PRINT The end.", fresh: false, lines: [L("PRINT \"The end\"")], spec: { contains: "the end" }, see: "The end" }
     ]),
   },
   {
     id: "quiz",
-    title: "Mini quiz",
-    blurb: "Ask a question and keep a score in a box.",
-    plan: ["Print a question.", "MOV the answer.", "ADD the score."],
+    title: "Chest quiz",
+    blurb: "A tiny quiz with a score box.",
+    plan: ["Ask with PRINT.","Store a number.","ADD the score."],
     steps: buildAsmSteps("Project step", [
-      { goal: "PRINT Quiz Time.", fresh: true, lines: [L('PRINT "Quiz Time"')], spec: { contains: "quiz time" }, see: "Quiz Time" },
-      { goal: "PRINT a question.", lines: [L('PRINT "How many arms?"')], spec: { contains: "?" }, see: "the question" },
-      { goal: "MOV answer 5.", lines: [L('MOV answer, "5"')], spec: { code: /MOV\s+answer/i }, see: "your old lines" },
-      { goal: "PRINT the answer.", lines: [L("PRINT answer")], spec: { line: "5" }, see: "5" },
-      { goal: "PRINT The answer is.", lines: [L('PRINT "The answer is"')], spec: { contains: "the answer is" }, see: "The answer is" },
-      { goal: "MOV 10 into R1.", lines: [L("MOV R1, 10")], spec: { code: /MOV\s+R1\s*,\s*10/i }, see: "your old lines" },
-      { goal: "PRINT the score.", lines: [L("PRINT R1")], spec: { line: "10" }, see: "10" },
-      { goal: "ADD nothing? Take a new box and show 8.", lines: [L("MOV R2, 8"), L("PRINT R2")], spec: { line: "8" }, see: "8" },
-      { goal: "PRINT pass.", lines: [L('PRINT "pass"')], spec: { line: "pass" }, see: "pass" },
-      { goal: "PRINT try.", lines: [L('PRINT "try"')], spec: { line: "try" }, see: "try" },
-      { goal: "MOV 1 into R3.", lines: [L("MOV R3, 1")], spec: { code: /MOV\s+R3\s*,\s*1/i }, see: "your old lines" },
-      { goal: "PRINT R3.", lines: [L("PRINT R3")], spec: { line: "1" }, see: "1" },
-      { goal: "REPEAT 1 and 2.", lines: [L("MOV R1, 1"), L("REPEAT 2"), L("PRINT R1", true), L("ADD R1, 1", true), L("END")], spec: { line: ["1", "2"] }, see: "1 and 2" },
-      { goal: "PRINT five arms.", lines: [L('PRINT "five arms"')], spec: { contains: "five arms" }, see: "five arms" },
-      { goal: "PRINT lives in the sea.", lines: [L('PRINT "lives in the sea"')], spec: { contains: "lives in the sea" }, see: "lives in the sea" },
-      { goal: "PRINT quiz done.", lines: [L('PRINT "quiz done"')], spec: { contains: "quiz done" }, see: "quiz done" },
-      { goal: "REPEAT yay twice.", lines: [L("REPEAT 2"), L('PRINT "yay"', true), L("END")], spec: { minCount: { line: "yay", n: 2 } }, see: "yay twice" },
-      { goal: "PRINT You finished the quiz!", lines: [L('PRINT "You finished the quiz!"')], spec: { contains: "you finished the quiz" }, see: "You finished the quiz!" },
+      { goal: "PRINT Chest Quiz.", fresh: true, lines: [L("PRINT \"Chest Quiz\"")], spec: { contains: "chest quiz" }, see: "Chest Quiz" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"How many keys?\"")], spec: { contains: "how many keys?" }, see: "How many keys?" },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"Count the gems.\"")], spec: { contains: "count the gems." }, see: "Count the gems." },
+      { goal: "MOV the name Gem.", fresh: false, lines: [L("MOV hero, \"Gem\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "gem" }, see: "Gem" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 4 into R1.", fresh: false, lines: [L("MOV R1, 4")], spec: { code: /MOV\s+R1\s*,\s*4\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "4" }, see: "4" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "5", code: /ADD\s+R1\s*,\s*1/i }, see: "5" },
+      { goal: "PRINT right.", fresh: false, lines: [L("PRINT \"right\"")], spec: { line: "right" }, see: "right" },
+      { goal: "REPEAT jingle twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"jingle\"", true), L("END")], spec: { minCount: { line: "jingle", n: 2 } }, see: "jingle twice" },
+      { goal: "PRINT The end.", fresh: false, lines: [L("PRINT \"The end\"")], spec: { contains: "the end" }, see: "The end" }
     ]),
-  },
+  }
 ];
 
 const advancedIdeas = [
   {
     id: "adventure",
-    title: "Ocean adventure",
-    blurb: "A hero box, a counting REPEAT, and a win line.",
-    plan: ["Name the hero.", "Count with REPEAT.", "Print You win!"],
+    title: "Cave dive",
+    blurb: "A harder cave path with counting.",
+    plan: ["Name the cave.","ADD a score.","REPEAT the ending."],
     steps: buildAsmSteps("Advanced step", [
-      { goal: "PRINT Ocean Adventure.", fresh: true, lines: [L('PRINT "Ocean Adventure"')], spec: { contains: "ocean adventure" }, see: "Ocean Adventure" },
-      { goal: "MOV hero Fin.", lines: [L('MOV hero, "Fin"')], spec: { code: /MOV\s+hero/i }, see: "the title" },
-      { goal: "PRINT the hero.", lines: [L("PRINT hero")], spec: { line: "fin" }, see: "Fin" },
-      { goal: "PRINT Go.", lines: [L('PRINT "Go"')], spec: { line: "go" }, see: "Go" },
-      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
-      { goal: "PRINT R1.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
-      { goal: "REPEAT to print 1, 2, 3.", lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { line: ["1", "2", "3"] }, see: "1 then 2 then 3" },
-      { goal: "PRINT strong.", lines: [L('PRINT "strong"')], spec: { line: "strong" }, see: "strong" },
-      { goal: "PRINT rest.", lines: [L('PRINT "rest"')], spec: { line: "rest" }, see: "rest" },
-      { goal: "MOV pal Bubbles.", lines: [L('MOV pal, "Bubbles"')], spec: { code: /MOV\s+pal/i }, see: "your old lines" },
-      { goal: "PRINT the pal.", lines: [L("PRINT pal")], spec: { line: "bubbles" }, see: "Bubbles" },
-      { goal: "PRINT You win!", lines: [L('PRINT "You win!"')], spec: { contains: "you win" }, see: "You win!" },
+      { goal: "PRINT Cave Dive.", fresh: true, lines: [L("PRINT \"Cave Dive\"")], spec: { contains: "cave dive" }, see: "Cave Dive" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"The path bends.\"")], spec: { contains: "the path bends." }, see: "The path bends." },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"A flag shows the way.\"")], spec: { contains: "a flag shows the way." }, see: "A flag shows the way." },
+      { goal: "MOV the name Cove.", fresh: false, lines: [L("MOV hero, \"Cove\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "cove" }, see: "Cove" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 5 into R1.", fresh: false, lines: [L("MOV R1, 5")], spec: { code: /MOV\s+R1\s*,\s*5\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "5" }, see: "5" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "6", code: /ADD\s+R1\s*,\s*1/i }, see: "6" },
+      { goal: "PRINT deep.", fresh: false, lines: [L("PRINT \"deep\"")], spec: { line: "deep" }, see: "deep" },
+      { goal: "Count 1, 2, 3 with REPEAT.", fresh: false, lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { line: ["1","2","3"], code: /REPEAT\s+3/i }, see: "1 then 2 then 3" },
+      { goal: "REPEAT shine twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"shine\"", true), L("END")], spec: { minCount: { line: "shine", n: 2 } }, see: "shine twice" }
     ]),
   },
   {
     id: "scorequiz",
-    title: "Score quiz",
-    blurb: "A question, a score box, and a clap.",
-    plan: ["Ask and answer.", "ADD the score.", "Clap at the end."],
+    title: "Coin quiz",
+    blurb: "Harder counting and a repeated cheer.",
+    plan: ["Print the quiz.","ADD coins.","REPEAT the win."],
     steps: buildAsmSteps("Advanced step", [
-      { goal: "PRINT Hard Quiz.", fresh: true, lines: [L('PRINT "Hard Quiz"')], spec: { contains: "hard quiz" }, see: "Hard Quiz" },
-      { goal: "PRINT a math question.", lines: [L('PRINT "What is 2 + 3?"')], spec: { contains: "2 + 3" }, see: "What is 2 + 3?" },
-      { goal: "MOV answer 5.", lines: [L('MOV answer, "5"')], spec: { code: /MOV\s+answer/i }, see: "your old lines" },
-      { goal: "PRINT the answer.", lines: [L("PRINT answer")], spec: { line: "5" }, see: "5" },
-      { goal: "MOV 10 into R1.", lines: [L("MOV R1, 10")], spec: { code: /MOV\s+R1\s*,\s*10/i }, see: "your old lines" },
-      { goal: "PRINT the points.", lines: [L("PRINT R1")], spec: { line: "10" }, see: "10" },
-      { goal: "Show 9 in R2.", lines: [L("MOV R2, 9"), L("PRINT R2")], spec: { line: "9" }, see: "9" },
-      { goal: "PRINT super.", lines: [L('PRINT "super"')], spec: { line: "super" }, see: "super" },
-      { goal: "PRINT ok.", lines: [L('PRINT "ok"')], spec: { line: "ok" }, see: "ok" },
-      { goal: "PRINT clap.", lines: [L('PRINT "clap"')], spec: { line: "clap" }, see: "clap" },
-      { goal: "REPEAT clap twice.", lines: [L("REPEAT 2"), L('PRINT "clap"', true), L("END")], spec: { minCount: { line: "clap", n: 2 } }, see: "clap again" },
-      { goal: "PRINT Quiz star!", lines: [L('PRINT "Quiz star!"')], spec: { contains: "quiz star" }, see: "Quiz star!" },
+      { goal: "PRINT Coin Quiz.", fresh: true, lines: [L("PRINT \"Coin Quiz\"")], spec: { contains: "coin quiz" }, see: "Coin Quiz" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"What is 2 plus 2?\"")], spec: { contains: "what is 2 plus 2?" }, see: "What is 2 plus 2?" },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"The pile grows.\"")], spec: { contains: "the pile grows." }, see: "The pile grows." },
+      { goal: "MOV the name Coin.", fresh: false, lines: [L("MOV hero, \"Coin\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "coin" }, see: "Coin" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 6 into R1.", fresh: false, lines: [L("MOV R1, 6")], spec: { code: /MOV\s+R1\s*,\s*6\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "6" }, see: "6" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "7", code: /ADD\s+R1\s*,\s*1/i }, see: "7" },
+      { goal: "PRINT rich.", fresh: false, lines: [L("PRINT \"rich\"")], spec: { line: "rich" }, see: "rich" },
+      { goal: "Count 1, 2, 3 with REPEAT.", fresh: false, lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { line: ["1","2","3"], code: /REPEAT\s+3/i }, see: "1 then 2 then 3" },
+      { goal: "REPEAT clink twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"clink\"", true), L("END")], spec: { minCount: { line: "clink", n: 2 } }, see: "clink twice" }
     ]),
   },
   {
     id: "catalog",
-    title: "Creature catalog",
-    blurb: "Three animals and a counting REPEAT.",
-    plan: ["Print three animals.", "Save a name.", "Finish the catalog."],
+    title: "Chest list",
+    blurb: "List the loot, then count it.",
+    plan: ["Print the items.","MOV a name.","REPEAT the last cheer."],
     steps: buildAsmSteps("Advanced step", [
-      { goal: "PRINT Sea Catalog.", fresh: true, lines: [L('PRINT "Sea Catalog"')], spec: { contains: "sea catalog" }, see: "Sea Catalog" },
-      { goal: "PRINT crab.", lines: [L('PRINT "crab"')], spec: { line: "crab" }, see: "crab" },
-      { goal: "PRINT eel.", lines: [L('PRINT "eel"')], spec: { line: "eel" }, see: "eel" },
-      { goal: "PRINT whale.", lines: [L('PRINT "whale"')], spec: { line: "whale" }, see: "whale" },
-      { goal: "MOV first crab.", lines: [L('MOV first, "crab"')], spec: { code: /MOV\s+first/i }, see: "your old lines" },
-      { goal: "PRINT first.", lines: [L("PRINT first")], spec: { minCount: { line: "crab", n: 2 } }, see: "crab again" },
-      { goal: "MOV 3 into R1.", lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3/i }, see: "your old lines" },
-      { goal: "PRINT the count.", lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
-      { goal: "REPEAT swim twice.", lines: [L("REPEAT 2"), L('PRINT "swim"', true), L("END")], spec: { minCount: { line: "swim", n: 2 } }, see: "swim twice" },
-      { goal: "PRINT full tank.", lines: [L('PRINT "full tank"')], spec: { contains: "full tank" }, see: "full tank" },
-      { goal: "ADD 1 and PRINT.", lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "4" }, see: "4" },
-      { goal: "PRINT catalog done.", lines: [L('PRINT "catalog done"')], spec: { contains: "catalog done" }, see: "catalog done" },
+      { goal: "PRINT Chest List.", fresh: true, lines: [L("PRINT \"Chest List\"")], spec: { contains: "chest list" }, see: "Chest List" },
+      { goal: "Add a treasure line.", fresh: false, lines: [L("PRINT \"Key\"")], spec: { contains: "key" }, see: "Key" },
+      { goal: "Add one more line.", fresh: false, lines: [L("PRINT \"Flag\"")], spec: { contains: "flag" }, see: "Flag" },
+      { goal: "MOV the name Map.", fresh: false, lines: [L("MOV hero, \"Map\"")], spec: { code: /MOV\s+hero/i }, see: "your old lines" },
+      { goal: "PRINT the name.", fresh: false, lines: [L("PRINT hero")], spec: { line: "map" }, see: "Map" },
+      { goal: "PRINT hello.", fresh: false, lines: [L("PRINT \"Ahoy\"")], spec: { line: "ahoy" }, see: "Ahoy" },
+      { goal: "MOV 3 into R1.", fresh: false, lines: [L("MOV R1, 3")], spec: { code: /MOV\s+R1\s*,\s*3\b/i }, see: "your old lines" },
+      { goal: "PRINT R1.", fresh: false, lines: [L("PRINT R1")], spec: { line: "3" }, see: "3" },
+      { goal: "ADD 1 and PRINT the box.", fresh: false, lines: [L("ADD R1, 1"), L("PRINT R1")], spec: { line: "4", code: /ADD\s+R1\s*,\s*1/i }, see: "4" },
+      { goal: "PRINT full.", fresh: false, lines: [L("PRINT \"full\"")], spec: { line: "full" }, see: "full" },
+      { goal: "Count 1, 2, 3 with REPEAT.", fresh: false, lines: [L("MOV R2, 1"), L("REPEAT 3"), L("PRINT R2", true), L("ADD R2, 1", true), L("END")], spec: { line: ["1","2","3"], code: /REPEAT\s+3/i }, see: "1 then 2 then 3" },
+      { goal: "REPEAT hooray twice.", fresh: false, lines: [L("REPEAT 2"), L("PRINT \"hooray\"", true), L("END")], spec: { minCount: { line: "hooray", n: 2 } }, see: "hooray twice" }
     ]),
-  },
+  }
 ];
 
 function normalizeOut(text) {
