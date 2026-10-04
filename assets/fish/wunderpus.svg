@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="wunderpusBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="0.45" stop-color="#fdba74"/>
+      <stop offset="1" stop-color="#c2410c"/>
+    </linearGradient>
+    <radialGradient id="wunderpusShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M156 132 C90 146, 36 112, 28 146" fill="none" stroke="#9a3412" stroke-width="11"/>
+    <path d="M164 146 C96 176, 40 166, 34 198" fill="none" stroke="#7c2d12" stroke-width="11"/>
+    <path d="M176 154 C120 198, 70 188, 86 214" fill="none" stroke="#c2410c" stroke-width="10"/>
+    <path d="M196 158 C210 206, 160 214, 140 196" fill="none" stroke="#9a3412" stroke-width="10"/>
+    <path d="M214 150 C262 196, 236 214, 196 200" fill="none" stroke="#7c2d12" stroke-width="10"/>
+    <path d="M150 120 C96 96, 54 108, 40 74" fill="none" stroke="#9a3412" stroke-width="10"/>
+    <path d="M168 78 C232 34, 324 62, 310 120 C328 172, 236 198, 176 162 C136 140, 134 98, 168 78Z" fill="url(#wunderpusBody)"/>
+    <path d="M196 68 C236 96, 250 136, 214 164" fill="none" stroke="#7c2d12" stroke-width="14"/>
+    <path d="M236 76 C276 104, 286 146, 250 170" fill="none" stroke="#9a3412" stroke-width="12"/>
+    <circle cx="214" cy="108" r="7" fill="#fff"/>
+    <circle cx="252" cy="124" r="6" fill="#fff"/>
+    <circle cx="206" cy="142" r="5" fill="#fff"/>
+    <circle cx="268" cy="150" r="5" fill="#fff"/>
+    <ellipse cx="230" cy="108" rx="36" ry="18" fill="url(#wunderpusShine)" stroke="none"/>
+    <circle cx="176" cy="108" r="15" fill="#fff"/><circle cx="171.8" cy="108.9" r="7.2" fill="#102028" stroke="none"/><circle cx="169.1" cy="103.8" r="3.0" fill="#fff" stroke="none"/>
+    <path d="M132 124 Q148 136 166 122" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

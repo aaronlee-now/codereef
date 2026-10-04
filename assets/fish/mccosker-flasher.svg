@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="mccoskerBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef08a"/>
+      <stop offset="0.45" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#ca8a04"/>
+    </linearGradient>
+    <radialGradient id="mccoskerShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M246 106 L364 54 L314 112 L364 170 Z" fill="#22d3ee"/>
+    <path d="M132 60 C186 24, 230 42, 238 82" fill="#22d3ee"/>
+    <path d="M150 148 C176 190, 222 188, 228 146" fill="#22d3ee"/>
+    <path d="M32 114 L76 90 C132 66, 196 70, 256 98 C288 122, 250 166, 168 174 C96 180, 56 156, 42 134 Z" fill="url(#mccoskerBody)"/>
+    <ellipse cx="150" cy="106" rx="42" ry="14" fill="url(#mccoskerShine)" stroke="none"/>
+    <path d="M80 96 H250" stroke="#2563eb" stroke-width="7" fill="none"/><path d="M90 112 H255" stroke="#db2777" stroke-width="7" fill="none"/><path d="M110 128 H230" stroke="#22d3ee" stroke-width="6" fill="none"/>
+    <circle cx="104" cy="104" r="15" fill="#fff"/><circle cx="99.8" cy="104.9" r="7.2" fill="#102028" stroke="none"/><circle cx="97.1" cy="99.8" r="3.0" fill="#fff" stroke="none"/>
+    <path d="M44 124 Q58 135 74 124" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="cleanershrimpBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecaca"/>
+      <stop offset="0.45" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+    <radialGradient id="cleanershrimpShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M36 74 C78 16, 132 28, 112 78" fill="none" stroke="#fff" stroke-width="3.2"/>
+    <path d="M48 92 C96 6, 156 22, 128 90" fill="none" stroke="#fff" stroke-width="2.4"/>
+    
+        <path d="M78 116 L34 148 L80 132 Z" fill="#f87171"/>
+        <path d="M98 126 L46 170 L112 142 Z" fill="#f87171"/>
+        
+    <path d="M118 108 C152 76, 204 84, 214 112 C236 94, 274 100, 292 118 C316 104, 346 112, 358 130 L344 152 C302 138, 250 148, 210 136 C176 158, 138 150, 118 128 Z" fill="url(#cleanershrimpBody)"/>
+    <path d="M130 112 H330" stroke="#fff" stroke-width="8" fill="none"/>
+    <path d="M352 132 L384 116 L370 140 L384 162 L346 148 Z" fill="#fff"/>
+    <path d="M132 154 C154 180, 184 174, 178 148" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M196 156 C216 186, 246 178, 236 150" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M254 156 C272 182, 298 174, 288 150" fill="none" stroke="#fff" stroke-width="3"/>
+    <ellipse cx="210" cy="116" rx="40" ry="12" fill="url(#cleanershrimpShine)" stroke="none"/>
+    <circle cx="124" cy="104" r="13" fill="#fff"/><circle cx="120.4" cy="104.8" r="6.2" fill="#102028" stroke="none"/><circle cx="118.0" cy="100.4" r="2.6" fill="#fff" stroke="none"/>
+    <path d="M96 116 Q110 126 124 116" fill="none" stroke-width="2.4"/>
+    
+  </g>
+</svg>

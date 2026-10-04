@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="clowngobyBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef08a"/>
+      <stop offset="0.45" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#ca8a04"/>
+    </linearGradient>
+    <radialGradient id="clowngobyShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M236 110 L360 68 L318 114 L360 160 Z" fill="#eab308"/>
+    <path d="M130 76 C176 42, 214 52, 224 90" fill="#fde047"/>
+    <path d="M146 140 C166 178, 206 176, 210 138" fill="#fde047"/>
+    <path d="M44 112 C58 74, 120 66, 246 96 C274 118, 246 156, 156 164 C86 170, 42 146, 44 112Z" fill="url(#clowngobyBody)"/>
+    <ellipse cx="146" cy="106" rx="36" ry="12" fill="url(#clowngobyShine)" stroke="none"/>
+    <circle cx="150" cy="118" r="8" fill="#f97316"/>
+    <circle cx="96" cy="104" r="16" fill="#fff"/><circle cx="91.5" cy="105.0" r="7.7" fill="#102028" stroke="none"/><circle cx="88.6" cy="99.5" r="3.2" fill="#fff" stroke="none"/>
+    <path d="M58 124 Q72 135 88 124" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

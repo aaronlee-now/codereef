@@ -231,6 +231,36 @@
   color: #ffd166;
 }
 
+.shop-card__rarity {
+  margin: -0.2rem 0 0;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #b8fff0;
+}
+
+.shop-rarity {
+  grid-column: 1 / -1;
+  margin: 0.9rem 0 0.1rem;
+  padding: 0.15rem 0.15rem 0.4rem;
+  border-bottom: 3px solid #ffd166;
+  font-family: "Baloo 2", "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: #ffd166;
+  text-align: left;
+}
+
+.shop-rarity--ultra { color: #f9a8d4; border-bottom-color: #f9a8d4; }
+.shop-rarity--mythic { color: #d8b4fe; border-bottom-color: #d8b4fe; }
+.shop-rarity--legendary { color: #fde68a; border-bottom-color: #fde68a; }
+.shop-rarity--epic { color: #fda4af; border-bottom-color: #fda4af; }
+.shop-rarity--special { color: #67e8f9; border-bottom-color: #67e8f9; }
+.shop-rarity--super-rare { color: #bef264; border-bottom-color: #bef264; }
+.shop-rarity--rare { color: #7dd3fc; border-bottom-color: #7dd3fc; }
+.shop-rarity--uncommon { color: #86efac; border-bottom-color: #86efac; }
+.shop-rarity--common { color: #e8f7f4; border-bottom-color: #e8f7f4; }
+
 .shop-card__have {
   margin: 0;
   font-weight: 800;

@@ -2,7 +2,7 @@
 // Sand is common. Coral is uncommon. Pearl is rare. Treasure is very rare.
 
 // Room for the bigger shop. Raising this never removes fish a kid already owns.
-var MAX_FISH = 200;
+var MAX_FISH = 280;
 var MAX_FISH_ON_SCREEN = 24;
 
 // Every trail stop. Rare coins are extra luck, not a sure thing.
@@ -21,6 +21,51 @@ var COIN_NAMES = {
 
 // rarity: higher number is rarer and faster in the aquarium race.
 // Cheaper fish are slower. A little Sand buys a common fish.
+// The number stays the race speed. The shop section word comes from fishRarityName.
+var RARITY_SECTIONS = [
+  "Ultra",
+  "Mythic",
+  "Legendary",
+  "Epic",
+  "Special",
+  "Super Rare",
+  "Rare",
+  "Uncommon",
+  "Common",
+];
+
+function fishRarityName(fish) {
+  if (fish && fish.rarityName) {
+    return fish.rarityName;
+  }
+  var n = fish && typeof fish.rarity === "number" ? fish.rarity : 1;
+  if (n >= 122) {
+    return "Ultra";
+  }
+  if (n >= 115) {
+    return "Mythic";
+  }
+  if (n >= 105) {
+    return "Legendary";
+  }
+  if (n >= 89) {
+    return "Epic";
+  }
+  if (n >= 71) {
+    return "Special";
+  }
+  if (n >= 53) {
+    return "Super Rare";
+  }
+  if (n >= 35) {
+    return "Rare";
+  }
+  if (n >= 17) {
+    return "Uncommon";
+  }
+  return "Common";
+}
+
 var FISH_FOR_SALE = [
   {
     id: "neon",
@@ -1197,62 +1242,642 @@ var FISH_FOR_SALE = [
     image: "assets/fish/colossal-squid.svg?v=rare50",
     kind: "fish",
     rarity: 116,
+  },
+  {
+    id: "emerald",
+    name: "Emerald Crab",
+    cost: { sand: 5 },
+    image: "assets/fish/emerald-crab.svg?v=more50b",
+    kind: "fish",
+    rarity: 9,
+  },
+  {
+    id: "cleanershrimp",
+    name: "Cleaner Shrimp",
+    cost: { sand: 6 },
+    image: "assets/fish/cleaner-shrimp.svg?v=more50b",
+    kind: "fish",
+    rarity: 11,
+  },
+  {
+    id: "tomini",
+    name: "Tomini Tang",
+    cost: { sand: 7 },
+    image: "assets/fish/tomini-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 12,
+  },
+  {
+    id: "pajama",
+    name: "Pajama Cardinal",
+    cost: { sand: 6, coral: 1 },
+    image: "assets/fish/pajama-cardinal.svg?v=more50b",
+    kind: "fish",
+    rarity: 14,
+  },
+  {
+    id: "neongoby",
+    name: "Neon Goby",
+    cost: { sand: 5, coral: 1 },
+    image: "assets/fish/neon-goby.svg?v=more50b",
+    kind: "fish",
+    rarity: 16,
+  },
+  {
+    id: "clowngoby",
+    name: "Yellow Clown Goby",
+    cost: { sand: 6, coral: 1 },
+    image: "assets/fish/clown-goby.svg?v=more50b",
+    kind: "fish",
+    rarity: 18,
+  },
+  {
+    id: "bandedshrimp",
+    name: "Banded Shrimp",
+    cost: { sand: 8, coral: 1 },
+    image: "assets/fish/banded-shrimp.svg?v=more50b",
+    kind: "fish",
+    rarity: 19,
+  },
+  {
+    id: "fireshrimp",
+    name: "Fire Shrimp",
+    cost: { sand: 7, coral: 1 },
+    image: "assets/fish/fire-shrimp.svg?v=more50b",
+    kind: "fish",
+    rarity: 21,
+  },
+  {
+    id: "purpfire",
+    name: "Purple Firefish",
+    cost: { sand: 8, coral: 1 },
+    image: "assets/fish/purple-firefish.svg?v=more50b",
+    kind: "fish",
+    rarity: 23,
+  },
+  {
+    id: "blackcap",
+    name: "Blackcap Basslet",
+    cost: { sand: 6, coral: 2 },
+    image: "assets/fish/blackcap-basslet.svg?v=more50b",
+    kind: "fish",
+    rarity: 25,
+  },
+  {
+    id: "swissguard",
+    name: "Swissguard Basslet",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/swissguard.svg?v=more50b",
+    kind: "fish",
+    rarity: 27,
+  },
+  {
+    id: "orchid",
+    name: "Orchid Dottyback",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/orchid-dottyback.svg?v=more50b",
+    kind: "fish",
+    rarity: 28,
+  },
+  {
+    id: "chevron",
+    name: "Chevron Tang",
+    cost: { sand: 8, coral: 2 },
+    image: "assets/fish/chevron-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 30,
+  },
+  {
+    id: "arrowcrab",
+    name: "Arrow Crab",
+    cost: { sand: 6, coral: 2 },
+    image: "assets/fish/arrow-crab.svg?v=more50b",
+    kind: "fish",
+    rarity: 32,
+  },
+  {
+    id: "sunrise",
+    name: "Sunrise Dottyback",
+    cost: { coral: 3 },
+    image: "assets/fish/sunrise-dottyback.svg?v=more50b",
+    kind: "fish",
+    rarity: 33,
+  },
+  {
+    id: "horseshoe",
+    name: "Horseshoe Crab",
+    cost: { sand: 8, coral: 3 },
+    image: "assets/fish/horseshoe-crab.svg?v=more50b",
+    kind: "fish",
+    rarity: 34,
+  },
+  {
+    id: "bifox",
+    name: "Bicolor Foxface",
+    cost: { sand: 8, coral: 3 },
+    image: "assets/fish/bicolor-foxface.svg?v=more50b",
+    kind: "fish",
+    rarity: 35,
+  },
+  {
+    id: "melanurus",
+    name: "Tailspot Wrasse",
+    cost: { sand: 8, coral: 3 },
+    image: "assets/fish/melanurus-wrasse.svg?v=more50b",
+    kind: "fish",
+    rarity: 36,
+  },
+  {
+    id: "magfox",
+    name: "Magnificent Foxface",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/magnificent-foxface.svg?v=more50b",
+    kind: "fish",
+    rarity: 37,
+  },
+  {
+    id: "sohal",
+    name: "Sohal Tang",
+    cost: { sand: 6, coral: 3, pearl: 1 },
+    image: "assets/fish/sohal-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 38,
+  },
+  {
+    id: "naso",
+    name: "Naso Tang",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/naso-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 40,
+  },
+  {
+    id: "lipstick",
+    name: "Lipstick Tang",
+    cost: { coral: 3, pearl: 1 },
+    image: "assets/fish/lipstick-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 41,
+  },
+  {
+    id: "scopas",
+    name: "Scopas Tang",
+    cost: { sand: 4, coral: 3, pearl: 1 },
+    image: "assets/fish/scopas-tang.svg?v=more50b",
+    kind: "fish",
+    rarity: 42,
+  },
+  {
+    id: "rockbeauty",
+    name: "Rock Beauty",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/rock-beauty.svg?v=more50b",
+    kind: "fish",
+    rarity: 43,
+  },
+  {
+    id: "lemonpeel",
+    name: "Lemonpeel Angel",
+    cost: { sand: 6, coral: 3, pearl: 1 },
+    image: "assets/fish/lemonpeel-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 44,
+  },
+  {
+    id: "biangel",
+    name: "Bicolor Angel",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/bicolor-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 46,
+  },
+  {
+    id: "christmas",
+    name: "Christmas Wrasse",
+    cost: { coral: 3, pearl: 1 },
+    image: "assets/fish/christmas-wrasse.svg?v=more50b",
+    kind: "fish",
+    rarity: 47,
+  },
+  {
+    id: "potter",
+    name: "Potter's Angel",
+    cost: { coral: 3, pearl: 2 },
+    image: "assets/fish/potter-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 48,
+  },
+  {
+    id: "semicircle",
+    name: "Semicircle Angel",
+    cost: { pearl: 2 },
+    image: "assets/fish/semicircle-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 49,
+  },
+  {
+    id: "kingangel",
+    name: "King Angelfish",
+    cost: { coral: 4, pearl: 2 },
+    image: "assets/fish/king-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 50,
+  },
+  {
+    id: "flamehawk",
+    name: "Flame Hawkfish",
+    cost: { coral: 4, pearl: 1 },
+    image: "assets/fish/flame-hawkfish.svg?v=more50b",
+    kind: "fish",
+    rarity: 51,
+  },
+  {
+    id: "arceye",
+    name: "Arc-eye Hawkfish",
+    cost: { pearl: 2 },
+    image: "assets/fish/arceye-hawkfish.svg?v=more50b",
+    kind: "fish",
+    rarity: 52,
+  },
+  {
+    id: "lagoon",
+    name: "Lagoon Trigger",
+    cost: { coral: 3, pearl: 2 },
+    image: "assets/fish/lagoon-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 53,
+  },
+  {
+    id: "harlequin",
+    name: "Harlequin Shrimp",
+    cost: { pearl: 3 },
+    image: "assets/fish/harlequin-shrimp.svg?v=more50b",
+    kind: "fish",
+    rarity: 54,
+  },
+  {
+    id: "niger",
+    name: "Niger Trigger",
+    cost: { pearl: 2 },
+    image: "assets/fish/niger-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 55,
+  },
+  {
+    id: "pompom",
+    name: "Pom-Pom Crab",
+    cost: { pearl: 2 },
+    image: "assets/fish/pompom-crab.svg?v=more50b",
+    kind: "fish",
+    rarity: 56,
+  },
+  {
+    id: "starry",
+    name: "Starry Trigger",
+    cost: { pearl: 2 },
+    image: "assets/fish/starry-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 58,
+  },
+  {
+    id: "pinktail",
+    name: "Pinktail Trigger",
+    cost: { coral: 2, pearl: 2 },
+    image: "assets/fish/pinktail-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 59,
+  },
+  {
+    id: "undulate",
+    name: "Undulate Trigger",
+    cost: { pearl: 3 },
+    image: "assets/fish/undulate-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 61,
+  },
+  {
+    id: "crosshatch",
+    name: "Crosshatch Trigger",
+    cost: { pearl: 3 },
+    image: "assets/fish/crosshatch-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 63,
+  },
+  {
+    id: "queentrig",
+    name: "Queen Trigger",
+    cost: { pearl: 3 },
+    image: "assets/fish/queen-trigger.svg?v=more50b",
+    kind: "fish",
+    rarity: 65,
+  },
+  {
+    id: "dragonwrasse",
+    name: "Dragon Wrasse",
+    cost: { pearl: 3 },
+    image: "assets/fish/dragon-wrasse.svg?v=more50b",
+    kind: "fish",
+    rarity: 66,
+  },
+  {
+    id: "flasher",
+    name: "Carpenter Flasher",
+    cost: { pearl: 3 },
+    image: "assets/fish/carpenter-flasher.svg?v=more50b",
+    kind: "fish",
+    rarity: 68,
+  },
+  {
+    id: "snowflake",
+    name: "Snowflake Moray",
+    cost: { pearl: 3 },
+    image: "assets/fish/snowflake-moray.svg?v=more50b",
+    kind: "fish",
+    rarity: 70,
+  },
+  {
+    id: "geometric",
+    name: "Geometric Moray",
+    cost: { pearl: 3 },
+    image: "assets/fish/geometric-moray.svg?v=more50b",
+    kind: "fish",
+    rarity: 72,
+  },
+  {
+    id: "dragonmoray",
+    name: "Dragon Moray",
+    cost: { pearl: 5, treasure: 3 },
+    image: "assets/fish/dragon-moray.svg?v=more50b",
+    kind: "fish",
+    rarity: 117,
+  },
+  {
+    id: "blackribbon",
+    name: "Black Ribbon Eel",
+    cost: { pearl: 6, treasure: 3 },
+    image: "assets/fish/black-ribbon-eel.svg?v=more50b",
+    kind: "fish",
+    rarity: 118,
+  },
+  {
+    id: "bandit",
+    name: "Bandit Angelfish",
+    cost: { pearl: 6, treasure: 4 },
+    image: "assets/fish/bandit-angel.svg?v=more50b",
+    kind: "fish",
+    rarity: 119,
+  },
+  {
+    id: "mccosker",
+    name: "McCosker Flasher",
+    cost: { pearl: 7, treasure: 4 },
+    image: "assets/fish/mccosker-flasher.svg?v=more50b",
+    kind: "fish",
+    rarity: 120,
+  },
+  {
+    id: "wunderpus",
+    name: "Wunderpus",
+    cost: { pearl: 8, treasure: 5 },
+    image: "assets/fish/wunderpus.svg?v=more50b",
+    kind: "fish",
+    rarity: 121,
+  },
+  {
+    id: "crystal",
+    name: "Crystal Shrimp",
+    cost: { pearl: 8, treasure: 6 },
+    image: "assets/fish/crystal-shrimp.svg?v=ultra1",
+    kind: "fish",
+    rarity: 122,
+    rarityName: "Ultra",
+  },
+  {
+    id: "candywrasse",
+    name: "Candy Wrasse",
+    cost: { pearl: 8, treasure: 7 },
+    image: "assets/fish/candy-wrasse.svg?v=ultra1",
+    kind: "fish",
+    rarity: 123,
+    rarityName: "Ultra",
+  },
+  {
+    id: "rubyanth",
+    name: "Ruby Anthias",
+    cost: { pearl: 9, treasure: 6 },
+    image: "assets/fish/ruby-anthias.svg?v=ultra1",
+    kind: "fish",
+    rarity: 124,
+    rarityName: "Ultra",
+  },
+  {
+    id: "opal",
+    name: "Opal Butterfly",
+    cost: { pearl: 9, treasure: 7 },
+    image: "assets/fish/opal-butterfly.svg?v=ultra1",
+    kind: "fish",
+    rarity: 125,
+    rarityName: "Ultra",
+  },
+  {
+    id: "prism",
+    name: "Prism Tang",
+    cost: { pearl: 9, treasure: 8 },
+    image: "assets/fish/prism-tang.svg?v=ultra1",
+    kind: "fish",
+    rarity: 126,
+    rarityName: "Ultra",
+  },
+  {
+    id: "rainbowfin",
+    name: "Rainbow Fin",
+    cost: { pearl: 10, treasure: 7 },
+    image: "assets/fish/rainbow-fin.svg?v=ultra1",
+    kind: "fish",
+    rarity: 127,
+    rarityName: "Ultra",
+  },
+  {
+    id: "embercrab",
+    name: "Ember Crab",
+    cost: { pearl: 10, treasure: 8 },
+    image: "assets/fish/ember-crab.svg?v=ultra1",
+    kind: "fish",
+    rarity: 128,
+    rarityName: "Ultra",
+  },
+  {
+    id: "cloudray",
+    name: "Cloud Ray",
+    cost: { pearl: 10, treasure: 8 },
+    image: "assets/fish/cloud-ray.svg?v=ultra1",
+    kind: "fish",
+    rarity: 129,
+    rarityName: "Ultra",
+  },
+  {
+    id: "moonlantern",
+    name: "Moon Lantern",
+    cost: { pearl: 11, treasure: 7 },
+    image: "assets/fish/moon-lantern.svg?v=ultra1",
+    kind: "fish",
+    rarity: 130,
+    rarityName: "Ultra",
+  },
+  {
+    id: "starlight",
+    name: "Starlight Seahorse",
+    cost: { pearl: 11, treasure: 8 },
+    image: "assets/fish/starlight-seahorse.svg?v=ultra1",
+    kind: "fish",
+    rarity: 131,
+    rarityName: "Ultra",
+  },
+  {
+    id: "velvet",
+    name: "Velvet Angel",
+    cost: { pearl: 11, treasure: 9 },
+    image: "assets/fish/velvet-angel.svg?v=ultra1",
+    kind: "fish",
+    rarity: 132,
+    rarityName: "Ultra",
+  },
+  {
+    id: "sparknaut",
+    name: "Spark Nautilus",
+    cost: { pearl: 12, treasure: 8 },
+    image: "assets/fish/spark-nautilus.svg?v=ultra1",
+    kind: "fish",
+    rarity: 133,
+    rarityName: "Ultra",
+  },
+  {
+    id: "sunburst",
+    name: "Sunburst Puffer",
+    cost: { pearl: 12, treasure: 9 },
+    image: "assets/fish/sunburst-puffer.svg?v=ultra1",
+    kind: "fish",
+    rarity: 134,
+    rarityName: "Ultra",
+  },
+  {
+    id: "glacier",
+    name: "Glacier Shark",
+    cost: { pearl: 12, treasure: 9 },
+    image: "assets/fish/glacier-shark.svg?v=ultra1",
+    kind: "fish",
+    rarity: 135,
+    rarityName: "Ultra",
+  },
+  {
+    id: "thundereel",
+    name: "Thunder Eel",
+    cost: { pearl: 13, treasure: 8 },
+    image: "assets/fish/thunder-eel.svg?v=ultra1",
+    kind: "fish",
+    rarity: 136,
+    rarityName: "Ultra",
+  },
+  {
+    id: "pearlsea",
+    name: "Pearl Seadragon",
+    cost: { pearl: 13, treasure: 9 },
+    image: "assets/fish/pearl-seadragon.svg?v=ultra1",
+    kind: "fish",
+    rarity: 137,
+    rarityName: "Ultra",
+  },
+  {
+    id: "galaxyeel",
+    name: "Galaxy Eel",
+    cost: { pearl: 13, treasure: 10 },
+    image: "assets/fish/galaxy-eel.svg?v=ultra1",
+    kind: "fish",
+    rarity: 138,
+    rarityName: "Ultra",
+  },
+  {
+    id: "comet",
+    name: "Comet Jelly",
+    cost: { pearl: 14, treasure: 9 },
+    image: "assets/fish/comet-jelly.svg?v=ultra1",
+    kind: "fish",
+    rarity: 139,
+    rarityName: "Ultra",
+  },
+  {
+    id: "aurora",
+    name: "Aurora Ray",
+    cost: { pearl: 14, treasure: 10 },
+    image: "assets/fish/aurora-ray.svg?v=ultra1",
+    kind: "fish",
+    rarity: 140,
+    rarityName: "Ultra",
+  },
+  {
+    id: "nebula",
+    name: "Nebula Octopus",
+    cost: { pearl: 15, treasure: 10 },
+    image: "assets/fish/nebula-octopus.svg?v=ultra1",
+    kind: "fish",
+    rarity: 141,
+    rarityName: "Ultra",
   }
 ];
 
 var DECOR_FOR_SALE = [
-  { id: "leaf-big", name: "Big Green Leaf", cost: { sand: 3 }, rest: true },
-  { id: "leaf-little", name: "Little Leaf", cost: { sand: 2 }, rest: true },
-  { id: "leaf-gold", name: "Golden Leaf", cost: { sand: 4 }, rest: true },
-  { id: "lily", name: "Lily Pad", cost: { sand: 4 }, rest: true },
-  { id: "lily-pink", name: "Pink Lily Pad", cost: { sand: 5 }, rest: true },
-  { id: "lily-spot", name: "Spotted Lily Pad", cost: { sand: 3, coral: 1 }, rest: true },
-  { id: "rock", name: "Round Rock", cost: { sand: 3 } },
-  { id: "pebbles", name: "Pebble Pile", cost: { sand: 2 } },
-  { id: "shell", name: "Spiral Shell", cost: { sand: 4 } },
-  { id: "sand-dollar", name: "Sand Dollar", cost: { sand: 4 } },
-  { id: "starfish", name: "Starfish", cost: { sand: 5 } },
-  { id: "coral", name: "Soft Coral", cost: { sand: 6 } },
-  { id: "seaweed", name: "Seaweed Patch", cost: { sand: 8 }, once: true },
-  { id: "kelp", name: "Tall Kelp", cost: { sand: 5 } },
-  { id: "cave", name: "Small Cave", cost: { sand: 4, coral: 1 } },
-  { id: "chest", name: "Treasure Chest", cost: { coral: 2, pearl: 1 } },
-  { id: "bubbles", name: "Bubble Cluster", cost: { sand: 2 } },
-  { id: "castle", name: "Sand Castle", cost: { sand: 6 } },
-  { id: "fan", name: "Fan Coral", cost: { sand: 3, coral: 1 } },
-  { id: "anemone", name: "Friendly Anemone", cost: { sand: 5, coral: 1 } },
-  { id: "driftwood", name: "Driftwood", cost: { sand: 4 } },
-  { id: "anchor", name: "Little Anchor", cost: { sand: 4 } },
-  { id: "buoy", name: "Striped Buoy", cost: { sand: 3 } },
-  { id: "clam", name: "Open Clam", cost: { sand: 5 } },
-  { id: "sponge", name: "Sea Sponge", cost: { sand: 3 } },
-  { id: "bottle", name: "Message Bottle", cost: { sand: 2 } },
-  { id: "conch", name: "Conch Shell", cost: { sand: 4, coral: 1 } },
-  { id: "brain", name: "Brain Coral", cost: { sand: 6, coral: 1 } },
-  { id: "oyster", name: "Pearl Oyster", cost: { coral: 2, pearl: 1 } },
+  { id: "leaf-big", name: "Big Green Leaf", cost: { sand: 3 }, rest: true, rarityName: "Uncommon" },
+  { id: "leaf-little", name: "Little Leaf", cost: { sand: 2 }, rest: true, rarityName: "Common" },
+  { id: "leaf-gold", name: "Golden Leaf", cost: { sand: 4 }, rest: true, rarityName: "Rare" },
+  { id: "lily", name: "Lily Pad", cost: { sand: 4 }, rest: true, rarityName: "Rare" },
+  { id: "lily-pink", name: "Pink Lily Pad", cost: { sand: 5 }, rest: true, rarityName: "Super Rare" },
+  { id: "lily-spot", name: "Spotted Lily Pad", cost: { sand: 3, coral: 1 }, rest: true, rarityName: "Special" },
+  { id: "rock", name: "Round Rock", cost: { sand: 3 }, rarityName: "Uncommon" },
+  { id: "pebbles", name: "Pebble Pile", cost: { sand: 2 }, rarityName: "Common" },
+  { id: "shell", name: "Spiral Shell", cost: { sand: 4 }, rarityName: "Rare" },
+  { id: "sand-dollar", name: "Sand Dollar", cost: { sand: 4 }, rarityName: "Rare" },
+  { id: "starfish", name: "Starfish", cost: { sand: 5 }, rarityName: "Super Rare" },
+  { id: "coral", name: "Soft Coral", cost: { sand: 6 }, rarityName: "Epic" },
+  { id: "seaweed", name: "Seaweed Patch", cost: { sand: 8 }, once: true, rarityName: "Legendary" },
+  { id: "kelp", name: "Tall Kelp", cost: { sand: 5 }, rarityName: "Super Rare" },
+  { id: "cave", name: "Small Cave", cost: { sand: 4, coral: 1 }, rarityName: "Special" },
+  { id: "chest", name: "Treasure Chest", cost: { coral: 2, pearl: 1 }, rarityName: "Mythic" },
+  { id: "bubbles", name: "Bubble Cluster", cost: { sand: 2 }, rarityName: "Common" },
+  { id: "castle", name: "Sand Castle", cost: { sand: 6 }, rarityName: "Epic" },
+  { id: "fan", name: "Fan Coral", cost: { sand: 3, coral: 1 }, rarityName: "Special" },
+  { id: "anemone", name: "Friendly Anemone", cost: { sand: 5, coral: 1 }, rarityName: "Epic" },
+  { id: "driftwood", name: "Driftwood", cost: { sand: 4 }, rarityName: "Rare" },
+  { id: "anchor", name: "Little Anchor", cost: { sand: 4 }, rarityName: "Rare" },
+  { id: "buoy", name: "Striped Buoy", cost: { sand: 3 }, rarityName: "Uncommon" },
+  { id: "clam", name: "Open Clam", cost: { sand: 5 }, rarityName: "Super Rare" },
+  { id: "sponge", name: "Sea Sponge", cost: { sand: 3 }, rarityName: "Uncommon" },
+  { id: "bottle", name: "Message Bottle", cost: { sand: 2 }, rarityName: "Common" },
+  { id: "conch", name: "Conch Shell", cost: { sand: 4, coral: 1 }, rarityName: "Special" },
+  { id: "brain", name: "Brain Coral", cost: { sand: 6, coral: 1 }, rarityName: "Legendary" },
+  { id: "oyster", name: "Pearl Oyster", cost: { coral: 2, pearl: 1 }, rarityName: "Mythic" },
 ];
 
 var OUTFITS_FOR_SALE = [
-  { id: "crown", name: "Tiny Crown", cost: { sand: 6, coral: 1 } },
-  { id: "bow", name: "Pretty Bow", cost: { sand: 4 } },
-  { id: "scarf", name: "Striped Scarf", cost: { sand: 5 } },
-  { id: "star", name: "Shiny Star", cost: { sand: 3 } },
-  { id: "sunglasses", name: "Sunglasses", cost: { sand: 4, coral: 1 } },
-  { id: "party", name: "Party Hat", cost: { sand: 5 } },
-  { id: "flower", name: "Flower", cost: { sand: 3 } },
-  { id: "necklace", name: "Pearl Necklace", cost: { coral: 2, pearl: 1 } },
-  { id: "captain", name: "Captain Hat", cost: { sand: 6, coral: 1 } },
-  { id: "snorkel", name: "Snorkel", cost: { sand: 4 } },
-  { id: "bowtie", name: "Bow Tie", cost: { sand: 4 } },
-  { id: "halo", name: "Tiny Halo", cost: { sand: 2, coral: 1 } },
-  { id: "backpack", name: "Tiny Backpack", cost: { sand: 5 } },
-  { id: "heart", name: "Heart Pin", cost: { sand: 3 } },
-  { id: "pirate", name: "Pirate Hat", cost: { sand: 6 } },
-  { id: "vest", name: "Life Vest", cost: { sand: 4 } },
-  { id: "medal", name: "Gold Medal", cost: { sand: 5, coral: 1 } },
-  { id: "beanie", name: "Cozy Beanie", cost: { sand: 3 } },
-  { id: "mask", name: "Eye Mask", cost: { sand: 4 } },
-  { id: "wand", name: "Bubble Wand", cost: { sand: 5 } },
+  { id: "crown", name: "Tiny Crown", cost: { sand: 6, coral: 1 }, rarityName: "Legendary" },
+  { id: "bow", name: "Pretty Bow", cost: { sand: 4 }, rarityName: "Uncommon" },
+  { id: "scarf", name: "Striped Scarf", cost: { sand: 5 }, rarityName: "Rare" },
+  { id: "star", name: "Shiny Star", cost: { sand: 3 }, rarityName: "Common" },
+  { id: "sunglasses", name: "Sunglasses", cost: { sand: 4, coral: 1 }, rarityName: "Epic" },
+  { id: "party", name: "Party Hat", cost: { sand: 5 }, rarityName: "Rare" },
+  { id: "flower", name: "Flower", cost: { sand: 3 }, rarityName: "Common" },
+  { id: "necklace", name: "Pearl Necklace", cost: { coral: 2, pearl: 1 }, rarityName: "Mythic" },
+  { id: "captain", name: "Captain Hat", cost: { sand: 6, coral: 1 }, rarityName: "Legendary" },
+  { id: "snorkel", name: "Snorkel", cost: { sand: 4 }, rarityName: "Uncommon" },
+  { id: "bowtie", name: "Bow Tie", cost: { sand: 4 }, rarityName: "Uncommon" },
+  { id: "halo", name: "Tiny Halo", cost: { sand: 2, coral: 1 }, rarityName: "Special" },
+  { id: "backpack", name: "Tiny Backpack", cost: { sand: 5 }, rarityName: "Rare" },
+  { id: "heart", name: "Heart Pin", cost: { sand: 3 }, rarityName: "Common" },
+  { id: "pirate", name: "Pirate Hat", cost: { sand: 6 }, rarityName: "Super Rare" },
+  { id: "vest", name: "Life Vest", cost: { sand: 4 }, rarityName: "Uncommon" },
+  { id: "medal", name: "Gold Medal", cost: { sand: 5, coral: 1 }, rarityName: "Epic" },
+  { id: "beanie", name: "Cozy Beanie", cost: { sand: 3 }, rarityName: "Common" },
+  { id: "mask", name: "Eye Mask", cost: { sand: 4 }, rarityName: "Uncommon" },
+  { id: "wand", name: "Bubble Wand", cost: { sand: 5 }, rarityName: "Rare" },
 ];
 
 function walletKidKey() {
@@ -1417,10 +2042,52 @@ function giftAndrewStingrayOnce(wallet) {
   return wallet;
 }
 
+var ANDREW_TREASURE2_GIFT_FLAG = "codereef_gift_treasure2_andrew";
+
+// Give Andrew 2 Treasure coins the first time his wallet loads. It does not cost coins.
+function giftAndrewTreasure2Once(wallet) {
+  if (signedInKidName() !== "andrew") {
+    return wallet;
+  }
+  if (localStorage.getItem(ANDREW_TREASURE2_GIFT_FLAG)) {
+    return wallet;
+  }
+  if (!wallet.coins) {
+    wallet.coins = emptyCoins();
+  }
+  wallet.coins.treasure = (wallet.coins.treasure || 0) + 2;
+  saveWallet(wallet);
+  localStorage.setItem(ANDREW_TREASURE2_GIFT_FLAG, "1");
+  return wallet;
+}
+
+var AARON_ULTRA4_GIFT_FLAG = "codereef_gift_ultra4_aaron";
+
+// Give Aaron four Ultra fish the first time his wallet loads. They do not cost coins.
+function giftAaronUltra4Once(wallet) {
+  if (signedInKidName() !== "aaron") {
+    return wallet;
+  }
+  if (localStorage.getItem(AARON_ULTRA4_GIFT_FLAG)) {
+    return wallet;
+  }
+  var gifts = ["crystal", "candywrasse", "rubyanth", "opal"];
+  var i;
+  for (i = 0; i < gifts.length; i += 1) {
+    var fishId = gifts[i];
+    wallet.fishCounts[fishId] = (wallet.fishCounts[fishId] || 0) + 1;
+  }
+  saveWallet(wallet);
+  localStorage.setItem(AARON_ULTRA4_GIFT_FLAG, "1");
+  return wallet;
+}
+
 function getWallet() {
   var raw = localStorage.getItem(walletKidKey());
   if (!raw) {
-    return rememberWallet(giftAndrewStingrayOnce(removeAndrewMantaOnce(emptyWallet())));
+    return rememberWallet(
+      giftAaronUltra4Once(giftAndrewTreasure2Once(giftAndrewStingrayOnce(removeAndrewMantaOnce(emptyWallet()))))
+    );
   }
   try {
     var data = JSON.parse(raw);
@@ -1428,7 +2095,9 @@ function getWallet() {
     if (loaded.migrated) {
       saveWallet(loaded.wallet);
     }
-    return rememberWallet(giftAndrewStingrayOnce(removeAndrewMantaOnce(loaded.wallet)));
+    return rememberWallet(
+      giftAaronUltra4Once(giftAndrewTreasure2Once(giftAndrewStingrayOnce(removeAndrewMantaOnce(loaded.wallet))))
+    );
   } catch (err) {
     return rememberWallet(emptyWallet());
   }
@@ -2701,6 +3370,78 @@ var FISH_WEAR = {
   marlin: wearSvg(35, 47, "long", "0.75", "0.65"),
   giant: wearSvg(42, 41, "bell", "0.9", "0.9"),
   colossal: wearSvg(40, 44, "round", "0.95", "1.1"),
+
+  emerald: wearSvg(39, 35, "round", "0.9", "1.1"),
+  cleanershrimp: wearSvg(31, 47),
+  tomini: wearSvg(27, 45),
+  pajama: wearSvg(24, 47),
+  neongoby: wearSvg(24, 47),
+  clowngoby: wearSvg(24, 47),
+  bandedshrimp: wearSvg(31, 47),
+  fireshrimp: wearSvg(31, 47),
+  purpfire: wearSvg(24, 47),
+  blackcap: wearSvg(24, 49),
+  swissguard: wearSvg(24, 47),
+  orchid: wearSvg(24, 47),
+  chevron: wearSvg(27, 45),
+  arrowcrab: wearSvg(42, 46, "side", "0.75", "0.9"),
+  sunrise: wearSvg(24, 47),
+  horseshoe: wearSvg(28, 45, "flat", "0.8", "1.15"),
+  bifox: wearSvg(30, 47),
+  melanurus: wearSvg(26, 47),
+  magfox: wearSvg(30, 47),
+  sohal: wearSvg(27, 45),
+  naso: wearSvg(27, 45),
+  lipstick: wearSvg(27, 45),
+  scopas: wearSvg(27, 45),
+  rockbeauty: wearSvg(27, 45, "round", "0.95", "1.1"),
+  lemonpeel: wearSvg(28, 45, "round", "0.95", "1.1"),
+  biangel: wearSvg(27, 45, "round", "0.95", "1.1"),
+  christmas: wearSvg(26, 47),
+  potter: wearSvg(27, 45, "round", "0.95", "1.1"),
+  semicircle: wearSvg(27, 45, "round", "0.95", "1.1"),
+  kingangel: wearSvg(28, 46, "round", "0.95", "1.1"),
+  flamehawk: wearSvg(25, 45),
+  arceye: wearSvg(25, 47),
+  lagoon: wearSvg(27, 47),
+  harlequin: wearSvg(31, 45),
+  niger: wearSvg(27, 47),
+  pompom: wearSvg(39, 35, "round", "0.9", "1.1"),
+  starry: wearSvg(27, 47),
+  pinktail: wearSvg(27, 47),
+  undulate: wearSvg(27, 47),
+  crosshatch: wearSvg(27, 47),
+  queentrig: wearSvg(27, 45),
+  dragonwrasse: wearSvg(26, 47),
+  flasher: wearSvg(26, 47),
+  snowflake: wearSvg(22, 53, "long", "0.85", "0.7"),
+  geometric: wearSvg(22, 53, "long", "0.85", "0.7"),
+  dragonmoray: wearSvg(22, 53, "long", "0.85", "0.7"),
+  blackribbon: wearSvg(22, 53, "long", "0.85", "0.7"),
+  bandit: wearSvg(27, 45, "round", "0.95", "1.1"),
+  mccosker: wearSvg(26, 47),
+  wunderpus: wearSvg(44, 49, "bell", "1", "0.95"),
+
+  crystal: wearSvg(31, 47),
+  candywrasse: wearSvg(26, 47),
+  rubyanth: wearSvg(24, 47),
+  opal: wearSvg(27, 45),
+  prism: wearSvg(27, 45),
+  rainbowfin: wearSvg(24, 45),
+  embercrab: wearSvg(39, 35, "round", "0.9", "1.1"),
+  cloudray: wearSvg(28, 47, "flat", "0.75", "1.15"),
+  moonlantern: wearSvg(25, 47),
+  starlight: wearSvg(31, 36, "tall", "0.85", "0.9"),
+  velvet: wearSvg(28, 46, "round", "0.95", "1.1"),
+  sparknaut: wearSvg(30, 49, "round", "0.9", "1"),
+  sunburst: wearSvg(30, 47, "round", "0.95", "1.2"),
+  glacier: wearSvg(27, 47, "long", "0.85", "0.7"),
+  thundereel: wearSvg(16, 48, "long", "0.8", "0.65"),
+  pearlsea: wearSvg(24, 36, "long", "0.85", "0.75"),
+  galaxyeel: wearSvg(16, 47, "long", "0.8", "0.65"),
+  comet: wearSvg(28, 49, "bell", "0.95", "1"),
+  aurora: wearSvg(30, 49, "flat", "0.75", "1.15"),
+  nebula: wearSvg(33, 45, "bell", "1", "0.95"),
 };
 
 function reefFishWear(fish) {

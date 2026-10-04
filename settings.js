@@ -102,6 +102,7 @@ function showAccount() {
     passwordEl.textContent = record.password;
   }
 
+  listEl.textContent = "";
   PATHS.forEach(function (path) {
     var item = document.createElement("li");
     var name = document.createElement("span");
@@ -116,4 +117,63 @@ function showAccount() {
   });
 }
 
+function showLine(el, text, ok) {
+  el.textContent = text;
+  el.hidden = false;
+  el.classList.toggle("auth__message--ok", !!ok);
+}
+
+function fillAccountCode() {
+  var box = document.getElementById("account-code");
+  var code = "";
+  try {
+    code = makeAccountCode();
+  } catch (err) {
+    code = "";
+  }
+  box.value = code;
+  if (!code) {
+    box.value = "";
+  }
+}
+
+function copyAccountCode() {
+  var box = document.getElementById("account-code");
+  var note = document.getElementById("copy-message");
+  var text = box.value;
+  if (!text) {
+    showLine(note, "We cannot make a code yet.", false);
+    return;
+  }
+  box.focus();
+  box.select();
+  function copied() {
+    showLine(note, "Copied. Paste it on the other computer.", true);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(copied).catch(function () {
+      showLine(note, "The code is selected. Copy it with a parent.", true);
+    });
+    return;
+  }
+  showLine(note, "The code is selected. Copy it with a parent.", true);
+}
+
+function putCodeIn() {
+  var box = document.getElementById("load-code");
+  var note = document.getElementById("load-message");
+  var result = loadAccountCodeForCurrentKid(box.value);
+  if (!result.ok) {
+    showLine(note, result.message, false);
+    return;
+  }
+  showAccount();
+  fillAccountCode();
+  box.value = "";
+  showLine(note, "This computer has the fish and lessons from that code. The other computer still has them too.", true);
+}
+
 showAccount();
+fillAccountCode();
+document.getElementById("copy-code").addEventListener("click", copyAccountCode);
+document.getElementById("load-code-btn").addEventListener("click", putCodeIn);

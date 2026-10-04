@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="tominiBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7e5e4"/>
+      <stop offset="0.45" stop-color="#a8a29e"/>
+      <stop offset="1" stop-color="#57534e"/>
+    </linearGradient>
+    <radialGradient id="tominiShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M252 108 L356 44 L314 110 L356 176 Z" fill="#f97316"/>
+    <path d="M124 70 C176 18, 240 28, 256 78 C204 50, 156 56, 124 70Z" fill="#d6d3d1"/>
+    <path d="M156 156 C174 198, 216 196, 222 154" fill="#d6d3d1"/>
+    <path d="M64 112 C72 58, 150 46, 250 82 C284 114, 246 172, 156 180 C96 180, 58 152, 64 112Z" fill="url(#tominiBody)"/>
+    <ellipse cx="118" cy="128" rx="18" ry="11" fill="#d6d3d1" transform="rotate(-24 118 128)"/>
+    <ellipse cx="168" cy="98" rx="46" ry="16" fill="url(#tominiShine)" stroke="none"/>
+    <circle cx="156" cy="118" r="13" fill="#111827"/><circle cx="120" cy="96" r="4" fill="#fdba74"/><circle cx="132" cy="112" r="4" fill="#fdba74"/><circle cx="118" cy="128" r="4" fill="#fdba74"/>
+    <circle cx="108" cy="100" r="16" fill="#fff"/><circle cx="103.5" cy="101.0" r="7.7" fill="#102028" stroke="none"/><circle cx="100.6" cy="95.5" r="3.2" fill="#fff" stroke="none"/>
+    <path d="M76 124 Q90 135 106 124" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

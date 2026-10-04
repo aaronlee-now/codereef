@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="banditBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#475569"/>
+      <stop offset="0.45" stop-color="#1f2937"/>
+      <stop offset="1" stop-color="#030712"/>
+    </linearGradient>
+    <radialGradient id="banditShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M246 108 L364 22 L302 110 L364 198 Z" fill="#e5e7eb"/>
+    <path d="M140 64 C190 4, 252 12, 268 74 C214 36, 168 44, 140 64Z" fill="#374151"/>
+    <path d="M154 154 C178 212, 236 210, 246 150" fill="#374151"/>
+    <path d="M72 108 C82 54, 158 44, 246 78 C292 114, 244 170, 158 178 C98 178, 64 150, 72 108Z" fill="url(#banditBody)"/>
+    <ellipse cx="120" cy="126" rx="16" ry="10" fill="#374151" transform="rotate(-20 120 126)"/>
+    <ellipse cx="160" cy="100" rx="40" ry="16" fill="url(#banditShine)" stroke="none"/>
+    <rect x="92" y="74" width="22" height="70" rx="8" fill="#fff"/>
+    <circle cx="108" cy="100" r="16" fill="#fff"/><circle cx="103.5" cy="101.0" r="7.7" fill="#102028" stroke="none"/><circle cx="100.6" cy="95.5" r="3.2" fill="#fff" stroke="none"/>
+    <path d="M82 122 Q96 133 112 122" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

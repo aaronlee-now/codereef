@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="snowflakeBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="0.45" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <radialGradient id="snowflakeShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M28 116 L74 96 L66 132 Z" fill="#facc15"/>
+    <path d="M70 104 C140 48, 240 40, 330 86 L348 70 L336 108 C300 86, 240 90, 180 108 C120 92, 86 100, 70 112 Z" fill="#facc15"/>
+    <path d="M52 120 C120 86, 210 84, 320 112 C372 124, 388 116, 392 126 C360 156, 270 168, 170 154 C96 164, 64 150, 48 132 Z" fill="url(#snowflakeBody)"/>
+    <ellipse cx="180" cy="118" rx="60" ry="12" fill="url(#snowflakeShine)" stroke="none"/>
+    <circle cx="140" cy="118" r="8" fill="#111827"/><circle cx="180" cy="108" r="8" fill="#111827"/><circle cx="220" cy="124" r="8" fill="#111827"/><circle cx="260" cy="112" r="8" fill="#111827"/><circle cx="300" cy="122" r="8" fill="#111827"/><circle cx="160" cy="132" r="8" fill="#111827"/><circle cx="150" cy="112" r="4" fill="#facc15"/><circle cx="200" cy="120" r="4" fill="#facc15"/><circle cx="250" cy="108" r="4" fill="#facc15"/><circle cx="290" cy="118" r="4" fill="#facc15"/>
+    <circle cx="86" cy="116" r="13" fill="#fff"/><circle cx="82.4" cy="116.8" r="6.2" fill="#102028" stroke="none"/><circle cx="80.0" cy="112.4" r="2.6" fill="#fff" stroke="none"/>
+    <path d="M40 128 Q54 139 70 128" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

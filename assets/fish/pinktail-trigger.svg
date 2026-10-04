@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="pinktailBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffedd5"/>
+      <stop offset="0.45" stop-color="#d6d3d1"/>
+      <stop offset="1" stop-color="#78716c"/>
+    </linearGradient>
+    <radialGradient id="pinktailShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M248 112 L352 66 L308 118 L352 166 Z" fill="#f9a8d4"/>
+    <path d="M156 76 L176 22 L196 84 Z" fill="#f9a8d4"/>
+    <path d="M176 150 C190 188, 220 186, 226 148" fill="#f9a8d4"/>
+    <path d="M70 114 C78 66, 152 54, 246 86 C278 116, 248 166, 158 174 C102 174, 62 148, 70 114Z" fill="url(#pinktailBody)"/>
+    <ellipse cx="122" cy="130" rx="16" ry="10" fill="#f9a8d4" transform="rotate(-18 122 130)"/>
+    <ellipse cx="166" cy="104" rx="40" ry="14" fill="url(#pinktailShine)" stroke="none"/>
+    <path d="M250 100 H330" stroke="#f9a8d4" stroke-width="8" fill="none"/>
+    <circle cx="108" cy="104" r="15" fill="#fff"/><circle cx="103.8" cy="104.9" r="7.2" fill="#102028" stroke="none"/><circle cx="101.1" cy="99.8" r="3.0" fill="#fff" stroke="none"/>
+    <path d="M80 126 Q94 137 110 126" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

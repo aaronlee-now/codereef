@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="arrowcrabBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffedd5"/>
+      <stop offset="0.45" stop-color="#fdba74"/>
+      <stop offset="1" stop-color="#c2410c"/>
+    </linearGradient>
+    <radialGradient id="arrowcrabShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M150 70 L40 16 M160 86 L24 40 M168 110 L16 120 M170 130 L30 190 M200 140 L150 210 M230 132 L300 206 M248 110 L360 46 M236 90 L330 20" fill="none" stroke="#fb923c" stroke-width="4.2"/>
+    <path d="M18 110 L128 86 L128 134 Z" fill="#fdba74"/>
+    <path d="M118 108 C148 62, 230 62, 252 108 C230 154, 148 156, 118 108Z" fill="url(#arrowcrabBody)"/>
+    <ellipse cx="180" cy="104" rx="28" ry="14" fill="url(#arrowcrabShine)" stroke="none"/>
+    <circle cx="168" cy="102" r="12" fill="#fff"/><circle cx="164.6" cy="102.7" r="5.8" fill="#102028" stroke="none"/><circle cx="162.5" cy="98.6" r="2.4" fill="#fff" stroke="none"/>
+    <path d="M124 112 Q140 122 132 108" fill="none" stroke-width="2.4"/>
+    
+  </g>
+</svg>

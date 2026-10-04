@@ -94,6 +94,8 @@ function addFishCard(fish) {
   price.className = "shop-card__price";
   price.textContent = formatCoinCost(fish.cost);
 
+  var rarity = makeRarityLine(fish);
+
   var have = document.createElement("p");
   have.className = "shop-card__have";
   have.textContent = "You have " + fishCount(fish.id);
@@ -139,6 +141,7 @@ function addFishCard(fish) {
   card.appendChild(preview);
   card.appendChild(name);
   card.appendChild(price);
+  card.appendChild(rarity);
   card.appendChild(have);
   card.appendChild(actions);
   gridEl.appendChild(card);
@@ -167,6 +170,8 @@ function addDecorCard(item) {
   var price = document.createElement("p");
   price.className = "shop-card__price";
   price.textContent = formatCoinCost(item.cost);
+
+  var rarity = makeRarityLine(item);
 
   var haveN = typeof decorCount === "function" ? decorCount(item.id) : 0;
   var cap = item.once ? 1 : 6;
@@ -210,6 +215,7 @@ function addDecorCard(item) {
   card.appendChild(preview);
   card.appendChild(name);
   card.appendChild(price);
+  card.appendChild(rarity);
   card.appendChild(have);
   card.appendChild(actions);
   gridEl.appendChild(card);
@@ -391,6 +397,8 @@ function addOutfitCard(item) {
   price.className = "shop-card__price";
   price.textContent = formatCoinCost(item.cost);
 
+  var rarity = makeRarityLine(item);
+
   var have = document.createElement("p");
   have.className = "shop-card__have";
   have.textContent = "You have " + ownedN;
@@ -417,6 +425,7 @@ function addOutfitCard(item) {
   card.appendChild(preview);
   card.appendChild(name);
   card.appendChild(price);
+  card.appendChild(rarity);
   card.appendChild(have);
   card.appendChild(actions);
   card.appendChild(picks);
@@ -733,26 +742,79 @@ document.addEventListener("keydown", function (event) {
 var shopTab = "all";
 var tabsEl = document.getElementById("shop-tabs");
 
+function itemRarityName(item) {
+  if (item && item.rarityName) {
+    return item.rarityName;
+  }
+  if (typeof fishRarityName === "function") {
+    return fishRarityName(item);
+  }
+  return "Common";
+}
+
+function makeRarityLine(item) {
+  var line = document.createElement("p");
+  line.className = "shop-card__rarity";
+  line.textContent = itemRarityName(item);
+  return line;
+}
+
+function rarityClass(name) {
+  return "shop-rarity--" + String(name).toLowerCase().replace(" ", "-");
+}
+
+function addSectionHeading(name) {
+  var heading = document.createElement("h2");
+  heading.className = "shop-rarity " + rarityClass(name);
+  heading.textContent = name;
+  gridEl.appendChild(heading);
+}
+
+function itemsInSection(list, name) {
+  var group = [];
+  var i;
+  for (i = 0; i < list.length; i += 1) {
+    if (itemRarityName(list[i]) === name) {
+      group.push(list[i]);
+    }
+  }
+  if (group.length && typeof group[0].rarity === "number") {
+    group.sort(function (a, b) {
+      return b.rarity - a.rarity;
+    });
+  }
+  return group;
+}
+
+function renderRaritySections(list, addCard) {
+  var sections = typeof RARITY_SECTIONS !== "undefined" ? RARITY_SECTIONS : ["Ultra", "Common"];
+  var s;
+  var i;
+  for (s = 0; s < sections.length; s += 1) {
+    var group = itemsInSection(list, sections[s]);
+    if (group.length === 0) {
+      continue;
+    }
+    addSectionHeading(sections[s]);
+    for (i = 0; i < group.length; i += 1) {
+      addCard(group[i]);
+    }
+  }
+}
+
 function buildShop() {
   gridEl.innerHTML = "";
   var showFish = shopTab === "all" || shopTab === "fish";
   var showDecor = shopTab === "all" || shopTab === "decor";
   var showOutfit = shopTab === "all" || shopTab === "outfit";
-  var i;
   if (showFish) {
-    for (i = 0; i < FISH_FOR_SALE.length; i += 1) {
-      addFishCard(FISH_FOR_SALE[i]);
-    }
+    renderRaritySections(FISH_FOR_SALE, addFishCard);
   }
   if (showDecor) {
-    for (i = 0; i < DECOR_FOR_SALE.length; i += 1) {
-      addDecorCard(DECOR_FOR_SALE[i]);
-    }
+    renderRaritySections(DECOR_FOR_SALE, addDecorCard);
   }
   if (showOutfit && typeof OUTFITS_FOR_SALE !== "undefined") {
-    for (i = 0; i < OUTFITS_FOR_SALE.length; i += 1) {
-      addOutfitCard(OUTFITS_FOR_SALE[i]);
-    }
+    renderRaritySections(OUTFITS_FOR_SALE, addOutfitCard);
   }
   refreshCoins();
 }

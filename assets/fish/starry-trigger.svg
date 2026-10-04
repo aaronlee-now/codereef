@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="starryBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cbd5e1"/>
+      <stop offset="0.45" stop-color="#64748b"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <radialGradient id="starryShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M248 112 L352 66 L308 118 L352 166 Z" fill="#94a3b8"/>
+    <path d="M156 76 L176 22 L196 84 Z" fill="#94a3b8"/>
+    <path d="M176 150 C190 188, 220 186, 226 148" fill="#94a3b8"/>
+    <path d="M70 114 C78 66, 152 54, 246 86 C278 116, 248 166, 158 174 C102 174, 62 148, 70 114Z" fill="url(#starryBody)"/>
+    <ellipse cx="122" cy="130" rx="16" ry="10" fill="#94a3b8" transform="rotate(-18 122 130)"/>
+    <ellipse cx="166" cy="104" rx="40" ry="14" fill="url(#starryShine)" stroke="none"/>
+    <path d="M160 96 L166 108 L178 108 L168 116 L172 128 L160 120 L148 128 L152 116 L142 108 L154 108 Z" fill="#fff"/>
+    <path d="M206 90 L212 104 L226 104 L215 113 L219 126 L206 117 L193 126 L197 113 L186 104 L200 104 Z" fill="#fff"/>
+    <path d="M188 124 L193 134 L204 134 L195 141 L198 152 L188 145 L178 152 L181 141 L172 134 L183 134 Z" fill="#fff"/>
+    <path d="M236 112 L241 122 L252 122 L243 129 L246 140 L236 133 L226 140 L229 129 L220 122 L231 122 Z" fill="#fff"/>
+    <circle cx="108" cy="104" r="15" fill="#fff"/><circle cx="103.8" cy="104.9" r="7.2" fill="#102028" stroke="none"/><circle cx="101.1" cy="99.8" r="3.0" fill="#fff" stroke="none"/>
+    <path d="M80 126 Q94 137 110 126" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

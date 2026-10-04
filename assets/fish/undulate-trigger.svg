@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="undulateBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bbf7d0"/>
+      <stop offset="0.45" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#166534"/>
+    </linearGradient>
+    <radialGradient id="undulateShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M248 112 L352 66 L308 118 L352 166 Z" fill="#4ade80"/>
+    <path d="M156 76 L176 22 L196 84 Z" fill="#4ade80"/>
+    <path d="M176 150 C190 188, 220 186, 226 148" fill="#4ade80"/>
+    <path d="M70 114 C78 66, 152 54, 246 86 C278 116, 248 166, 158 174 C102 174, 62 148, 70 114Z" fill="url(#undulateBody)"/>
+    <ellipse cx="122" cy="130" rx="16" ry="10" fill="#4ade80" transform="rotate(-18 122 130)"/>
+    <ellipse cx="166" cy="104" rx="40" ry="14" fill="url(#undulateShine)" stroke="none"/>
+    <path d="M120 100 C150 86, 180 114, 220 98" fill="none" stroke="#f97316" stroke-width="5"/><path d="M116 120 C150 108, 186 136, 226 116" fill="none" stroke="#f97316" stroke-width="5"/>
+    <circle cx="108" cy="104" r="15" fill="#fff"/><circle cx="103.8" cy="104.9" r="7.2" fill="#102028" stroke="none"/><circle cx="101.1" cy="99.8" r="3.0" fill="#fff" stroke="none"/>
+    <path d="M80 126 Q94 137 110 126" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>

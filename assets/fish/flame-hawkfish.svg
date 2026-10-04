@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="flamehawkBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecaca"/>
+      <stop offset="0.45" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+    <radialGradient id="flamehawkShine" cx="36%" cy="34%" r="42%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#163040" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    
+    <path d="M236 106 L352 60 L312 114 L352 166 Z" fill="#f87171"/>
+    <path d="M120 62 C176 26, 224 40, 230 82" fill="#f87171"/>
+    <path d="M46 114 C28 100, 26 136, 58 136 C40 130, 42 116, 46 114Z" fill="#f87171"/>
+    <path d="M58 110 C86 64, 160 60, 240 92 C274 118, 240 166, 156 172 C96 176, 58 148, 58 110Z" fill="url(#flamehawkBody)"/>
+    <ellipse cx="150" cy="104" rx="36" ry="14" fill="url(#flamehawkShine)" stroke="none"/>
+    <circle cx="140" cy="108" r="6" fill="#fff"/><circle cx="168" cy="96" r="6" fill="#fff"/><circle cx="186" cy="120" r="6" fill="#fff"/><circle cx="156" cy="128" r="6" fill="#fff"/><circle cx="210" cy="108" r="6" fill="#fff"/>
+    <circle cx="100" cy="100" r="16" fill="#fff"/><circle cx="95.5" cy="101.0" r="7.7" fill="#102028" stroke="none"/><circle cx="92.6" cy="95.5" r="3.2" fill="#fff" stroke="none"/>
+    <path d="M52 126 Q66 137 82 126" fill="none" stroke-width="2.6"/>
+    
+  </g>
+</svg>
