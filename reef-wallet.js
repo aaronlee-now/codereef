@@ -2533,23 +2533,11 @@ function findDecor(decorId) {
   return null;
 }
 
-function decorCap(item) {
-  if (!item) {
-    return 1;
-  }
-  if (item.once) {
-    return 1;
-  }
-  if (item.max) {
-    return item.max;
-  }
-  return 6;
-}
-
 function ownDecor(decorId) {
   return decorCount(decorId) > 0;
 }
 
+// Another copy is fine. Old decorations stay.
 function buyDecor(decorId) {
   var item = findDecor(decorId);
   if (!item) {
@@ -2559,17 +2547,6 @@ function buyDecor(decorId) {
   if (!Array.isArray(wallet.decor)) {
     wallet.decor = [];
   }
-  var have = 0;
-  var i;
-  for (i = 0; i < wallet.decor.length; i += 1) {
-    if (wallet.decor[i] === decorId) {
-      have += 1;
-    }
-  }
-  var cap = decorCap(item);
-  if (have >= cap) {
-    return { ok: false, reason: item.once ? "owned" : "max", cap: cap };
-  }
   var cost = item.cost || {};
   if (!hasCoins(wallet, cost)) {
     return { ok: false, reason: "coins", need: coinsShortText(wallet, cost) };
@@ -2577,7 +2554,7 @@ function buyDecor(decorId) {
   takeCoins(wallet, cost);
   wallet.decor.push(decorId);
   saveWallet(wallet);
-  return { ok: true, decor: item, count: have + 1 };
+  return { ok: true, decor: item, count: decorCount(decorId) };
 }
 
 // Sell one decoration. It leaves the aquarium, and the kid gets half the buy price.
@@ -2732,15 +2709,16 @@ function buyOutfit(outfitId, fishId) {
     wallet.outfits = [];
   }
   takeCoins(wallet, cost);
-  // One costume on this kind of fish. The old one stays owned, just not worn.
-  unwearFish(wallet, fishId);
-  wallet.outfits.push({ fishId: fishId, outfitId: outfitId });
+  // A fish wears one costume. A new copy stays in the wallet if this fish is busy.
+  var busy = costumeOnFish(wallet, fishId);
+  wallet.outfits.push({ fishId: busy ? "" : fishId, outfitId: outfitId });
   saveWallet(wallet);
   return {
     ok: true,
     outfit: outfit,
     fish: fish,
     count: outfitCount(outfitId),
+    onFish: !busy,
   };
 }
 
@@ -2822,8 +2800,21 @@ function fishWearingOutfit(outfitId) {
   return list;
 }
 
+// The costume already on this kind of fish, or "" if none.
+function costumeOnFish(wallet, fishId) {
+  var worn = (wallet && wallet.outfits) || [];
+  var i;
+  for (i = 0; i < worn.length; i += 1) {
+    if (worn[i] && worn[i].fishId === fishId && worn[i].outfitId) {
+      return worn[i].outfitId;
+    }
+  }
+  return "";
+}
+
 // Put one owned copy on this kind of fish.
-// If that copy was on another fish, it comes off. Other costumes on this fish come off too.
+// A fish can wear only one costume. Take the old one off before a new one goes on.
+// A free copy can go on a different fish. If every copy is worn, one moves to the new fish.
 function putOutfitOn(outfitId, fishId) {
   var outfit = findOutfit(outfitId);
   var fish = findFish(fishId);
@@ -2852,7 +2843,9 @@ function putOutfitOn(outfitId, fishId) {
       return { ok: true, outfit: outfit, fish: fish, already: true };
     }
   }
-  var removedId = unwearFish(wallet, fishId);
+  if (costumeOnFish(wallet, fishId)) {
+    return { ok: false, reason: "wearing" };
+  }
   var pick = -1;
   for (i = 0; i < copies.length; i += 1) {
     if (!wallet.outfits[copies[i]].fishId) {
@@ -2863,10 +2856,11 @@ function putOutfitOn(outfitId, fishId) {
   if (pick < 0) {
     pick = copies[0];
   }
+  var fromId = wallet.outfits[pick].fishId;
   wallet.outfits[pick].fishId = fishId;
   saveWallet(wallet);
-  var removed = removedId && removedId !== outfitId ? findOutfit(removedId) : null;
-  return { ok: true, outfit: outfit, fish: fish, removed: removed };
+  var movedOff = fromId ? findFish(fromId) : null;
+  return { ok: true, outfit: outfit, fish: fish, movedOff: movedOff };
 }
 
 // Costume stays owned. It just is not on a fish.

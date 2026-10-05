@@ -174,14 +174,12 @@ function addDecorCard(item) {
   var rarity = makeRarityLine(item);
 
   var haveN = typeof decorCount === "function" ? decorCount(item.id) : 0;
-  var cap = item.once ? 1 : 6;
-  var full = haveN >= cap;
 
   var have = document.createElement("p");
   have.className = "shop-card__have";
   have.textContent = "You have " + haveN;
 
-  var btn = makeBuyButton(full ? (item.once ? "You own this!" : "That's enough!") : "Buy", full);
+  var btn = makeBuyButton("Buy", false);
 
   btn.addEventListener("click", function () {
     var result = buyDecor(item.id);
@@ -267,8 +265,18 @@ function openOutfitPicks(item, preview, picks) {
       pick.addEventListener("click", function () {
         preview.innerHTML = fishPreviewHtml(fish, item.id);
         var result = buyOutfit(item.id, fish.id);
-        if (result.ok) {
+        if (result.ok && result.onFish) {
           showMsg(item.name + " is on your " + fish.name + "!", "ok");
+          buildShop();
+          return;
+        }
+        if (result.ok) {
+          showMsg(
+            "You bought the " +
+              item.name +
+              "! This fish already has a costume. Take it off first.",
+            "need"
+          );
           buildShop();
           return;
         }
@@ -287,94 +295,6 @@ function openOutfitPicks(item, preview, picks) {
         showMsg("That outfit is not for sale.", "need");
       });
       picks.appendChild(pick);
-    })(choices[i]);
-  }
-}
-
-function wearStatusText(item) {
-  var wearers = typeof fishWearingOutfit === "function" ? fishWearingOutfit(item.id) : [];
-  if (wearers.length === 0) {
-    return "Nobody wears it yet.";
-  }
-  if (wearers.length === 1) {
-    return "Your " + wearers[0].name + " wears the " + item.name + ".";
-  }
-  var names = [];
-  var i;
-  for (i = 0; i < wearers.length; i += 1) {
-    names.push(wearers[i].name);
-  }
-  var last = names.pop();
-  return "Your " + names.join(", ") + " and " + last + " wear the " + item.name + ".";
-}
-
-function fillWearChoices(item, preview, picks) {
-  picks.innerHTML = "";
-  var ask = document.createElement("p");
-  ask.className = "shop-card__ask";
-  ask.textContent = "Who wears this?";
-  picks.appendChild(ask);
-
-  var status = document.createElement("p");
-  status.className = "shop-card__have";
-  var choices = ownedFishForShop();
-  if (choices.length === 0) {
-    status.textContent = "Buy a fish first.";
-    picks.appendChild(status);
-    return;
-  }
-  status.textContent = wearStatusText(item);
-  picks.appendChild(status);
-
-  var wearers = typeof fishWearingOutfit === "function" ? fishWearingOutfit(item.id) : [];
-  if (wearers.length > 0) {
-    preview.innerHTML = fishPreviewHtml(wearers[0], item.id);
-  }
-
-  var i;
-  for (i = 0; i < choices.length; i += 1) {
-    (function (fish) {
-      var wearing = typeof outfitIsOnFish === "function" && outfitIsOnFish(item.id, fish.id);
-      var row = document.createElement("div");
-      row.className = "shop-card__wear-row";
-      var who = document.createElement("span");
-      who.className = "shop-card__ask";
-      who.textContent = fish.name;
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "shop-card__pick";
-      btn.textContent = wearing ? "Take it off" : "Put it on";
-      btn.addEventListener("click", function () {
-        if (wearing) {
-          var off = takeOutfitOff(item.id, fish.id);
-          if (off.ok) {
-            showMsg("The " + item.name + " came off your " + fish.name + ".", "ok");
-            buildShop();
-            return;
-          }
-          showMsg("That costume is not on your " + fish.name + ".", "need");
-          return;
-        }
-        preview.innerHTML = fishPreviewHtml(fish, item.id);
-        var result = putOutfitOn(item.id, fish.id);
-        if (result.ok) {
-          var line = "Your " + fish.name + " wears the " + item.name + ".";
-          if (result.removed) {
-            line += " The " + result.removed.name + " came off.";
-          }
-          showMsg(line, "ok");
-          buildShop();
-          return;
-        }
-        if (result.reason === "nofish") {
-          showMsg("You need that fish first.", "need");
-          return;
-        }
-        showMsg("You need that costume first.", "need");
-      });
-      row.appendChild(who);
-      row.appendChild(btn);
-      picks.appendChild(row);
     })(choices[i]);
   }
 }
@@ -406,9 +326,6 @@ function addOutfitCard(item) {
   var picks = document.createElement("div");
   picks.className = "shop-card__picks";
 
-  var wear = document.createElement("div");
-  wear.className = "shop-card__wear";
-
   var btn = makeBuyButton("Buy", false);
   btn.addEventListener("click", function () {
     openOutfitPicks(item, preview, picks);
@@ -419,7 +336,11 @@ function addOutfitCard(item) {
   actions.appendChild(btn);
   if (ownedN > 0) {
     addSellButton(actions, item, "outfit");
-    fillWearChoices(item, preview, wear);
+    var who = makeBuyButton("Who wears this?", false);
+    who.addEventListener("click", function () {
+      window.location.href = "wear.html?outfit=" + encodeURIComponent(item.id);
+    });
+    actions.appendChild(who);
   }
 
   card.appendChild(preview);
@@ -429,7 +350,6 @@ function addOutfitCard(item) {
   card.appendChild(have);
   card.appendChild(actions);
   card.appendChild(picks);
-  card.appendChild(wear);
   gridEl.appendChild(card);
 }
 

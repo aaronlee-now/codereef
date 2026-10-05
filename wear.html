@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Who wears this? — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=shop3" />
+    <link rel="stylesheet" href="shop.css?v=ultra1" />
+    <link rel="stylesheet" href="wear.css?v=wearpage1" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="shop.html?v=swim1">← Back to Fish Shop</a>
+
+    <main class="shop-page">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title" id="wear-title">Who wears this?</h1>
+        <p class="auth__hint" id="wear-hint">Pick a fish.</p>
+      </header>
+
+      <p class="wear-empty" id="wear-empty" hidden>
+        <a class="shop-resume" href="shop.html?v=swim1">Back to Fish Shop</a>
+      </p>
+
+      <div class="wear-list" id="wear-list"></div>
+      <p class="shop-msg" id="wear-msg" role="status"></p>
+
+      <p class="wear-shop-link">
+        <a href="shop.html?v=swim1">Back to Fish Shop</a>
+      </p>
+
+      <nav class="shop-links" aria-label="Reef places">
+        <a href="explore.html?v=swim1">Start exploring</a>
+        <a href="aquarium.html?v=swim1">My aquarium</a>
+        <a href="shop.html?v=swim1">Fish shop</a>
+        <a href="sell.html?v=sell1">Sell items</a>
+        <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
+      </nav>
+    </main>
+
+    <script src="auth.js?v=shop3"></script>
+    <script src="reef-wallet.js?v=wearpage2"></script>
+    <script src="wear.js?v=wearpage2"></script>
+  </body>
+</html>
