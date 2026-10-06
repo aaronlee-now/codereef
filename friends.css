@@ -1,0 +1,125 @@
+.cover__btn--friends {
+  min-width: 12rem;
+  background: #7b5ea7;
+  border: 2px solid #7b5ea7;
+  color: #f4fffc;
+}
+
+.friend-heading {
+  margin: 1.1rem 0 0.4rem;
+  font-family: "Baloo 2", "Nunito", sans-serif;
+  font-size: 1.35rem;
+  color: var(--foam);
+}
+
+.friend-ask {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.friend-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.35rem 0;
+}
+
+.friend-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  background: #2a9d8f;
+  color: #f4fffc;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.friend-btn--no {
+  background: #c46b5a;
+}
+
+.online-box {
+  display: inline-block;
+  min-width: 5.2rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #5c6b73;
+  color: #f4fffc;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.online-box--on {
+  background: #2a9d8f;
+}
+
+.friend-chat {
+  max-width: 32rem;
+  margin: 0.8rem auto 0;
+}
+
+.friend-chat__log {
+  min-height: 4.5rem;
+  max-height: 12rem;
+  overflow: auto;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  background: rgba(6, 36, 48, 0.45);
+}
+
+.friend-chat__line {
+  margin: 0.25rem 0;
+}
+
+.friend-chat__form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.friend-lane {
+  margin: 0.45rem 0;
+}
+
+.friend-lane__track {
+  position: relative;
+  height: 3.2rem;
+  margin-top: 0.2rem;
+  border-radius: 999px;
+  background: rgba(61, 155, 233, 0.25);
+  overflow: hidden;
+}
+
+.friend-racer {
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  width: 3.4rem;
+  height: 2.6rem;
+}
+
+.friend-racer__face {
+  transform: scaleX(-1);
+}
+
+.friend-racer__face img {
+  width: 3.2rem;
+  height: auto;
+  display: block;
+}
+
+.friend-race__result {
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.explore-reef-nav__friends {
+  background: #7b5ea7;
+  border: 2px solid #7b5ea7;
+}

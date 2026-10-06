@@ -1880,6 +1880,53 @@ var OUTFITS_FOR_SALE = [
   { id: "wand", name: "Bubble Wand", cost: { sand: 5 }, rarityName: "Rare" },
 ];
 
+// Fish food. Higher energy fills more hunger. Full is ENERGY_MAX.
+var ENERGY_MAX = 6;
+var RACE_ENERGY_COST = 2;
+
+var FOOD_FOR_SALE = [
+  {
+    id: "crumbs",
+    name: "Tiny Crumbs",
+    cost: { sand: 2 },
+    kind: "food",
+    rarity: 1,
+    rarityName: "Common",
+    energy: 1,
+    help: "Fills a little",
+  },
+  {
+    id: "flakes",
+    name: "Yummy Flakes",
+    cost: { sand: 5 },
+    kind: "food",
+    rarity: 18,
+    rarityName: "Uncommon",
+    energy: 2,
+    help: "Fills some",
+  },
+  {
+    id: "salad",
+    name: "Sea Salad",
+    cost: { sand: 4, coral: 1 },
+    kind: "food",
+    rarity: 36,
+    rarityName: "Rare",
+    energy: 4,
+    help: "Fills a lot",
+  },
+  {
+    id: "feast",
+    name: "Reef Feast",
+    cost: { coral: 2, pearl: 1 },
+    kind: "food",
+    rarity: 90,
+    rarityName: "Epic",
+    energy: 6,
+    help: "Fills all the way",
+  },
+];
+
 function walletKidKey() {
   var user = typeof getCurrentUser === "function" ? getCurrentUser() : null;
   var kid = "guest";
@@ -1897,7 +1944,195 @@ function emptyCoins() {
 }
 
 function emptyWallet() {
-  return { coins: emptyCoins(), fishCounts: {}, decor: [], outfits: [] };
+  return { coins: emptyCoins(), fishCounts: {}, decor: [], outfits: [], foods: {}, fishEnergy: {} };
+}
+
+function ensureExtras(wallet) {
+  if (!wallet.foods || typeof wallet.foods !== "object" || Array.isArray(wallet.foods)) {
+    wallet.foods = {};
+  }
+  if (!wallet.fishEnergy || typeof wallet.fishEnergy !== "object" || Array.isArray(wallet.fishEnergy)) {
+    wallet.fishEnergy = {};
+  }
+  return wallet;
+}
+
+function energyMapFromSaved(obj) {
+  var map = {};
+  var id;
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+    return map;
+  }
+  for (id in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, id)) {
+      var n = coinAmount(obj[id]);
+      if (n > ENERGY_MAX) {
+        n = ENERGY_MAX;
+      }
+      map[id] = n;
+    }
+  }
+  return map;
+}
+
+function energyOf(wallet, fishId) {
+  ensureExtras(wallet);
+  if (typeof wallet.fishEnergy[fishId] !== "number") {
+    return ENERGY_MAX;
+  }
+  var n = wallet.fishEnergy[fishId];
+  if (n < 0) {
+    return 0;
+  }
+  if (n > ENERGY_MAX) {
+    return ENERGY_MAX;
+  }
+  return n;
+}
+
+function energyWord(amount) {
+  if (amount <= 0) {
+    return "Hungry";
+  }
+  if (amount >= ENERGY_MAX) {
+    return "Full";
+  }
+  if (amount >= 3) {
+    return "OK";
+  }
+  return "A little hungry";
+}
+
+function findFood(foodId) {
+  var i;
+  for (i = 0; i < FOOD_FOR_SALE.length; i += 1) {
+    if (FOOD_FOR_SALE[i].id === foodId) {
+      return FOOD_FOR_SALE[i];
+    }
+  }
+  return null;
+}
+
+function foodCount(foodId) {
+  var wallet = getWallet();
+  ensureExtras(wallet);
+  return wallet.foods[foodId] || 0;
+}
+
+function buyFood(foodId) {
+  var food = findFood(foodId);
+  if (!food) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  ensureExtras(wallet);
+  var cost = food.cost || {};
+  if (!hasCoins(wallet, cost)) {
+    return { ok: false, reason: "coins", need: coinsShortText(wallet, cost) };
+  }
+  takeCoins(wallet, cost);
+  wallet.foods[foodId] = (wallet.foods[foodId] || 0) + 1;
+  saveWallet(wallet);
+  return { ok: true, food: food, count: wallet.foods[foodId] };
+}
+
+function sellFood(foodId) {
+  var food = findFood(foodId);
+  if (!food) {
+    return { ok: false, reason: "missing" };
+  }
+  var wallet = getWallet();
+  ensureExtras(wallet);
+  var owned = wallet.foods[foodId] || 0;
+  if (owned < 1) {
+    return { ok: false, reason: "none" };
+  }
+  var refund = sellPriceFor(food);
+  addSellCoins(wallet, refund);
+  owned -= 1;
+  if (owned > 0) {
+    wallet.foods[foodId] = owned;
+  } else {
+    delete wallet.foods[foodId];
+  }
+  saveWallet(wallet);
+  return { ok: true, food: food, count: owned, priceText: formatCoinCost(refund) };
+}
+
+function sprinkleFood(foodId, fishId) {
+  var food = findFood(foodId);
+  var fish = findFish(fishId);
+  if (!food || !fish) {
+    return { ok: false, reason: "missing", message: "Pick a food and a fish." };
+  }
+  var wallet = getWallet();
+  ensureExtras(wallet);
+  if ((wallet.fishCounts[fishId] || 0) < 1) {
+    return { ok: false, reason: "nofish", message: "You do not have that fish." };
+  }
+  if ((wallet.foods[foodId] || 0) < 1) {
+    return { ok: false, reason: "nofood", message: "You need to buy that food." };
+  }
+  var before = energyOf(wallet, fishId);
+  if (before >= ENERGY_MAX) {
+    return { ok: false, reason: "full", message: fish.name + " is already full!" };
+  }
+  var gained = food.energy;
+  var after = before + gained;
+  if (after > ENERGY_MAX) {
+    gained = ENERGY_MAX - before;
+    after = ENERGY_MAX;
+  }
+  wallet.foods[foodId] -= 1;
+  if (wallet.foods[foodId] <= 0) {
+    delete wallet.foods[foodId];
+  }
+  wallet.fishEnergy[fishId] = after;
+  saveWallet(wallet);
+  var message;
+  if (before <= 0 && after > 0) {
+    message = fish.name + " can swim again!";
+  } else if (after >= ENERGY_MAX) {
+    message = fish.name + " is full!";
+  } else {
+    message = fish.name + " got " + gained + " more energy.";
+  }
+  return { ok: true, before: before, after: after, gained: gained, message: message };
+}
+
+function spendEnergy(fishId, amount) {
+  var wallet = getWallet();
+  if ((wallet.fishCounts[fishId] || 0) < 1) {
+    return energyOf(wallet, fishId);
+  }
+  var next = energyOf(wallet, fishId) - amount;
+  if (next < 0) {
+    next = 0;
+  }
+  ensureExtras(wallet);
+  wallet.fishEnergy[fishId] = next;
+  saveWallet(wallet);
+  return next;
+}
+
+function tickSwimEnergy() {
+  var wallet = getWallet();
+  var id;
+  var changed = false;
+  ensureExtras(wallet);
+  for (id in wallet.fishCounts) {
+    if (!Object.prototype.hasOwnProperty.call(wallet.fishCounts, id)) {
+      continue;
+    }
+    if ((wallet.fishCounts[id] || 0) > 0 && energyOf(wallet, id) > 0) {
+      wallet.fishEnergy[id] = energyOf(wallet, id) - 1;
+      changed = true;
+    }
+  }
+  if (changed) {
+    saveWallet(wallet);
+  }
+  return changed;
 }
 
 function coinAmount(value) {
@@ -1985,6 +2220,8 @@ function walletFromSaved(data) {
       fishCounts: fishCounts,
       decor: Array.isArray(data.decor) ? data.decor : [],
       outfits: cleanOutfits(data.outfits),
+      foods: countsFromObject(data.foods),
+      fishEnergy: energyMapFromSaved(data.fishEnergy),
     },
     migrated: migrated,
   };
@@ -2120,6 +2357,9 @@ function saveWallet(wallet) {
     localStorage.setItem(walletKidKey(), JSON.stringify(wallet));
   } catch (err) {
     // Quota or private mode — keep the copy in memory for the next try.
+  }
+  if (window.CodeReefCloud && typeof CodeReefCloud.pushBag === "function") {
+    CodeReefCloud.pushBag();
   }
 }
 
@@ -2305,6 +2545,10 @@ function buyFish(fishId) {
     return { ok: false, reason: "coins", need: coinsShortText(wallet, cost) };
   }
   takeCoins(wallet, cost);
+  ensureExtras(wallet);
+  if (!wallet.fishCounts[fishId]) {
+    wallet.fishEnergy[fishId] = ENERGY_MAX;
+  }
   wallet.fishCounts[fishId] = (wallet.fishCounts[fishId] || 0) + 1;
   saveWallet(wallet);
   return { ok: true, fish: fish, count: wallet.fishCounts[fishId] };

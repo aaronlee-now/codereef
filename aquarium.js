@@ -29,6 +29,8 @@ var lastLineup = null;
 var pickRows = [];
 var lastCourseKey = "";
 var lastKindKey = "";
+var selectedFishId = "";
+var sprinkleNote = "";
 
 function seaweedHtml() {
   return (
@@ -147,10 +149,13 @@ function showTip(name, clientX, clientY) {
   }, 1600);
 }
 
-function bindFishClick(swimmer, name) {
+function bindFishClick(swimmer, name, fishId) {
   swimmer.addEventListener("click", function (event) {
     event.stopPropagation();
     showTip(name, event.clientX, event.clientY);
+    if (fishId) {
+      selectSprinkleFish(fishId);
+    }
   });
 }
 
@@ -179,7 +184,20 @@ function placeFish(fish, index, outfitId) {
   swimmer.style.setProperty("--stroke", heavy ? "2.4s" : 1.05 + (index % 4) * 0.12 + "s");
   swimmer.style.setProperty("--stroke-delay", -(index * 0.37) + "s");
   swimmer.style.animationDelay = -(index * 3.1) + "s";
-  bindFishClick(swimmer, fish.name);
+  var energy = typeof energyOf === "function" ? energyOf(getWallet(), fish.id) : ENERGY_MAX;
+  var badge = document.createElement("span");
+  badge.className = "aquarium-energy";
+  badge.textContent = typeof energyWord === "function" ? energyWord(energy) : "";
+  swimmer.appendChild(badge);
+  swimmer.setAttribute("data-fish-id", fish.id);
+  if (energy <= 0) {
+    swimmer.className += " aquarium-swimmer--hungry";
+    swimmer.style.top = "auto";
+    swimmer.style.bottom = "28px";
+    swimmer.style.left = 8 + (index % 8) * 11 + "%";
+    swimmer.style.animation = "none";
+  }
+  bindFishClick(swimmer, fish.name, fish.id);
   tankEl.appendChild(swimmer);
 }
 
@@ -298,6 +316,7 @@ function renderAquarium() {
     placeFish(fishList[i], i, worn);
   }
   startDecorRest();
+  renderSprinkle();
 }
 
 // Higher rarity is a faster racer. Uses fish.rarity from the shop list.
@@ -391,6 +410,10 @@ function addPick(index) {
   if (!row || row.picked >= row.owned) {
     return;
   }
+  if (typeof energyOf === "function" && energyOf(getWallet(), row.fish.id) <= 0) {
+    setRaceMsg("This fish is hungry. Sprinkle food first.");
+    return;
+  }
   if (pickedTotal() >= RACE_LIMIT) {
     setRaceMsg("You already picked " + RACE_LIMIT + "!");
     return;
@@ -427,9 +450,25 @@ function makePickCard(row, index, total) {
   picBtn.appendChild(name);
   var have = document.createElement("span");
   have.className = "aquarium-pick__have";
+  var energy = typeof energyOf === "function" ? energyOf(getWallet(), row.fish.id) : ENERGY_MAX;
+  var hungry = energy <= 0;
   have.textContent = "You have " + row.owned;
   picBtn.appendChild(have);
+  var energyLine = document.createElement("span");
+  energyLine.className = "aquarium-pick__energy";
+  energyLine.setAttribute("data-energy", String(energy));
+  energyLine.textContent = (typeof energyWord === "function" ? energyWord(energy) : "") + "";
+  var bar = document.createElement("span");
+  bar.className = "energy-bar";
+  bar.innerHTML = '<span style="width:' + Math.round((energy / ENERGY_MAX) * 100) + '%"></span>';
+  energyLine.appendChild(bar);
+  picBtn.appendChild(energyLine);
   picBtn.addEventListener("click", function () {
+    if (hungry) {
+      setRaceMsg("This fish is hungry. Sprinkle food first.");
+      selectSprinkleFish(row.fish.id);
+      return;
+    }
     if (row.owned === 1 && row.picked === 1) {
       subPick(index);
       return;
@@ -461,7 +500,7 @@ function makePickCard(row, index, total) {
   plus.className = "aquarium-pick__btn";
   plus.textContent = "Add";
   plus.setAttribute("aria-label", "Add " + row.fish.name);
-  plus.disabled = row.picked >= row.owned || total >= RACE_LIMIT;
+  plus.disabled = hungry || row.picked >= row.owned || total >= RACE_LIMIT;
   plus.addEventListener("click", function () {
     addPick(index);
   });
@@ -787,6 +826,26 @@ function startRace(lineup) {
     openPicker();
     return;
   }
+  var hungryName = "";
+  var seenHungry = {};
+  var h;
+  for (h = 0; h < lineup.length; h += 1) {
+    if (typeof energyOf === "function" && energyOf(getWallet(), lineup[h].id) <= 0 && !seenHungry[lineup[h].id]) {
+      seenHungry[lineup[h].id] = true;
+      hungryName = lineup[h].name;
+    }
+  }
+  if (hungryName) {
+    setRaceMsg(hungryName + " is hungry. Sprinkle food first.");
+    return;
+  }
+  var seenSpend = {};
+  for (h = 0; h < lineup.length; h += 1) {
+    if (!seenSpend[lineup[h].id] && typeof spendEnergy === "function") {
+      seenSpend[lineup[h].id] = true;
+      spendEnergy(lineup[h].id, typeof RACE_ENERGY_COST === "number" ? RACE_ENERGY_COST : 2);
+    }
+  }
   lastLineup = lineup;
   closePicker();
 
@@ -1017,6 +1076,107 @@ function startRace(lineup) {
 }
 
 renderAquarium();
+
+function energyBarHtml(amount) {
+  var max = typeof ENERGY_MAX === "number" ? ENERGY_MAX : 6;
+  var width = Math.round((amount / max) * 100);
+  return '<span class="energy-bar" aria-hidden="true"><span style="width:' + width + '%"></span></span>';
+}
+
+function selectSprinkleFish(fishId) {
+  selectedFishId = fishId;
+  renderSprinkle();
+  var nodes = tankEl ? tankEl.querySelectorAll(".aquarium-swimmer") : [];
+  var i;
+  for (i = 0; i < nodes.length; i += 1) {
+    nodes[i].classList.toggle("aquarium-swimmer--picked", nodes[i].getAttribute("data-fish-id") === fishId);
+  }
+}
+
+function renderSprinkle() {
+  var fishBox = document.getElementById("sprinkle-fish");
+  var foodBox = document.getElementById("sprinkle-foods");
+  var msg = document.getElementById("sprinkle-msg");
+  var wallet;
+  var id;
+  var i;
+  if (!fishBox || !foodBox) {
+    return;
+  }
+  wallet = getWallet();
+  fishBox.innerHTML = "";
+  foodBox.innerHTML = "";
+  if (msg) {
+    msg.textContent = sprinkleNote;
+  }
+  for (i = 0; i < FISH_FOR_SALE.length; i += 1) {
+    var fish = FISH_FOR_SALE[i];
+    var count = wallet.fishCounts[fish.id] || 0;
+    var amount;
+    var btn;
+    if (count < 1) {
+      continue;
+    }
+    amount = energyOf(wallet, fish.id);
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sprinkle__pick" + (selectedFishId === fish.id ? " is-on" : "");
+    btn.setAttribute("data-energy", String(amount));
+    btn.innerHTML =
+      fish.name +
+      " · " +
+      energyWord(amount) +
+      energyBarHtml(amount);
+    btn.addEventListener("click", function (fishId) {
+      return function () {
+        selectSprinkleFish(fishId);
+      };
+    }(fish.id));
+    fishBox.appendChild(btn);
+  }
+  var anyFood = false;
+  for (i = 0; i < FOOD_FOR_SALE.length; i += 1) {
+    var food = FOOD_FOR_SALE[i];
+    var owned = wallet.foods && wallet.foods[food.id] ? wallet.foods[food.id] : 0;
+    var foodBtn;
+    if (owned < 1) {
+      continue;
+    }
+    anyFood = true;
+    foodBtn = document.createElement("button");
+    foodBtn.type = "button";
+    foodBtn.className = "sprinkle__food";
+    foodBtn.textContent = "Sprinkle " + food.name + " (" + owned + ")";
+    foodBtn.addEventListener("click", function (foodId) {
+      return function () {
+        if (!selectedFishId) {
+          sprinkleNote = "Tap a fish first.";
+          renderSprinkle();
+          return;
+        }
+        var result = sprinkleFood(foodId, selectedFishId);
+        sprinkleNote = result.message || "Sprinkled!";
+        renderAquarium();
+      };
+    }(food.id));
+    foodBox.appendChild(foodBtn);
+  }
+  if (!anyFood) {
+    var empty = document.createElement("p");
+    empty.className = "sprinkle__empty";
+    empty.textContent = "Buy fish food in the shop.";
+    foodBox.appendChild(empty);
+  }
+}
+
+window.setInterval(function () {
+  if (raceOn || !getCurrentUser()) {
+    return;
+  }
+  if (typeof tickSwimEnergy === "function" && tickSwimEnergy()) {
+    renderAquarium();
+  }
+}, 40000);
 
 if (raceBtn) {
   raceBtn.addEventListener("click", askToRace);

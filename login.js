@@ -7,23 +7,29 @@ form.addEventListener("submit", function (event) {
 
   const kidName = form.kid_name.value.trim().replace(/\s+/g, " ");
   const password = form.password.value;
-  const user = findUserByKidName(kidName);
 
-  if (!user || user.password !== password) {
-    message.textContent = "Name or password is wrong. Try again.";
-    message.hidden = false;
-    return;
-  }
-
+  message.hidden = true;
   submitButton.disabled = true;
   submitButton.textContent = "Logging in...";
 
-  notifyParentOfLogin(user)
-    .catch(function () {
-      // Still log in even if the email did not send.
+  CodeReefCloud.login(kidName, password)
+    .then(function (result) {
+      if (!result.ok) {
+        message.textContent = result.message || "Name or password is wrong. Try again.";
+        message.hidden = false;
+        submitButton.disabled = false;
+        submitButton.textContent = "Log in";
+        return;
+      }
+
+      finishSoon(notifyParentOfLogin(result.user)).finally(function () {
+        window.location.href = "home.html";
+      });
     })
-    .finally(function () {
-      setCurrentUser(user);
-      window.location.href = "home.html";
+    .catch(function (error) {
+      message.textContent = "We can't reach the reef. " + (error && error.message ? error.message : "Try again.");
+      message.hidden = false;
+      submitButton.disabled = false;
+      submitButton.textContent = "Log in";
     });
 });

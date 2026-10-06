@@ -89,24 +89,23 @@ function domainCanGetMail(domain) {
 
 function saveAndEnter(user) {
   // Many kids can share one parent email. Only the kid's name must be new.
-  if (findUserByKidName(user.kidName)) {
-    showError("That name is already taken.");
-    setButton("Sign up", false);
-    return;
-  }
-
-  const users = getUsers();
-  users.push(user);
-  saveUsers(users);
-  setCurrentUser(user);
   setButton("Signing up...", true);
 
-  notifyParentOfSignup(user)
-    .catch(function () {
-      // Still sign up even if the email did not send.
+  CodeReefCloud.signUp(user)
+    .then(function (result) {
+      if (!result.ok) {
+        showError(result.message || "That name is already taken.");
+        setButton("Sign up", false);
+        return;
+      }
+
+      finishSoon(notifyParentOfSignup(user)).finally(function () {
+        window.location.href = "home.html";
+      });
     })
-    .finally(function () {
-      window.location.href = "home.html";
+    .catch(function (error) {
+      showError("We can't reach the reef. " + (error && error.message ? error.message : "Try again."));
+      setButton("Sign up", false);
     });
 }
 

@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css?v=shop3" />
-    <link rel="stylesheet" href="shop.css?v=ultra1" />
+    <link rel="stylesheet" href="shop.css?v=eye1" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="home.html?v=swim1">← Back home</a>
@@ -38,6 +38,14 @@
       </div>
       <p class="aquarium-race-msg" id="aquarium-race-msg" role="status"></p>
 
+      <section class="sprinkle" id="sprinkle-box" aria-label="Sprinkle food">
+        <h2 class="sprinkle__title">Sprinkle food</h2>
+        <p class="sprinkle__hint">Tap a fish, then tap a food.</p>
+        <div class="sprinkle__fish" id="sprinkle-fish"></div>
+        <div class="sprinkle__foods" id="sprinkle-foods"></div>
+        <p class="sprinkle__msg" id="sprinkle-msg" role="status"></p>
+      </section>
+
       <section class="aquarium-picker" id="aquarium-picker" hidden>
         <h2 class="aquarium-picker__title">Pick 2 to 10 fish</h2>
         <p class="aquarium-picker__count" id="aquarium-picker-count">0 of 10 picked</p>
@@ -59,12 +67,14 @@
         <a href="aquarium.html?v=swim1" aria-current="page">My aquarium</a>
         <a href="shop.html?v=swim1">Fish shop</a>
         <a href="sell.html?v=sell1">Sell items</a>
+        <a href="friends.html?v=eye1">Race friends</a>
         <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
       </nav>
     </main>
 
-    <script src="auth.js?v=login2"></script>
-    <script src="reef-wallet.js?v=wearpage2"></script>
-    <script src="aquarium.js?v=play3"></script>
+    <script src="auth.js?v=eye1"></script>
+    <script src="cloud.js?v=eye4"></script>
+    <script src="reef-wallet.js?v=eye1"></script>
+    <script src="aquarium.js?v=eye1"></script>
   </body>
 </html>

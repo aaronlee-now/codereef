@@ -119,6 +119,8 @@ function confirmSell() {
     result = sellDecor(item.id);
   } else if (item.kind === "outfit") {
     result = sellOutfit(item.id);
+  } else if (item.kind === "food") {
+    result = sellFood(item.id);
   } else {
     result = sellFish(item.id);
   }
@@ -172,6 +174,22 @@ function buildSell() {
       if (outfitN > 0) {
         any = true;
         addSellCard(outfit, "outfit", outfitN, outfitPreview(outfit.id));
+      }
+    }
+  }
+
+  if (typeof FOOD_FOR_SALE !== "undefined") {
+    for (i = 0; i < FOOD_FOR_SALE.length; i += 1) {
+      var food = FOOD_FOR_SALE[i];
+      var foodN = typeof foodCount === "function" ? foodCount(food.id) : 0;
+      if (foodN > 0) {
+        any = true;
+        addSellCard(
+          food,
+          "food",
+          foodN,
+          '<span class="shop-food-dot shop-food-dot--' + food.id + '" aria-hidden="true"></span>'
+        );
       }
     }
   }

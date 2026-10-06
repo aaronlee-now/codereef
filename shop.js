@@ -375,6 +375,9 @@ function shopOwnedCount(kind, id) {
   if (kind === "outfit") {
     return typeof outfitCount === "function" ? outfitCount(id) : 0;
   }
+  if (kind === "food") {
+    return typeof foodCount === "function" ? foodCount(id) : 0;
+  }
   return fishCount(id);
 }
 
@@ -569,6 +572,8 @@ function confirmSell() {
     result = sellDecor(itemId);
   } else if (kind === "outfit") {
     result = sellOutfit(itemId);
+  } else if (kind === "food") {
+    result = sellFood(itemId);
   } else {
     result = sellFish(itemId);
   }
@@ -723,11 +728,75 @@ function renderRaritySections(list, addCard) {
   }
 }
 
+function foodPreviewHtml(food) {
+  return '<span class="shop-food-dot shop-food-dot--' + food.id + '" aria-hidden="true"></span>';
+}
+
+function addFoodCard(food) {
+  var card = document.createElement("article");
+  card.className = "shop-card";
+  card.setAttribute("role", "listitem");
+
+  var preview = document.createElement("div");
+  preview.className = "shop-card__preview";
+  preview.innerHTML = foodPreviewHtml(food);
+
+  var name = document.createElement("h2");
+  name.className = "shop-card__name";
+  name.textContent = food.name;
+
+  var price = document.createElement("p");
+  price.className = "shop-card__price";
+  price.textContent = formatCoinCost(food.cost);
+
+  var rarity = makeRarityLine(food);
+
+  var help = document.createElement("p");
+  help.className = "shop-card__help";
+  help.textContent = food.help;
+
+  var owned = typeof foodCount === "function" ? foodCount(food.id) : 0;
+  var have = document.createElement("p");
+  have.className = "shop-card__have";
+  have.textContent = "You have " + owned;
+
+  var btn = makeBuyButton("Buy", false);
+  var actions = document.createElement("div");
+  actions.className = "shop-card__actions";
+  btn.addEventListener("click", function () {
+    var result = buyFood(food.id);
+    if (result.ok) {
+      showMsg("Yum! " + food.name + " is yours. You have " + result.count + ".", "ok");
+      buildShop();
+      return;
+    }
+    if (result.reason === "coins") {
+      showMsg("Not enough yet. You need " + result.need + ".", "need");
+      return;
+    }
+    showMsg("Hmm, that food is not in the shop.", "need");
+  });
+  actions.appendChild(btn);
+  if (owned > 0) {
+    addSellButton(actions, food, "food");
+  }
+
+  card.appendChild(preview);
+  card.appendChild(name);
+  card.appendChild(price);
+  card.appendChild(rarity);
+  card.appendChild(help);
+  card.appendChild(have);
+  card.appendChild(actions);
+  gridEl.appendChild(card);
+}
+
 function buildShop() {
   gridEl.innerHTML = "";
   var showFish = shopTab === "all" || shopTab === "fish";
   var showDecor = shopTab === "all" || shopTab === "decor";
   var showOutfit = shopTab === "all" || shopTab === "outfit";
+  var showFood = shopTab === "all" || shopTab === "food";
   if (showFish) {
     renderRaritySections(FISH_FOR_SALE, addFishCard);
   }
@@ -736,6 +805,9 @@ function buildShop() {
   }
   if (showOutfit && typeof OUTFITS_FOR_SALE !== "undefined") {
     renderRaritySections(OUTFITS_FOR_SALE, addOutfitCard);
+  }
+  if (showFood && typeof FOOD_FOR_SALE !== "undefined") {
+    renderRaritySections(FOOD_FOR_SALE, addFoodCard);
   }
   refreshCoins();
 }

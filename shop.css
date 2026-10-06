@@ -3004,3 +3004,119 @@ body > .menu-fish-layer {
   color: var(--sand);
   text-align: right;
 }
+
+.shop-card__help {
+  margin: 0.15rem 0 0;
+  font-weight: 800;
+  color: var(--sand);
+}
+
+.shop-food-dot {
+  display: inline-block;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: #e0b03a;
+}
+
+.shop-food-dot--flakes {
+  width: 2.8rem;
+  height: 2.8rem;
+  background: #e07a5f;
+}
+
+.shop-food-dot--salad {
+  width: 3.1rem;
+  height: 3.1rem;
+  background: #2a9d8f;
+}
+
+.shop-food-dot--feast {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #7b5ea7;
+}
+
+.sprinkle {
+  width: min(40rem, 100%);
+  margin: 0.8rem auto 0;
+}
+
+.sprinkle__title {
+  margin: 0;
+  font-family: "Baloo 2", "Nunito", sans-serif;
+}
+
+.sprinkle__hint,
+.sprinkle__msg,
+.sprinkle__empty {
+  margin: 0.3rem 0;
+}
+
+.sprinkle__fish,
+.sprinkle__foods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.sprinkle__pick,
+.sprinkle__food {
+  border: 2px solid rgba(242, 230, 201, 0.35);
+  border-radius: 0.9rem;
+  padding: 0.45rem 0.7rem;
+  background: rgba(6, 36, 48, 0.45);
+  color: var(--foam);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sprinkle__pick.is-on {
+  border-color: #ffd166;
+}
+
+.energy-bar {
+  display: inline-block;
+  width: 4.2rem;
+  height: 0.55rem;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.energy-bar > span {
+  display: block;
+  height: 100%;
+  background: #7dce82;
+}
+
+.aquarium-energy {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  color: #f4fffc;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.aquarium-swimmer--hungry,
+.aquarium-swimmer--hungry.aquarium-swimmer--left,
+.aquarium-swimmer--hungry.aquarium-swimmer--right {
+  animation: none !important;
+  top: auto !important;
+  bottom: 28px !important;
+}
+
+.aquarium-swimmer--hungry .reef-fish__wiggle,
+.aquarium-swimmer--hungry .reef-fish__img {
+  animation: none !important;
+}
+
+.aquarium-pick__energy {
+  display: block;
+  font-size: 0.8rem;
+}

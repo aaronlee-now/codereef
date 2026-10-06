@@ -30,13 +30,20 @@ function getCurrentUser() {
   return JSON.parse(raw);
 }
 
-// End the session only. Coins, fish, lessons, and projects stay saved under this kid's name.
+// End the session on this computer only. The shared account stays saved.
 function logOut() {
   if (window.CodeReefProgress && typeof CodeReefProgress.flush === "function") {
     CodeReefProgress.flush();
   }
-  localStorage.removeItem("codereef_current_user");
-  window.location.href = "index.html";
+  var finish = function () {
+    localStorage.removeItem("codereef_current_user");
+    window.location.href = "index.html";
+  };
+  if (window.CodeReefCloud && typeof CodeReefCloud.onLogout === "function") {
+    CodeReefCloud.onLogout().then(finish, finish);
+    return;
+  }
+  finish();
 }
 
 function normalizeName(name) {
@@ -125,11 +132,59 @@ function notifyParentOfLogin(user) {
   );
 }
 
-// No server and no device limit. Accounts live only in this browser's
-// localStorage (codereef_users). Signing in checks the kid's name and password
-// on this computer. A brand-new computer does not have the account until it is
-// created there. Any browser that already has the account can stay logged in.
-// Login never kicks another computer off and never overwrites a saved password.
+// One kid name is one shared account. Any computer can log in with that name
+// and password and stay logged in. Login never kicks another computer off.
+// A wrong password does not change the saved account. Log out only clears
+// this computer. The eye button shows or hides a password while it is typed.
+
+function bindPasswordEyes() {
+  var buttons = document.querySelectorAll(".field__eye");
+  var i;
+  for (i = 0; i < buttons.length; i += 1) {
+    buttons[i].addEventListener("click", function () {
+      var wrap = this.parentNode;
+      var input = wrap ? wrap.querySelector("input") : null;
+      var openIcon = this.querySelector(".field__eye-open");
+      var shutIcon = this.querySelector(".field__eye-shut");
+      var show;
+      if (!input) {
+        return;
+      }
+      show = input.type === "password";
+      input.type = show ? "text" : "password";
+      this.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      this.setAttribute("aria-pressed", show ? "true" : "false");
+      if (openIcon) {
+        openIcon.hidden = show;
+      }
+      if (shutIcon) {
+        shutIcon.hidden = !show;
+      }
+      input.focus();
+    });
+  }
+}
+
+bindPasswordEyes();
+
+// Don't wait forever on the parent email. The kid should still get in.
+function finishSoon(promise) {
+  return new Promise(function (resolve) {
+    var timer = setTimeout(function () {
+      resolve();
+    }, 2500);
+    Promise.resolve(promise).then(
+      function () {
+        clearTimeout(timer);
+        resolve();
+      },
+      function () {
+        clearTimeout(timer);
+        resolve();
+      }
+    );
+  });
+}
 
 function notifyParentOfLanguageComplete(user, languageName) {
   var kid = user.kidName;
