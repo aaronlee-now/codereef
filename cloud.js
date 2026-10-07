@@ -640,7 +640,31 @@
     return finishWithin(function (gate) {
       return findAccount(kidKey).then(function (row) {
         if (!row || !row.passwordSalt || !row.passwordHash) {
-          return { ok: false, message: "Name or password is wrong. Try again." };
+          // This computer already has the kid, and the shared store does not yet.
+          // Save the account there. Log in only after that save works.
+          var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
+          if (!local || local.password !== password) {
+            return { ok: false, message: "Name or password is wrong. Try again." };
+          }
+          var salt = makeSalt();
+          return hashPassword(password, salt).then(function (hash) {
+            var saved = {
+              kidName: local.kidName,
+              parentEmail: local.parentEmail || "",
+              password: password,
+            };
+            var body = blankAccount(
+              local,
+              kidKey,
+              hash,
+              salt,
+              collectBag(kidKey),
+              mergeFlags({}, collectFlags(kidKey))
+            );
+            return postAccount(body).then(function () {
+              return enterAccount(saved, body, kidKey, gate);
+            });
+          });
         }
         return hashPassword(password, row.passwordSalt).then(function (hash) {
           if (hash !== row.passwordHash) {
