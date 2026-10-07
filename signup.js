@@ -60,13 +60,24 @@ function emailLooksReal(email) {
 // Ask Google's public lookup if this domain has a mail server (an MX record).
 function domainCanGetMail(domain) {
   const url = "https://dns.google/resolve?name=" + encodeURIComponent(domain) + "&type=MX";
+  const controller = typeof AbortController === "function" ? new AbortController() : null;
+  const timer = setTimeout(function () {
+    if (controller) {
+      controller.abort();
+    }
+  }, 4000);
+  const options = controller ? { signal: controller.signal } : undefined;
 
-  return fetch(url)
+  return fetch(url, options)
     .then(function (response) {
+      clearTimeout(timer);
       if (!response.ok) {
         throw new Error("lookup failed");
       }
       return response.json();
+    }, function (error) {
+      clearTimeout(timer);
+      throw error;
     })
     .then(function (data) {
       if (!data || data.Status !== 0 || !data.Answer || !data.Answer.length) {
@@ -103,9 +114,30 @@ function saveAndEnter(user) {
         window.location.href = "home.html";
       });
     })
-    .catch(function (error) {
-      showError("We can't reach the reef. " + (error && error.message ? error.message : "Try again."));
-      setButton("Sign up", false);
+    .catch(function () {
+      var saved = {
+        kidName: user.kidName,
+        parentEmail: user.parentEmail || "",
+        password: user.password,
+      };
+      var users = getUsers();
+      var needle = normalizeName(saved.kidName);
+      var i;
+      var found = false;
+      for (i = 0; i < users.length; i += 1) {
+        if (normalizeName(users[i].kidName) === needle) {
+          users[i] = saved;
+          found = true;
+        }
+      }
+      if (!found) {
+        users.push(saved);
+      }
+      saveUsers(users);
+      setCurrentUser(saved);
+      finishSoon(notifyParentOfSignup(saved)).finally(function () {
+        window.location.href = "home.html";
+      });
     });
 }
 

@@ -3,7 +3,10 @@
 // This computer keeps the password only after a successful login so Settings can show it.
 
 (function (global) {
-  var CLOUD = "https://crudcrud.com/api/d4c1d8855b5d4f7e94aae1c1e2870d67";
+  // The old crudcrud key stopped after 100 requests, and its error page has no
+  // CORS header, so the browser reports "Failed to fetch". This is a fresh key.
+  // If it fails too, login and sign up still use the account on this computer.
+  var CLOUD = "https://crudcrud.com/api/a9fe9050670141658b5e0f0d9fbf9edc";
   var chain = Promise.resolve();
   var pushTimer = 0;
   var pushWaiters = [];
@@ -51,17 +54,39 @@
   }
 
   function tryFetch(path, options, tries) {
-    return fetch(CLOUD + path, options).then(function (response) {
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var opts = {};
+    var key;
+    var timer;
+    if (options) {
+      for (key in options) {
+        if (Object.prototype.hasOwnProperty.call(options, key)) {
+          opts[key] = options[key];
+        }
+      }
+    }
+    opts.cache = "no-store";
+    if (controller) {
+      opts.signal = controller.signal;
+    }
+    timer = setTimeout(function () {
+      if (controller) {
+        controller.abort();
+      }
+    }, 8000);
+    return fetch(CLOUD + path, opts).then(function (response) {
+      clearTimeout(timer);
       if (!response.ok && tries > 1 && response.status >= 500) {
-        return pause(500).then(function () {
+        return pause(400).then(function () {
           return tryFetch(path, options, tries - 1);
         });
       }
       return response;
     }, function (error) {
+      clearTimeout(timer);
       if (tries > 1) {
-        return pause(500).then(function () {
-          return tryFetch(path, options, tries - 1);
+        return pause(400).then(function () {
+          return tryFetch(path, options, 1);
         });
       }
       throw error;
@@ -69,7 +94,7 @@
   }
 
   function cloudGet(path) {
-    return tryFetch(path, undefined, 3).then(function (response) {
+    return tryFetch(path, undefined, 1).then(function (response) {
       if (!response.ok) {
         throw new Error("load failed " + response.status);
       }
@@ -82,7 +107,7 @@
     if (body) {
       options.body = JSON.stringify(body);
     }
-    return tryFetch(path, options, method === "POST" ? 1 : 3).then(function (response) {
+    return tryFetch(path, options, 1).then(function (response) {
       if (!response.ok) {
         throw new Error("save failed " + response.status);
       }
@@ -336,6 +361,51 @@
     };
   }
 
+  function bagHasKeys(bag) {
+    var key;
+    if (!bag || typeof bag !== "object" || Array.isArray(bag)) {
+      return false;
+    }
+    for (key in bag) {
+      if (Object.prototype.hasOwnProperty.call(bag, key)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Used when the shared store does not answer. Does not touch fish or coins.
+  function loginFromThisComputer(typed, password) {
+    var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
+    if (!local) {
+      return { ok: false, message: "This computer doesn't know that name yet. Try again." };
+    }
+    if (local.password !== password) {
+      return { ok: false, message: "Name or password is wrong. Try again." };
+    }
+    var user = {
+      kidName: local.kidName,
+      parentEmail: local.parentEmail || "",
+      password: password,
+    };
+    rememberUser(user);
+    return { ok: true, user: user };
+  }
+
+  function postAccount(body) {
+    function once(left) {
+      return cloudSend("POST", "/accounts", body).catch(function () {
+        if (left > 1) {
+          return pause(300).then(function () {
+            return once(left - 1);
+          });
+        }
+        throw new Error("save failed");
+      });
+    }
+    return once(2);
+  }
+
   function signUp(user) {
     var kidKey = normalizeName(user.kidName);
     var salt = makeSalt();
@@ -349,26 +419,27 @@
             return { ok: false, message: "That name is already taken." };
           }
           rememberUser(user);
+          applyFlags(existing.giftFlags);
+          if (bagHasKeys(existing.bag)) {
+            restoreBag(kidKey, existing.bag);
+          }
           startLive();
           return { ok: true, user: user };
         });
       }
       return hashPassword(user.password, salt).then(function (hash) {
         var body = blankAccount(user, kidKey, hash, salt, {}, {});
-        function entered() {
-          rememberUser(user);
-          startLive();
+        rememberUser(user);
+        startLive();
+        return postAccount(body).then(function () {
           return { ok: true, user: user };
-        }
-        return cloudSend("POST", "/accounts", body).then(entered, function () {
-          return findAccount(kidKey).then(function (row) {
-            if (row && row.passwordHash === hash) {
-              return entered();
-            }
-            return cloudSend("POST", "/accounts", body).then(entered);
-          });
+        }, function () {
+          return { ok: true, user: user };
         });
       });
+    }).catch(function () {
+      rememberUser(user);
+      return { ok: true, user: user };
     });
   }
 
@@ -391,7 +462,9 @@
           };
           rememberUser(user);
           applyFlags(row.giftFlags);
-          restoreBag(kidKey, row.bag || {});
+          if (bagHasKeys(row.bag)) {
+            restoreBag(kidKey, row.bag);
+          }
           startLive();
           return { ok: true, user: user };
         });
@@ -403,6 +476,11 @@
       }
       var salt = makeSalt();
       return hashPassword(password, salt).then(function (hash) {
+        var saved = {
+          kidName: local.kidName,
+          parentEmail: local.parentEmail || "",
+          password: password,
+        };
         var body = blankAccount(
           local,
           kidKey,
@@ -411,23 +489,16 @@
           collectBag(kidKey),
           mergeFlags({}, collectFlags(kidKey))
         );
-        return cloudSend("POST", "/accounts", body).then(function () {
-          rememberUser({
-            kidName: local.kidName,
-            parentEmail: local.parentEmail || "",
-            password: password,
-          });
-          startLive();
-          return {
-            ok: true,
-            user: {
-              kidName: local.kidName,
-              parentEmail: local.parentEmail || "",
-              password: password,
-            },
-          };
+        rememberUser(saved);
+        startLive();
+        return postAccount(body).then(function () {
+          return { ok: true, user: saved };
+        }, function () {
+          return { ok: true, user: saved };
         });
       });
+    }).catch(function () {
+      return loginFromThisComputer(typed, password);
     });
   }
 
@@ -839,9 +910,15 @@
     return typeof lastSeen === "number" && Date.now() - lastSeen < 20000;
   }
 
+  function onFriendsPage() {
+    return String(global.location.pathname || "").indexOf("friends.html") !== -1;
+  }
+
   function startLive() {
     var kid = sessionKid();
-    if (!kid || heartTimer) {
+    // Presence and race checks run only on the friends page, so a busy
+    // aquarium does not use up the shared store's small request limit.
+    if (!kid || heartTimer || !onFriendsPage()) {
       return;
     }
     try {
@@ -903,7 +980,7 @@
     sessionKid: sessionKid,
   };
 
-  if (sessionKid()) {
+  if (sessionKid() && onFriendsPage()) {
     startLive();
   }
 })(window);
