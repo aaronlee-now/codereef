@@ -3,10 +3,12 @@
 // This computer keeps the password only after a successful login so Settings can show it.
 
 (function (global) {
-  // The old crudcrud key stopped after 100 requests, and its error page has no
-  // CORS header, so the browser reports "Failed to fetch". This is a fresh key.
-  // If it fails too, login and sign up still use the account on this computer.
-  var CLOUD = "https://crudcrud.com/api/a9fe9050670141658b5e0f0d9fbf9edc";
+  // Public app key. This store echoes the page origin, so both
+  // http://127.0.0.1:5173 and https://aaronlee-now.github.io can read and write.
+  // Values travel in the URL, so each piece stays short. Passwords are a hash only.
+  var APP_KEY = "1hfmrg1w";
+  var API = "https://keyvalue.immanuel.co/api/KeyVal";
+  var CHUNK = 160;
   var chain = Promise.resolve();
   var pushTimer = 0;
   var pushWaiters = [];
@@ -34,26 +36,42 @@
     return run;
   }
 
-  function readJson(response) {
-    return response.text().then(function (text) {
-      if (!text) {
-        return {};
-      }
-      try {
-        return JSON.parse(text);
-      } catch (err) {
-        return {};
-      }
-    });
+  function slot(name) {
+    var clean = String(name).replace(/[^A-Za-z0-9._~-]/g, "~");
+    if (clean.length > 36) {
+      clean = clean.slice(0, 36);
+    }
+    return clean;
   }
 
-  function pause(ms) {
-    return new Promise(function (resolve) {
-      setTimeout(resolve, ms);
-    });
+  function textToB64Url(text) {
+    var bytes = new TextEncoder().encode(text);
+    var bin = "";
+    var i;
+    for (i = 0; i < bytes.length; i += 1) {
+      bin += String.fromCharCode(bytes[i]);
+    }
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
   }
 
-  function tryFetch(path, options, tries) {
+  function b64UrlToText(value) {
+    var pad = value.length % 4;
+    var b64 = String(value).replace(/-/g, "+").replace(/_/g, "/");
+    var bin;
+    var bytes;
+    var i;
+    if (pad) {
+      b64 += "====".slice(pad);
+    }
+    bin = atob(b64);
+    bytes = new Uint8Array(bin.length);
+    for (i = 0; i < bin.length; i += 1) {
+      bytes[i] = bin.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
+  }
+
+  function timedFetch(url, options) {
     var controller = typeof AbortController === "function" ? new AbortController() : null;
     var opts = {};
     var key;
@@ -74,45 +92,210 @@
         controller.abort();
       }
     }, 8000);
-    return fetch(CLOUD + path, opts).then(function (response) {
+    return fetch(url, opts).then(function (response) {
       clearTimeout(timer);
-      if (!response.ok && tries > 1 && response.status >= 500) {
-        return pause(400).then(function () {
-          return tryFetch(path, options, tries - 1);
-        });
-      }
       return response;
     }, function (error) {
       clearTimeout(timer);
-      if (tries > 1) {
-        return pause(400).then(function () {
-          return tryFetch(path, options, 1);
-        });
-      }
       throw error;
     });
   }
 
-  function cloudGet(path) {
-    return tryFetch(path, undefined, 1).then(function (response) {
+  function readSlot(slotName) {
+    return timedFetch(API + "/GetValue/" + APP_KEY + "/" + encodeURIComponent(slotName)).then(function (response) {
       if (!response.ok) {
         throw new Error("load failed " + response.status);
       }
-      return readJson(response);
+      return response.json().then(function (value) {
+        if (value == null || value === "") {
+          return "";
+        }
+        return String(value);
+      });
     });
   }
 
-  function cloudSend(method, path, body) {
-    var options = { method: method, headers: { "Content-Type": "application/json" } };
-    if (body) {
-      options.body = JSON.stringify(body);
+  function writeSlot(slotName, text) {
+    if (!text || text.length > CHUNK) {
+      throw new Error("save failed");
     }
-    return tryFetch(path, options, 1).then(function (response) {
+    return timedFetch(
+      API + "/UpdateValue/" + APP_KEY + "/" + encodeURIComponent(slotName) + "/" + encodeURIComponent(text),
+      { method: "POST", body: "" }
+    ).then(function (response) {
       if (!response.ok) {
         throw new Error("save failed " + response.status);
       }
-      return readJson(response);
     });
+  }
+
+  function getJson(key) {
+    var id = slot(key);
+    return readSlot(id + "~n").then(function (countText) {
+      var count = parseInt(countText, 10);
+      var reads = [];
+      var i;
+      if (!count || count < 1) {
+        return null;
+      }
+      for (i = 0; i < count; i += 1) {
+        reads.push(readSlot(id + "~" + i));
+      }
+      return Promise.all(reads).then(function (parts) {
+        var joined = "";
+        for (i = 0; i < parts.length; i += 1) {
+          if (!parts[i]) {
+            throw new Error("load failed");
+          }
+          joined += parts[i];
+        }
+        return JSON.parse(b64UrlToText(joined));
+      });
+    });
+  }
+
+  function putJson(key, value) {
+    var id = slot(key);
+    var packed = textToB64Url(JSON.stringify(value));
+    var parts = [];
+    var writes = [];
+    var i;
+    for (i = 0; i < packed.length; i += CHUNK) {
+      parts.push(packed.slice(i, i + CHUNK));
+    }
+    if (!parts.length) {
+      throw new Error("save failed");
+    }
+    for (i = 0; i < parts.length; i += 1) {
+      writes.push(writeSlot(id + "~" + i, parts[i]));
+    }
+    return Promise.all(writes).then(function () {
+      return writeSlot(id + "~n", String(parts.length));
+    });
+  }
+
+  function queryMap(path) {
+    var mark = path.indexOf("?");
+    var out = {};
+    var route = path;
+    var bits;
+    var i;
+    if (mark !== -1) {
+      route = path.slice(0, mark);
+      bits = path.slice(mark + 1).split("&");
+      for (i = 0; i < bits.length; i += 1) {
+        var pair = bits[i].split("=");
+        out[decodeURIComponent(pair[0] || "")] = decodeURIComponent((pair[1] || "").replace(/\+/g, " "));
+      }
+    }
+    return { route: route, query: out };
+  }
+
+  function asRows(value) {
+    return Array.isArray(value) ? value : [];
+  }
+
+  function upsertRow(key, item) {
+    return getJson(key).then(function (rows) {
+      var list = asRows(rows);
+      var i;
+      var found = false;
+      for (i = 0; i < list.length; i += 1) {
+        if (list[i] && list[i]._id === item._id) {
+          list[i] = item;
+          found = true;
+        }
+      }
+      if (!found) {
+        list.push(item);
+      }
+      return putJson(key, list).then(function () {
+        return item;
+      });
+    });
+  }
+
+  function newId(prefix) {
+    return String(prefix || "id") + "-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+  }
+
+  function cloudGet(path) {
+    var parsed = queryMap(path);
+    var route = parsed.route;
+    var query = parsed.query;
+    if (route === "/accounts") {
+      return getJson("account/" + (query.kidKey || "")).then(function (row) {
+        return row ? [row] : [];
+      });
+    }
+    if (route === "/messages") {
+      return getJson("messages/" + (query.pair || "")).then(function (rows) {
+        return asRows(rows);
+      });
+    }
+    if (route === "/challenges") {
+      var who = query.toKey ? "chto/" + query.toKey : "chfrom/" + (query.fromKey || "");
+      return getJson(who).then(function (rows) {
+        return asRows(rows);
+      });
+    }
+    if (route === "/presence") {
+      return getJson("presence/" + (query.kidKey || "")).then(function (row) {
+        return row ? [row] : [];
+      });
+    }
+    return Promise.reject(new Error("load failed"));
+  }
+
+  function cloudSend(method, path, body) {
+    var bits = path.split("?")[0].split("/");
+    var kind = bits[1] || "";
+    var id = bits[2] ? decodeURIComponent(bits[2]) : "";
+    var saved = body || {};
+    if (saved.password) {
+      delete saved.password;
+    }
+    if (kind === "accounts" && method === "POST") {
+      saved._id = saved.kidKey;
+      return putJson("account/" + saved.kidKey, saved).then(function () {
+        return saved;
+      });
+    }
+    if (kind === "accounts" && method === "PUT") {
+      saved._id = saved.kidKey || id;
+      return putJson("account/" + (saved.kidKey || id), saved).then(function () {
+        return saved;
+      });
+    }
+    if (kind === "messages" && method === "POST") {
+      saved._id = newId(saved.fromKey || "msg");
+      return upsertRow("messages/" + saved.pair, saved);
+    }
+    if (kind === "challenges" && method === "POST") {
+      saved._id = newId(saved.fromKey || "race");
+      return upsertRow("chto/" + saved.toKey, saved).then(function () {
+        return upsertRow("chfrom/" + saved.fromKey, saved);
+      });
+    }
+    if (kind === "challenges" && method === "PUT") {
+      saved._id = id;
+      return upsertRow("chto/" + saved.toKey, saved).then(function () {
+        return upsertRow("chfrom/" + saved.fromKey, saved);
+      });
+    }
+    if (kind === "presence" && method === "POST") {
+      saved._id = saved.kidKey;
+      return putJson("presence/" + saved.kidKey, saved).then(function () {
+        return saved;
+      });
+    }
+    if (kind === "presence" && method === "PUT") {
+      saved._id = id || saved.kidKey;
+      return putJson("presence/" + saved._id, saved).then(function () {
+        return saved;
+      });
+    }
+    return Promise.reject(new Error("save failed"));
   }
 
   function bytesToHex(buffer) {
@@ -374,36 +557,52 @@
     return false;
   }
 
-  // Used when the shared store does not answer. Does not touch fish or coins.
-  function loginFromThisComputer(typed, password) {
-    var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
-    if (!local) {
-      return { ok: false, message: "This computer doesn't know that name yet. Try again." };
-    }
-    if (local.password !== password) {
-      return { ok: false, message: "Name or password is wrong. Try again." };
-    }
-    var user = {
-      kidName: local.kidName,
-      parentEmail: local.parentEmail || "",
-      password: password,
-    };
-    rememberUser(user);
-    return { ok: true, user: user };
-  }
+  var BUSY = "The reef is busy. Try again.";
 
   function postAccount(body) {
-    function once(left) {
-      return cloudSend("POST", "/accounts", body).catch(function () {
-        if (left > 1) {
-          return pause(300).then(function () {
-            return once(left - 1);
-          });
+    return cloudSend("POST", "/accounts", body);
+  }
+
+  // The button must not spin forever. The shared store also aborts each request.
+  function finishWithin(start) {
+    return new Promise(function (resolve) {
+      var gate = { open: true };
+      var timer = setTimeout(function () {
+        if (!gate.open) {
+          return;
         }
-        throw new Error("save failed");
+        gate.open = false;
+        resolve({ ok: false, message: BUSY });
+      }, 8000);
+      Promise.resolve(start(gate)).then(function (result) {
+        if (!gate.open) {
+          return;
+        }
+        gate.open = false;
+        clearTimeout(timer);
+        resolve(result);
+      }, function () {
+        if (!gate.open) {
+          return;
+        }
+        gate.open = false;
+        clearTimeout(timer);
+        resolve({ ok: false, message: BUSY });
       });
+    });
+  }
+
+  function enterAccount(user, row, kidKey, gate) {
+    if (gate && !gate.open) {
+      return { ok: false, message: BUSY };
     }
-    return once(2);
+    rememberUser(user);
+    applyFlags(row && row.giftFlags);
+    if (row && bagHasKeys(row.bag)) {
+      restoreBag(kidKey, row.bag);
+    }
+    startLive();
+    return { ok: true, user: user };
   }
 
   function signUp(user) {
@@ -412,34 +611,23 @@
     if (typeof findUserByKidName === "function" && findUserByKidName(user.kidName)) {
       return Promise.resolve({ ok: false, message: "That name is already taken." });
     }
-    return findAccount(kidKey).then(function (existing) {
-      if (existing) {
-        return hashPassword(user.password, existing.passwordSalt).then(function (hash) {
-          if (hash !== existing.passwordHash) {
-            return { ok: false, message: "That name is already taken." };
-          }
-          rememberUser(user);
-          applyFlags(existing.giftFlags);
-          if (bagHasKeys(existing.bag)) {
-            restoreBag(kidKey, existing.bag);
-          }
-          startLive();
-          return { ok: true, user: user };
-        });
-      }
-      return hashPassword(user.password, salt).then(function (hash) {
-        var body = blankAccount(user, kidKey, hash, salt, {}, {});
-        rememberUser(user);
-        startLive();
-        return postAccount(body).then(function () {
-          return { ok: true, user: user };
-        }, function () {
-          return { ok: true, user: user };
+    return finishWithin(function (gate) {
+      return findAccount(kidKey).then(function (existing) {
+        if (existing) {
+          return hashPassword(user.password, existing.passwordSalt).then(function (hash) {
+            if (hash !== existing.passwordHash) {
+              return { ok: false, message: "That name is already taken." };
+            }
+            return enterAccount(user, existing, kidKey, gate);
+          });
+        }
+        return hashPassword(user.password, salt).then(function (hash) {
+          var body = blankAccount(user, kidKey, hash, salt, {}, {});
+          return postAccount(body).then(function () {
+            return enterAccount(user, body, kidKey, gate);
+          });
         });
       });
-    }).catch(function () {
-      rememberUser(user);
-      return { ok: true, user: user };
     });
   }
 
@@ -449,8 +637,11 @@
     if (!typed || !password) {
       return Promise.resolve({ ok: false, message: "Name or password is wrong. Try again." });
     }
-    return findAccount(kidKey).then(function (row) {
-      if (row) {
+    return finishWithin(function (gate) {
+      return findAccount(kidKey).then(function (row) {
+        if (!row || !row.passwordSalt || !row.passwordHash) {
+          return { ok: false, message: "Name or password is wrong. Try again." };
+        }
         return hashPassword(password, row.passwordSalt).then(function (hash) {
           if (hash !== row.passwordHash) {
             return { ok: false, message: "Name or password is wrong. Try again." };
@@ -460,45 +651,9 @@
             parentEmail: row.parentEmail || "",
             password: password,
           };
-          rememberUser(user);
-          applyFlags(row.giftFlags);
-          if (bagHasKeys(row.bag)) {
-            restoreBag(kidKey, row.bag);
-          }
-          startLive();
-          return { ok: true, user: user };
-        });
-      }
-
-      var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
-      if (!local || local.password !== password) {
-        return { ok: false, message: "Name or password is wrong. Try again." };
-      }
-      var salt = makeSalt();
-      return hashPassword(password, salt).then(function (hash) {
-        var saved = {
-          kidName: local.kidName,
-          parentEmail: local.parentEmail || "",
-          password: password,
-        };
-        var body = blankAccount(
-          local,
-          kidKey,
-          hash,
-          salt,
-          collectBag(kidKey),
-          mergeFlags({}, collectFlags(kidKey))
-        );
-        rememberUser(saved);
-        startLive();
-        return postAccount(body).then(function () {
-          return { ok: true, user: saved };
-        }, function () {
-          return { ok: true, user: saved };
+          return enterAccount(user, row, kidKey, gate);
         });
       });
-    }).catch(function () {
-      return loginFromThisComputer(typed, password);
     });
   }
 

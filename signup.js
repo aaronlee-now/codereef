@@ -115,29 +115,8 @@ function saveAndEnter(user) {
       });
     })
     .catch(function () {
-      var saved = {
-        kidName: user.kidName,
-        parentEmail: user.parentEmail || "",
-        password: user.password,
-      };
-      var users = getUsers();
-      var needle = normalizeName(saved.kidName);
-      var i;
-      var found = false;
-      for (i = 0; i < users.length; i += 1) {
-        if (normalizeName(users[i].kidName) === needle) {
-          users[i] = saved;
-          found = true;
-        }
-      }
-      if (!found) {
-        users.push(saved);
-      }
-      saveUsers(users);
-      setCurrentUser(saved);
-      finishSoon(notifyParentOfSignup(saved)).finally(function () {
-        window.location.href = "home.html";
-      });
+      showError("The reef is busy. Try again.");
+      setButton("Sign up", false);
     });
 }
 

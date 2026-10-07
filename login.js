@@ -27,20 +27,7 @@ form.addEventListener("submit", function (event) {
       });
     })
     .catch(function () {
-      var local = findUserByKidName(kidName);
-      if (local && local.password === password) {
-        setCurrentUser({
-          kidName: local.kidName,
-          parentEmail: local.parentEmail || "",
-        });
-        finishSoon(notifyParentOfLogin(local)).finally(function () {
-          window.location.href = "home.html";
-        });
-        return;
-      }
-      message.textContent = local
-        ? "Name or password is wrong. Try again."
-        : "This computer doesn't know that name yet. Try again.";
+      message.textContent = "The reef is busy. Try again.";
       message.hidden = false;
       submitButton.disabled = false;
       submitButton.textContent = "Log in";
