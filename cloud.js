@@ -725,17 +725,55 @@
     });
   }
 
+  function socialFrom(row) {
+    return {
+      friends: asList(row && row.friends),
+      incoming: asList(row && row.incoming),
+      outgoing: asList(row && row.outgoing),
+    };
+  }
+
+  function loadSocial(kidKey) {
+    return getJson("social/" + kidKey).then(function (social) {
+      if (!social) {
+        return null;
+      }
+      return socialFrom(social);
+    });
+  }
+
+  function saveSocial(kidKey, book) {
+    return putJson("social/" + kidKey, socialFrom(book));
+  }
+
+  // Friend lists are their own small record. Saving a wallet must not erase them.
+  // Older lists that still sit on the account are used until the first friend save.
+  function friendBook(kidKey) {
+    return loadSocial(kidKey).then(function (social) {
+      if (social) {
+        return social;
+      }
+      return findAccount(kidKey).then(function (row) {
+        return socialFrom(row);
+      });
+    });
+  }
+
   function loadMine() {
     var kid = sessionKid();
     if (!kid) {
       return Promise.resolve(null);
     }
-    return findAccount(kid.key);
-  }
-
-  function saveBoth(mine, mineBody, other, otherBody) {
-    return cloudSend("PUT", "/accounts/" + mine._id, mineBody).then(function () {
-      return cloudSend("PUT", "/accounts/" + other._id, otherBody);
+    return findAccount(kid.key).then(function (row) {
+      if (!row) {
+        return null;
+      }
+      return friendBook(kid.key).then(function (book) {
+        row.friends = book.friends;
+        row.incoming = book.incoming;
+        row.outgoing = book.outgoing;
+        return row;
+      });
     });
   }
 
@@ -753,33 +791,42 @@
     if (themKey === kid.key) {
       return Promise.resolve({ ok: false, message: "That's you!" });
     }
+    // Being offline is fine. We do not look at a heartbeat. The request is saved
+    // in the shared store, and they Accept or Decline the next time they log in.
     return enqueue(function () {
-      return Promise.all([findAccount(kid.key), findAccount(themKey)]).then(function (rows) {
-        var mine = rows[0];
-        var theirs = rows[1];
-        var mineBody;
-        var theirBody;
+      return Promise.all([
+        findAccount(kid.key),
+        findAccount(themKey),
+        loadSocial(kid.key),
+        loadSocial(themKey),
+      ]).then(function (parts) {
+        var mine = parts[0];
+        var theirs = parts[1];
+        var mineBook = parts[2] || socialFrom(mine);
+        var theirBook = parts[3] || socialFrom(theirs);
+        var theirName;
         if (!mine) {
           return { ok: false, message: "We can't reach your account." };
         }
         if (!theirs) {
-          return { ok: false, message: "We can't find that name." };
+          return { ok: false, message: "No one has that name yet." };
         }
-        mineBody = editable(mine);
-        theirBody = editable(theirs);
-        if (hasKey(mineBody.friends, themKey) || hasKey(theirBody.friends, kid.key)) {
+        theirName = theirs.kidName || typed;
+        if (hasKey(mineBook.friends, themKey) || hasKey(theirBook.friends, kid.key)) {
           return { ok: false, message: "You are already friends." };
         }
-        if (hasKey(theirBody.incoming, kid.key) || hasKey(mineBody.outgoing, themKey)) {
+        if (hasKey(theirBook.incoming, kid.key) || hasKey(mineBook.outgoing, themKey)) {
           return { ok: false, message: "You already asked." };
         }
-        if (hasKey(mineBody.incoming, themKey)) {
+        if (hasKey(mineBook.incoming, themKey)) {
           return { ok: false, message: "They already asked you. Tap Accept." };
         }
-        mineBody.outgoing.push({ key: themKey, name: theirs.kidName || typed });
-        theirBody.incoming.push({ key: kid.key, name: mine.kidName || kid.name });
-        return saveBoth(mine, mineBody, theirs, theirBody).then(function () {
-          return { ok: true, message: "Asked " + (theirs.kidName || typed) + "!" };
+        mineBook.outgoing.push({ key: themKey, name: theirName });
+        theirBook.incoming.push({ key: kid.key, name: mine.kidName || kid.name });
+        return saveSocial(themKey, theirBook).then(function () {
+          return saveSocial(kid.key, mineBook);
+        }).then(function () {
+          return { ok: true, message: "Asked " + theirName + "! They can say yes later." };
         });
       });
     });
@@ -791,31 +838,36 @@
       return Promise.resolve({ ok: false, message: "Log in first." });
     }
     return enqueue(function () {
-      return Promise.all([findAccount(kid.key), findAccount(theirKey)]).then(function (rows) {
-        var mine = rows[0];
-        var theirs = rows[1];
-        var mineBody;
-        var theirBody;
+      return Promise.all([
+        findAccount(kid.key),
+        findAccount(theirKey),
+        loadSocial(kid.key),
+        loadSocial(theirKey),
+      ]).then(function (parts) {
+        var mine = parts[0];
+        var theirs = parts[1];
+        var mineBook = parts[2] || socialFrom(mine);
+        var theirBook = parts[3] || socialFrom(theirs);
         var theirName = theirKey;
         if (!mine || !theirs) {
           return { ok: false, message: "We can't find that friend." };
         }
-        mineBody = editable(mine);
-        theirBody = editable(theirs);
         theirName = theirs.kidName || theirKey;
-        mineBody.incoming = withoutKey(mineBody.incoming, theirKey);
-        mineBody.outgoing = withoutKey(mineBody.outgoing, theirKey);
-        theirBody.incoming = withoutKey(theirBody.incoming, kid.key);
-        theirBody.outgoing = withoutKey(theirBody.outgoing, kid.key);
+        mineBook.incoming = withoutKey(mineBook.incoming, theirKey);
+        mineBook.outgoing = withoutKey(mineBook.outgoing, theirKey);
+        theirBook.incoming = withoutKey(theirBook.incoming, kid.key);
+        theirBook.outgoing = withoutKey(theirBook.outgoing, kid.key);
         if (accept) {
-          if (!hasKey(mineBody.friends, theirKey)) {
-            mineBody.friends.push({ key: theirKey, name: theirName });
+          if (!hasKey(mineBook.friends, theirKey)) {
+            mineBook.friends.push({ key: theirKey, name: theirName });
           }
-          if (!hasKey(theirBody.friends, kid.key)) {
-            theirBody.friends.push({ key: kid.key, name: mine.kidName || kid.name });
+          if (!hasKey(theirBook.friends, kid.key)) {
+            theirBook.friends.push({ key: kid.key, name: mine.kidName || kid.name });
           }
         }
-        return saveBoth(mine, mineBody, theirs, theirBody).then(function () {
+        return saveSocial(kid.key, mineBook).then(function () {
+          return saveSocial(theirKey, theirBook);
+        }).then(function () {
           return { ok: true };
         });
       });
@@ -838,9 +890,10 @@
     if (clean.length > 80) {
       clean = clean.slice(0, 80);
     }
-    return findAccount(kid.key).then(function (mine) {
-      var friends = mine ? asList(mine.friends) : [];
-      if (!hasKey(friends, toKey)) {
+    return Promise.all([findAccount(kid.key), friendBook(kid.key)]).then(function (parts) {
+      var mine = parts[0];
+      var book = parts[1];
+      if (!mine || !hasKey(book.friends, toKey)) {
         return { ok: false, message: "You can message friends." };
       }
       return cloudSend("POST", "/messages", {
@@ -884,18 +937,36 @@
     return best;
   }
 
-  function sendChallenge(toKey, toName) {
+  function chosenFish(picked) {
+    var fish = picked && picked.id ? picked : null;
+    var energy;
+    if (!fish) {
+      fish = bestEnergeticFish();
+    }
+    if (!fish) {
+      return null;
+    }
+    energy = typeof energyOf === "function" ? energyOf(getWallet(), fish.id) : 1;
+    if (energy <= 0) {
+      return null;
+    }
+    return fish;
+  }
+
+  function sendChallenge(toKey, toName, picked) {
     var kid = sessionKid();
     var fish;
     if (!kid) {
       return Promise.resolve({ ok: false, message: "Log in first." });
     }
-    fish = bestEnergeticFish();
+    fish = chosenFish(picked);
     if (!fish) {
       return Promise.resolve({ ok: false, message: "This fish is hungry. Sprinkle food first." });
     }
-    return findAccount(kid.key).then(function (mine) {
-      if (!mine || !hasKey(asList(mine.friends), toKey)) {
+    return Promise.all([findAccount(kid.key), friendBook(kid.key)]).then(function (parts) {
+      var mine = parts[0];
+      var book = parts[1];
+      if (!mine || !hasKey(book.friends, toKey)) {
         return { ok: false, message: "You can race friends." };
       }
       return cloudSend("POST", "/challenges", {
@@ -934,16 +1005,21 @@
       style.id = "race-popup-style";
       style.textContent =
         "#race-popup{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(4,24,34,.55);padding:1rem}" +
-        "#race-popup[hidden]{display:none}" +
-        ".race-popup__box{width:min(24rem,100%);padding:1.1rem 1.2rem;border-radius:1.2rem;background:#0d3b4c;color:#f4fffc;text-align:center}" +
+        "#race-popup[hidden]{display:none !important;pointer-events:none !important}" +
+        ".race-popup__box{position:relative;z-index:2;pointer-events:auto;width:min(24rem,100%);padding:1.1rem 1.2rem;border-radius:1.2rem;background:#0d3b4c;color:#f4fffc;text-align:center}" +
         ".race-popup__text{margin:0 0 .8rem;font-size:1.2rem;font-weight:800}" +
-        ".race-popup__actions{display:flex;gap:.6rem;justify-content:center}" +
-        ".race-popup__yes,.race-popup__no{border:0;border-radius:999px;padding:.7rem 1rem;font:inherit;font-weight:800;color:#fff;cursor:pointer}" +
+        ".race-popup__actions{position:relative;z-index:3;display:flex;gap:.6rem;justify-content:center;pointer-events:auto}" +
+        ".race-popup__yes,.race-popup__no{position:relative;z-index:4;pointer-events:auto;border:0;border-radius:999px;padding:.7rem 1rem;font:inherit;font-weight:800;color:#fff;cursor:pointer}" +
         ".race-popup__yes{background:#2a9d8f}.race-popup__no{background:#c46b5a}";
       document.head.appendChild(style);
     }
     popupEl.querySelector("#race-popup-yes").addEventListener("click", function () {
-      answerChallenge(true);
+      var pending = pendingChallenge;
+      if (!pending) {
+        return;
+      }
+      hidePopup();
+      global.dispatchEvent(new CustomEvent("codereef-race-accept", { detail: pending }));
     });
     popupEl.querySelector("#race-popup-no").addEventListener("click", function () {
       answerChallenge(false);
@@ -951,10 +1027,20 @@
     return popupEl;
   }
 
+  function pickIsOpen() {
+    var picker = document.getElementById("friend-picker");
+    return !!(picker && !picker.hidden);
+  }
+
   function showPopup(challenge) {
-    var box = ensurePopup();
-    var text = box.querySelector("#race-popup-text");
+    var box;
+    var text;
     pendingChallenge = challenge;
+    if (pickIsOpen()) {
+      return;
+    }
+    box = ensurePopup();
+    text = box.querySelector("#race-popup-text");
     text.textContent =
       (challenge.fromName || "A friend") +
       " wants to race" +
@@ -970,8 +1056,8 @@
     }
   }
 
-  function answerChallenge(accept) {
-    var pending = pendingChallenge;
+  function answerChallenge(accept, picked, challenge) {
+    var pending = challenge || pendingChallenge;
     var kid = sessionKid();
     var body;
     var fish;
@@ -986,11 +1072,9 @@
         return { ok: true };
       });
     }
-    fish = bestEnergeticFish();
+    fish = chosenFish(picked);
     if (!fish) {
-      var note = ensurePopup().querySelector("#race-popup-text");
-      note.textContent = "Your fish are hungry. Sprinkle food first.";
-      return Promise.resolve({ ok: false, message: "Your fish are hungry. Sprinkle food first." });
+      return Promise.resolve({ ok: false, message: "This fish is hungry. Sprinkle food first." });
     }
     body.status = "accepted";
     body.toFishId = fish.id;
@@ -1002,7 +1086,7 @@
       hidePopup();
       global.dispatchEvent(new CustomEvent("codereef-race", { detail: body }));
       if (!document.getElementById("friend-race")) {
-        global.location.href = "friends.html?v=eye1";
+        global.location.href = "friends.html?v=racefix1";
       }
       return { ok: true, challenge: body };
     });
@@ -1118,10 +1202,11 @@
     heartTimer = 0;
     raceTimer = 0;
     return pushBagNow().then(function () {
-      if (!kid || !presenceId) {
+      if (!kid) {
         return;
       }
-      return cloudSend("PUT", "/presence/" + presenceId, { kidKey: kid.key, lastSeen: 0 });
+      // Logging out from any page means offline. The friends page is not required.
+      return cloudSend("PUT", "/presence/" + kid.key, { kidKey: kid.key, lastSeen: 0 });
     });
   }
 
@@ -1152,6 +1237,7 @@
     sendMessage: sendMessage,
     loadMessages: loadMessages,
     sendChallenge: sendChallenge,
+    answerChallenge: answerChallenge,
     loadPresence: loadPresence,
     isFresh: isFresh,
     loadChallenges: loadChallenges,

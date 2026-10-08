@@ -14,7 +14,7 @@
     />
     <link rel="stylesheet" href="style.css?v=eye1" />
     <link rel="stylesheet" href="shop.css?v=eye1" />
-    <link rel="stylesheet" href="friends.css?v=eye1" />
+    <link rel="stylesheet" href="friends.css?v=racefix2" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="home.html?v=swim1">← Back home</a>
@@ -23,7 +23,7 @@
       <header class="auth__header">
         <p class="auth__brand">CodeReef</p>
         <h1 class="auth__title">Race friends</h1>
-        <p class="auth__hint">Ask a friend by name. They have to say yes before you can chat or race.</p>
+        <p class="auth__hint">Ask a friend by name. They can say yes later, even if they are not here. Then you can chat and race.</p>
       </header>
 
       <form class="friend-ask" id="friend-ask">
@@ -56,21 +56,38 @@
         </form>
       </section>
 
-      <section class="friend-race" id="friend-race" hidden aria-live="polite"></section>
+      <section class="aquarium-picker" id="friend-picker" hidden>
+        <h2 class="aquarium-picker__title">Pick your fish</h2>
+        <p class="aquarium-picker__count" id="friend-picker-count">Pick one fish</p>
+        <div class="aquarium-picker__grid" id="friend-picker-grid"></div>
+        <p class="aquarium-race-msg" id="friend-picker-msg" role="status"></p>
+        <div class="aquarium-picker__actions">
+          <button type="button" class="aquarium-race-btn" id="friend-picker-go">Start race</button>
+          <button type="button" class="aquarium-race-btn aquarium-race-btn--calm" id="friend-picker-back">Back</button>
+        </div>
+      </section>
+
+      <section class="friend-race" id="friend-race" hidden aria-live="polite">
+        <h2 class="friend-heading">Race!</h2>
+        <p class="aquarium-race-msg" id="friend-race-msg" role="status"></p>
+        <div class="aquarium-tank" id="friend-tank" aria-label="Friend race">
+          <div class="aquarium-tank__sand" aria-hidden="true"></div>
+        </div>
+      </section>
 
       <nav class="shop-links" aria-label="Reef places">
         <a href="explore.html?v=swim1">Start exploring</a>
         <a href="aquarium.html?v=swim1">My aquarium</a>
         <a href="shop.html?v=swim1">Fish shop</a>
         <a href="sell.html?v=sell1">Sell items</a>
-        <a href="friends.html?v=eye1" aria-current="page">Race friends</a>
+        <a href="friends.html?v=racefix2" aria-current="page">Race friends</a>
         <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
       </nav>
     </main>
 
     <script src="auth.js?v=eye1"></script>
-    <script src="cloud.js?v=share2"></script>
+    <script src="cloud.js?v=racefix1"></script>
     <script src="reef-wallet.js?v=eye1"></script>
-    <script src="friends.js?v=eye1"></script>
+    <script src="friends.js?v=racefix2"></script>
   </body>
 </html>
