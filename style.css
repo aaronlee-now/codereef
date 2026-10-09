@@ -416,6 +416,13 @@ body {
   color: rgba(232, 247, 244, 0.45);
 }
 
+.field__input--code {
+  letter-spacing: 0.35em;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
 .field__input:focus {
   outline: none;
   border-color: var(--sand);

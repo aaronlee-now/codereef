@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=eye1" />
+    <link rel="stylesheet" href="style.css?v=code1" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="index.html">← Back to cover</a>
@@ -22,8 +22,8 @@
         <p class="auth__brand">CodeReef</p>
         <h1 class="auth__title">Welcome back</h1>
         <p class="auth__hint">
-          Log in with your name and password. We’ll email your parent when you
-          dive in.
+          Use your name, your password, and the same parent email from sign up.
+          CodeReef will email a code. Type that code to finish signing in.
         </p>
       </header>
 
@@ -39,6 +39,19 @@
             autocomplete="nickname"
             required
             placeholder="Sam"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Parent email</span>
+          <input
+            class="field__input"
+            type="text"
+            name="parent_email"
+            inputmode="email"
+            autocomplete="email"
+            required
+            placeholder="The email from sign up"
           />
         </label>
 
@@ -76,8 +89,8 @@
         <a href="signup.html">Sign up</a>
       </p>
     </main>
-    <script src="auth.js?v=eye1"></script>
-    <script src="cloud.js?v=offline2"></script>
-    <script src="login.js?v=share1"></script>
+    <script src="auth.js?v=code1"></script>
+    <script src="cloud.js?v=code1"></script>
+    <script src="login.js?v=code1"></script>
   </body>
 </html>

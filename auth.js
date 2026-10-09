@@ -116,6 +116,23 @@ function notifyParentOfSignup(user) {
   );
 }
 
+function notifyParentOfLoginCode(user, code) {
+  var kid = user.kidName;
+  return notifyParent(
+    user,
+    "CodeReef: sign-in code for " + kid,
+    parentEmailText([
+      "This message is from CodeReef.",
+      "CodeReef is a coding website for kids. Your child practices coding there. This email is a note for you, the parent.",
+      kid + " wants to sign in to CodeReef.",
+      "The sign-in code is " + code + ".",
+      "Read this code to " +
+        kid +
+        " so they can type it on the CodeReef page. The code works for 10 minutes. You do not need to reply.",
+    ])
+  );
+}
+
 function notifyParentOfLogin(user) {
   var kid = user.kidName;
   return notifyParent(
@@ -168,6 +185,38 @@ function bindPasswordEyes() {
 bindPasswordEyes();
 
 // Don't wait forever on the parent email. The kid should still get in.
+var LOGIN_CODE_KEY = "codereef_login_code";
+
+function saveLoginCode(pending) {
+  sessionStorage.setItem(LOGIN_CODE_KEY, JSON.stringify(pending));
+}
+
+function readLoginCode() {
+  var raw = sessionStorage.getItem(LOGIN_CODE_KEY);
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    return null;
+  }
+}
+
+function clearLoginCode() {
+  sessionStorage.removeItem(LOGIN_CODE_KEY);
+}
+
+function makeLoginCode() {
+  var bytes = new Uint32Array(1);
+  if (window.crypto && window.crypto.getRandomValues) {
+    window.crypto.getRandomValues(bytes);
+  } else {
+    bytes[0] = Math.floor(Math.random() * 4294967296);
+  }
+  return String(bytes[0] % 1000000).padStart(6, "0");
+}
+
 function finishSoon(promise) {
   return new Promise(function (resolve) {
     var timer = setTimeout(function () {

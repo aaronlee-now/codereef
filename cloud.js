@@ -631,6 +631,54 @@
     });
   }
 
+  function sameParentEmail(saved, typed) {
+    return String(saved || "").trim().toLowerCase() === String(typed || "").trim().toLowerCase();
+  }
+
+  // Check the name, password, and parent email. Do not sign the kid in yet.
+  function checkLogin(kidName, password, parentEmail) {
+    var typed = String(kidName || "").trim().replace(/\s+/g, " ");
+    var kidKey = normalizeName(typed);
+    var email = String(parentEmail || "").trim();
+    if (!typed || !password) {
+      return Promise.resolve({ ok: false, message: "Name or password is wrong. Try again." });
+    }
+    if (!email) {
+      return Promise.resolve({ ok: false, message: "Type the parent email from sign up." });
+    }
+    return finishWithin(function () {
+      return findAccount(kidKey).then(function (row) {
+        function ready(user) {
+          if (!user.parentEmail || !sameParentEmail(user.parentEmail, email)) {
+            return { ok: false, message: "Use the same parent email from when you signed up." };
+          }
+          return { ok: true, user: user };
+        }
+        if (!row || !row.passwordSalt || !row.passwordHash) {
+          var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
+          if (!local || local.password !== password) {
+            return { ok: false, message: "Name or password is wrong. Try again." };
+          }
+          return ready({
+            kidName: local.kidName,
+            parentEmail: local.parentEmail || "",
+            password: password,
+          });
+        }
+        return hashPassword(password, row.passwordSalt).then(function (hash) {
+          if (hash !== row.passwordHash) {
+            return { ok: false, message: "Name or password is wrong. Try again." };
+          }
+          return ready({
+            kidName: row.kidName || typed,
+            parentEmail: row.parentEmail || "",
+            password: password,
+          });
+        });
+      });
+    });
+  }
+
   function login(kidName, password) {
     var typed = String(kidName || "").trim().replace(/\s+/g, " ");
     var kidKey = normalizeName(typed);
@@ -1227,6 +1275,7 @@
 
   global.CodeReefCloud = {
     signUp: signUp,
+    checkLogin: checkLogin,
     login: login,
     pushBag: pushBag,
     pushBagNow: pushBagNow,
