@@ -129,6 +129,32 @@
     });
   }
 
+  // A saved fish list can contain one bad backslash. That used to block sign-in.
+  function parseStoredJson(text) {
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      var slash = String.fromCharCode(92);
+      var ok = '"' + slash + "/bfnrtu";
+      var out = "";
+      var i;
+      var ch;
+      var next;
+      for (i = 0; i < text.length; i += 1) {
+        ch = text.charAt(i);
+        out += ch;
+        if (ch !== slash) {
+          continue;
+        }
+        next = text.charAt(i + 1);
+        if (ok.indexOf(next) === -1) {
+          out += slash;
+        }
+      }
+      return JSON.parse(out);
+    }
+  }
+
   function getJson(key) {
     var id = slot(key);
     return readSlot(id + "~n").then(function (countText) {
@@ -149,7 +175,7 @@
           }
           joined += parts[i];
         }
-        return JSON.parse(b64UrlToText(joined));
+        return parseStoredJson(b64UrlToText(joined));
       });
     });
   }
