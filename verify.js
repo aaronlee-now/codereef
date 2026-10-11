@@ -87,7 +87,11 @@ if (resendButton && pending && pending.parentEmail) {
       })
       .catch(function (error) {
         message.classList.remove("auth__message--ok");
-        showProblem((error && error.message) || "We could not email a new code. Try again.");
+        if (error && error.codereefEmail && error.message) {
+          showProblem(error.message);
+        } else {
+          showProblem("We could not email a new code. Try again.");
+        }
         resendButton.disabled = false;
       });
   });

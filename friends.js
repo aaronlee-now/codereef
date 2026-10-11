@@ -53,7 +53,6 @@ function raceNoteKey(kind, challenge) {
 
 function spendOnce(challenge) {
   var kid = CodeReefCloud.sessionKid();
-  var fishId;
   var note;
   if (!kid || !challenge || !challenge._id) {
     return;
@@ -66,10 +65,6 @@ function spendOnce(challenge) {
   } catch (err) {
     return;
   }
-  fishId = kid.key === challenge.fromKey ? challenge.fromFishId : challenge.toFishId;
-  if (fishId && typeof spendEnergy === "function") {
-    spendEnergy(fishId, typeof RACE_ENERGY_COST === "number" ? RACE_ENERGY_COST : 2);
-  }
   try {
     if (note) {
       localStorage.setItem(note, "1");
@@ -79,19 +74,7 @@ function spendOnce(challenge) {
   }
 }
 
-function myRaceFishId(challenge) {
-  var kid = CodeReefCloud.sessionKid();
-  if (!kid || !challenge) {
-    return "";
-  }
-  if (kid.key === challenge.fromKey) {
-    return challenge.fromFishId || "";
-  }
-  return challenge.toFishId || "";
-}
-
 function showRace(challenge) {
-  var mineId;
   var seen;
   if (!challenge || !challenge._id || shownRaces[challenge._id] || !raceEl) {
     return;
@@ -106,12 +89,6 @@ function showRace(challenge) {
     }
   } catch (err) {
     // Keep going. A missing note should not hide the race.
-  }
-  mineId = myRaceFishId(challenge);
-  if (mineId && typeof energyOf === "function" && energyOf(getWallet(), mineId) <= 0) {
-    openRaceStage();
-    setFriendRaceMsg("This fish is hungry. Sprinkle food first.");
-    return;
   }
   shownRaces[challenge._id] = true;
   spendOnce(challenge);
@@ -408,11 +385,6 @@ function ownedFish() {
 }
 
 function chooseFish(fish) {
-  var energy = typeof energyOf === "function" ? energyOf(getWallet(), fish.id) : 1;
-  if (energy <= 0) {
-    setPickMsg("This fish is hungry. Sprinkle food first.");
-    return;
-  }
   pickedFishId = fish.id;
   setPickMsg(fish.name + " will race.");
   renderFriendPick();
@@ -439,15 +411,11 @@ function renderFriendPick() {
 }
 
 function makeFishPick(fish) {
-  var energy = typeof energyOf === "function" ? energyOf(getWallet(), fish.id) : 1;
-  var hungry = energy <= 0;
   var on = pickedFishId === fish.id;
   var card = document.createElement("div");
   var picBtn = document.createElement("button");
   var img = document.createElement("img");
   var name = document.createElement("span");
-  var energyLine = document.createElement("span");
-  var bar = document.createElement("span");
   var pickBtn = document.createElement("button");
   card.className = "aquarium-pick" + (on ? " aquarium-pick--on" : "");
   picBtn.type = "button";
@@ -458,19 +426,13 @@ function makeFishPick(fish) {
   name.className = "aquarium-pick__name";
   name.textContent = fish.name;
   picBtn.appendChild(name);
-  energyLine.className = "aquarium-pick__energy";
-  energyLine.textContent = typeof energyWord === "function" ? energyWord(energy) : "";
-  bar.className = "energy-bar";
-  bar.innerHTML = '<span style="width:' + Math.round((energy / (typeof ENERGY_MAX === "number" ? ENERGY_MAX : 6)) * 100) + '%"></span>';
-  energyLine.appendChild(bar);
-  picBtn.appendChild(energyLine);
   picBtn.addEventListener("click", function () {
     chooseFish(fish);
   });
   card.appendChild(picBtn);
   pickBtn.type = "button";
   pickBtn.className = "aquarium-pick__btn";
-  pickBtn.textContent = hungry ? "Hungry" : on ? "Picked" : "Pick";
+  pickBtn.textContent = on ? "Picked" : "Pick";
   pickBtn.setAttribute("aria-label", (on ? "Picked " : "Pick ") + fish.name);
   pickBtn.addEventListener("click", function () {
     chooseFish(fish);
@@ -488,7 +450,7 @@ function openFriendPick(job) {
     return;
   }
   pickerEl.hidden = false;
-  setPickMsg(pickMode === "accept" ? "Pick your fish. Then start the race." : "Pick one fish with energy.");
+  setPickMsg(pickMode === "accept" ? "Pick your fish. Then start the race." : "Pick one fish.");
   renderFriendPick();
   if (pickerEl.scrollIntoView) {
     pickerEl.scrollIntoView({ block: "nearest" });
@@ -501,10 +463,6 @@ function startPickedRace() {
   var challenge;
   if (!fish) {
     setPickMsg("Pick one fish first.");
-    return;
-  }
-  if (typeof energyOf === "function" && energyOf(getWallet(), fish.id) <= 0) {
-    setPickMsg("This fish is hungry. Sprinkle food first.");
     return;
   }
   if (pickMode === "ask" && pickFriend) {
@@ -526,7 +484,7 @@ function startPickedRace() {
     setPickMsg("Starting the race...");
     CodeReefCloud.answerChallenge(true, fish, challenge).then(function (result) {
       if (!result || !result.ok) {
-        setPickMsg((result && result.message) || "This fish is hungry. Sprinkle food first.");
+        setPickMsg((result && result.message) || "Pick one fish first.");
         return;
       }
       closeFriendPick();

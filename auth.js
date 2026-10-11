@@ -68,6 +68,14 @@ function parentEmailText(lines) {
 
 // Emails the parent (Gmail works). FormSubmit may ask them to tap a link the first time.
 // More than one kid can share the same parent email. The address does not have to be unique.
+function parentEmailProblem(raw) {
+  var message = String(raw || "").toLowerCase();
+  if (message.indexOf("activat") !== -1) {
+    return "Look in the parent email for a note from FormSubmit. It might be in Spam. Tap Activate Form one time. Then try logging in again.";
+  }
+  return "";
+}
+
 function notifyParent(user, subject, text) {
   if (!user || !user.parentEmail) {
     return Promise.reject(new Error("missing email"));
@@ -83,29 +91,28 @@ function notifyParent(user, subject, text) {
       name: "CodeReef",
       _subject: subject,
       _template: "box",
+      // FormSubmit refuses the send when the browser does not share the page address.
+      _url: "https://aaronlee-now.github.io/codereef/login.html",
       message: text,
       _captcha: "false",
     }),
   }).then(function (response) {
     return response.text().then(function (raw) {
       var data = {};
-      var note = "";
+      var problem;
+      var error;
       try {
         data = JSON.parse(raw);
-      } catch (error) {
+      } catch (parseError) {
         data = {};
       }
-      if (response.ok && String(data.success) === "true") {
-        return data;
+      if (!response.ok || String(data.success) !== "true") {
+        problem = parentEmailProblem(data.message);
+        error = new Error(problem || "email failed");
+        error.codereefEmail = !!problem;
+        throw error;
       }
-      note = String((data && data.message) || "");
-      if (response.status === 429 || /rate limit/i.test(note)) {
-        throw new Error("Too many emails were sent. Wait one minute, then press Log in again.");
-      }
-      if (/activat/i.test(note)) {
-        throw new Error("Ask a parent to open their email and tap Activate from FormSubmit. Then press Log in again.");
-      }
-      throw new Error("We could not email the code. Try again.");
+      return data;
     });
   });
 }

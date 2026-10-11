@@ -39,7 +39,11 @@ form.addEventListener("submit", function (event) {
       });
     })
     .catch(function (error) {
-      showProblem((error && error.message) || "We could not email the code. Try again.");
+      if (error && error.codereefEmail && error.message) {
+        showProblem(error.message);
+        return;
+      }
+      showProblem("We could not email the code. Try again.");
     });
 });
 
