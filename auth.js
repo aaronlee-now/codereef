@@ -89,15 +89,23 @@ function notifyParent(user, subject, text) {
   }).then(function (response) {
     return response.text().then(function (raw) {
       var data = {};
+      var note = "";
       try {
         data = JSON.parse(raw);
       } catch (error) {
         data = {};
       }
-      if (!response.ok || String(data.success) !== "true") {
-        throw new Error("email failed");
+      if (response.ok && String(data.success) === "true") {
+        return data;
       }
-      return data;
+      note = String((data && data.message) || "");
+      if (response.status === 429 || /rate limit/i.test(note)) {
+        throw new Error("Too many emails were sent. Wait one minute, then press Log in again.");
+      }
+      if (/activat/i.test(note)) {
+        throw new Error("Ask a parent to open their email and tap Activate from FormSubmit. Then press Log in again.");
+      }
+      throw new Error("We could not email the code. Try again.");
     });
   });
 }

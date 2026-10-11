@@ -85,9 +85,9 @@ if (resendButton && pending && pending.parentEmail) {
         message.hidden = false;
         resendButton.disabled = false;
       })
-      .catch(function () {
+      .catch(function (error) {
         message.classList.remove("auth__message--ok");
-        showProblem("We could not email a new code. Try again.");
+        showProblem((error && error.message) || "We could not email a new code. Try again.");
         resendButton.disabled = false;
       });
   });

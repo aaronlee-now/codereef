@@ -38,8 +38,8 @@ form.addEventListener("submit", function (event) {
         window.location.href = "verify.html";
       });
     })
-    .catch(function () {
-      showProblem("We could not email the code. Try again.");
+    .catch(function (error) {
+      showProblem((error && error.message) || "We could not email the code. Try again.");
     });
 });
 
