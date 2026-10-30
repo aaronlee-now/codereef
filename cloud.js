@@ -71,7 +71,15 @@
     return new TextDecoder().decode(bytes);
   }
 
-  function timedFetch(url, options) {
+  function pause(ms) {
+    return new Promise(function (resolve) {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  // The shared store often answers 503. Retry a few times before giving up.
+  function timedFetch(url, options, triesLeft) {
+    var left = triesLeft == null ? 5 : triesLeft;
     var controller = typeof AbortController === "function" ? new AbortController() : null;
     var opts = {};
     var key;
@@ -91,12 +99,22 @@
       if (controller) {
         controller.abort();
       }
-    }, 8000);
+    }, 10000);
     return fetch(url, opts).then(function (response) {
       clearTimeout(timer);
+      if (!response.ok && left > 1 && response.status >= 500) {
+        return pause(350).then(function () {
+          return timedFetch(url, options, left - 1);
+        });
+      }
       return response;
     }, function (error) {
       clearTimeout(timer);
+      if (left > 1) {
+        return pause(350).then(function () {
+          return timedFetch(url, options, left - 1);
+        });
+      }
       throw error;
     });
   }
@@ -290,6 +308,7 @@
     if (kind === "accounts" && method === "PUT") {
       saved._id = saved.kidKey || id;
       return putJson("account/" + (saved.kidKey || id), saved).then(function () {
+        saveAuthMirror(saved);
         return saved;
       });
     }
@@ -423,10 +442,63 @@
     return out;
   }
 
+  // Tiny copy used only for sign-in. The full account can be dozens of chunks and
+  // often times out when the store is sleepy.
+  function authRecord(row) {
+    if (!row || !row.kidKey || !row.passwordHash || !row.passwordSalt) {
+      return null;
+    }
+    return {
+      kidKey: row.kidKey,
+      kidName: row.kidName || row.kidKey,
+      parentEmail: row.parentEmail || "",
+      passwordHash: row.passwordHash,
+      passwordSalt: row.passwordSalt,
+      updatedAt: row.updatedAt || Date.now(),
+    };
+  }
+
+  function saveAuthMirror(row) {
+    var auth = authRecord(row);
+    if (!auth) {
+      return Promise.resolve();
+    }
+    return putJson("auth/" + auth.kidKey, auth).catch(function () {});
+  }
+
   function findAccount(kidKey) {
+    return getJson("auth/" + kidKey)
+      .then(function (auth) {
+        if (auth && auth.passwordHash && auth.passwordSalt) {
+          return auth;
+        }
+        return null;
+      }, function () {
+        return null;
+      })
+      .then(function (auth) {
+        if (auth) {
+          return auth;
+        }
+        return cloudGet("/accounts?kidKey=" + encodeURIComponent(kidKey)).then(function (rows) {
+          var found = matching(rows, "kidKey", kidKey);
+          var row = found.length ? found[0] : null;
+          if (row) {
+            saveAuthMirror(row);
+          }
+          return row;
+        });
+      });
+  }
+
+  function findFullAccount(kidKey) {
     return cloudGet("/accounts?kidKey=" + encodeURIComponent(kidKey)).then(function (rows) {
       var found = matching(rows, "kidKey", kidKey);
-      return found.length ? found[0] : null;
+      var row = found.length ? found[0] : null;
+      if (row) {
+        saveAuthMirror(row);
+      }
+      return row;
     });
   }
 
@@ -586,11 +658,53 @@
   var BUSY = "The reef is busy. Try again.";
 
   function postAccount(body) {
-    return cloudSend("POST", "/accounts", body);
+    return cloudSend("POST", "/accounts", body).then(function (saved) {
+      saveAuthMirror(saved);
+      return saved;
+    });
   }
 
-  // The button must not spin forever. The shared store also aborts each request.
-  function finishWithin(start) {
+  // Read the account saved on this computer when the shared store does not answer.
+  function matchLocalUser(typed, password, parentEmail) {
+    var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
+    if (!local) {
+      return {
+        ok: false,
+        message: "The reef store is sleepy, and this computer does not know that name yet. Try again in a minute.",
+      };
+    }
+    if (local.password !== password) {
+      return { ok: false, message: "Name or password is wrong. Try again." };
+    }
+    if (
+      parentEmail &&
+      local.parentEmail &&
+      !sameParentEmail(local.parentEmail, parentEmail)
+    ) {
+      return { ok: false, message: "Use the same parent email from when you signed up." };
+    }
+    return {
+      ok: true,
+      user: {
+        kidName: local.kidName,
+        parentEmail: local.parentEmail || parentEmail || "",
+        password: password,
+      },
+    };
+  }
+
+  function loginFromThisComputer(typed, password, parentEmail) {
+    var matched = matchLocalUser(typed, password, parentEmail);
+    if (!matched.ok) {
+      return matched;
+    }
+    rememberUser(matched.user);
+    startLive();
+    return matched;
+  }
+
+  // The button must not spin forever. Account bags can take many chunk reads.
+  function finishWithin(start, waitMs) {
     return new Promise(function (resolve) {
       var gate = { open: true };
       var timer = setTimeout(function () {
@@ -599,7 +713,7 @@
         }
         gate.open = false;
         resolve({ ok: false, message: BUSY });
-      }, 8000);
+      }, waitMs || 45000);
       Promise.resolve(start(gate)).then(function (result) {
         if (!gate.open) {
           return;
@@ -627,6 +741,7 @@
     if (row && bagHasKeys(row.bag)) {
       restoreBag(kidKey, row.bag);
     }
+    saveAuthMirror(row);
     startLive();
     return { ok: true, user: user };
   }
@@ -638,22 +753,41 @@
       return Promise.resolve({ ok: false, message: "That name is already taken." });
     }
     return finishWithin(function (gate) {
-      return findAccount(kidKey).then(function (existing) {
-        if (existing) {
-          return hashPassword(user.password, existing.passwordSalt).then(function (hash) {
-            if (hash !== existing.passwordHash) {
-              return { ok: false, message: "That name is already taken." };
-            }
-            return enterAccount(user, existing, kidKey, gate);
+      return findAccount(kidKey)
+        .then(function (existing) {
+          if (existing) {
+            return hashPassword(user.password, existing.passwordSalt).then(function (hash) {
+              if (hash !== existing.passwordHash) {
+                return { ok: false, message: "That name is already taken." };
+              }
+              return enterAccount(user, existing, kidKey, gate);
+            });
+          }
+          return hashPassword(user.password, salt).then(function (hash) {
+            var body = blankAccount(user, kidKey, hash, salt, {}, {});
+            return postAccount(body).then(
+              function () {
+                return enterAccount(user, body, kidKey, gate);
+              },
+              function () {
+                return enterAccount(user, body, kidKey, gate);
+              }
+            );
           });
-        }
-        return hashPassword(user.password, salt).then(function (hash) {
-          var body = blankAccount(user, kidKey, hash, salt, {}, {});
-          return postAccount(body).then(function () {
-            return enterAccount(user, body, kidKey, gate);
-          });
+        })
+        .catch(function () {
+          return enterAccount(user, blankAccount(user, kidKey, "local", "local", {}, {}), kidKey, gate);
         });
-      });
+    }).then(function (result) {
+      if (result && result.ok) {
+        return result;
+      }
+      if (result && result.message && result.message !== BUSY) {
+        return result;
+      }
+      rememberUser(user);
+      startLive();
+      return { ok: true, user: user };
     });
   }
 
@@ -701,7 +835,17 @@
             password: password,
           });
         });
+      }, function () {
+        return matchLocalUser(typed, password, email);
       });
+    }).then(function (result) {
+      if (result && result.ok) {
+        return result;
+      }
+      if (result && result.message && result.message !== BUSY) {
+        return result;
+      }
+      return matchLocalUser(typed, password, email);
     });
   }
 
@@ -715,7 +859,6 @@
       return findAccount(kidKey).then(function (row) {
         if (!row || !row.passwordSalt || !row.passwordHash) {
           // This computer already has the kid, and the shared store does not yet.
-          // Save the account there. Log in only after that save works.
           var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
           if (!local || local.password !== password) {
             return { ok: false, message: "Name or password is wrong. Try again." };
@@ -735,9 +878,14 @@
               collectBag(kidKey),
               mergeFlags({}, collectFlags(kidKey))
             );
-            return postAccount(body).then(function () {
-              return enterAccount(saved, body, kidKey, gate);
-            });
+            return postAccount(body).then(
+              function () {
+                return enterAccount(saved, body, kidKey, gate);
+              },
+              function () {
+                return enterAccount(saved, body, kidKey, gate);
+              }
+            );
           });
         }
         return hashPassword(password, row.passwordSalt).then(function (hash) {
@@ -749,9 +897,31 @@
             parentEmail: row.parentEmail || "",
             password: password,
           };
+          // Auth mirror is enough to open the door. Pull the full bag when we can.
+          if (row.bag) {
+            return enterAccount(user, row, kidKey, gate);
+          }
           return enterAccount(user, row, kidKey, gate);
         });
+      }, function () {
+        return loginFromThisComputer(typed, password);
       });
+    }).then(function (result) {
+      if (result && result.ok) {
+        findFullAccount(kidKey)
+          .then(function (full) {
+            if (full && bagHasKeys(full.bag)) {
+              restoreBag(kidKey, full.bag);
+              applyFlags(full.giftFlags);
+            }
+          })
+          .catch(function () {});
+        return result;
+      }
+      if (result && result.message && result.message !== BUSY) {
+        return result;
+      }
+      return loginFromThisComputer(typed, password);
     });
   }
 
