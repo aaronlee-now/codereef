@@ -31,6 +31,8 @@ var raceTarget = null;
 var pendingChallenge = null;
 var pickMode = "";
 var pickedFishId = "";
+var raceBusy = false;
+var seenAccepted = {};
 
 function setMsg(text) {
   if (msgEl) {
@@ -65,8 +67,10 @@ function closePicker() {
   pendingChallenge = null;
   pickMode = "";
   pickedFishId = "";
+  raceBusy = false;
   if (pickerEl) {
     pickerEl.hidden = true;
+    pickerEl.removeAttribute("data-mode");
   }
 }
 
@@ -223,6 +227,7 @@ function openRacePick(mode, entry, challenge) {
   pickedFishId = "";
   peekEl.hidden = true;
   pickerEl.hidden = false;
+  pickerEl.setAttribute("data-mode", mode || "ask");
   setPickMsg(
     mode === "accept"
       ? "Pick your fish. Then start the race."
@@ -364,32 +369,50 @@ peekBackBtn.addEventListener("click", function () {
 
 pickerGoBtn.addEventListener("click", function () {
   var fish = typeof findFish === "function" ? findFish(pickedFishId) : null;
+  if (raceBusy) {
+    return;
+  }
   if (!fish) {
     setPickMsg("Pick one fish first.");
     return;
   }
   if (pickMode === "ask" && raceTarget) {
+    raceBusy = true;
     setPickMsg("Asking " + (raceTarget.name || "them") + " to race...");
-    CodeReefCloud.sendChallenge(raceTarget.key, raceTarget.name, fish).then(function (result) {
-      setPickMsg(result.message || "");
-      setMsg(result.message || "");
-      if (result.ok) {
-        closePicker();
-      }
-    });
+    CodeReefCloud.sendChallenge(raceTarget.key, raceTarget.name, fish)
+      .then(function (result) {
+        raceBusy = false;
+        setPickMsg(result.message || "");
+        setMsg(result.message || "");
+        if (result.ok) {
+          closePicker();
+        }
+      })
+      .catch(function () {
+        raceBusy = false;
+        setPickMsg("Could not send the race ask. Try again.");
+        setMsg("Could not send the race ask. Try again.");
+      });
     return;
   }
   if (pickMode === "accept" && pendingChallenge) {
+    raceBusy = true;
     setPickMsg("Starting the race...");
-    CodeReefCloud.answerChallenge(true, fish, pendingChallenge).then(function (result) {
-      if (!result || !result.ok) {
-        setPickMsg((result && result.message) || "Pick one fish first.");
-        return;
-      }
-      closePicker();
-      setMsg("Race starting...");
-      window.location.href = "friends.html?v=servers1";
-    });
+    CodeReefCloud.answerChallenge(true, fish, pendingChallenge)
+      .then(function (result) {
+        raceBusy = false;
+        if (!result || !result.ok) {
+          setPickMsg((result && result.message) || "Pick one fish first.");
+          return;
+        }
+        closePicker();
+        setMsg("Race starting...");
+        window.location.href = "friends.html?v=servers1";
+      })
+      .catch(function () {
+        raceBusy = false;
+        setPickMsg("Could not start the race. Try again.");
+      });
   }
 });
 
@@ -411,5 +434,37 @@ window.addEventListener("codereef-race", function () {
   window.location.href = "friends.html?v=servers1";
 });
 
+function lookForAcceptedRace() {
+  var kid = CodeReefCloud.sessionKid();
+  if (!kid) {
+    return;
+  }
+  Promise.all([
+    CodeReefCloud.loadChallenges("from", kid.key),
+    CodeReefCloud.loadChallenges("to", kid.key),
+  ])
+    .then(function (parts) {
+      var rows = parts[0].concat(parts[1]);
+      var i;
+      var row;
+      for (i = 0; i < rows.length; i += 1) {
+        row = rows[i];
+        if (!row || row.status !== "accepted" || !row._id) {
+          continue;
+        }
+        if (seenAccepted[row._id]) {
+          continue;
+        }
+        seenAccepted[row._id] = true;
+        setMsg("Race is ready! Opening the race...");
+        window.location.href = "friends.html?v=servers1";
+        return;
+      }
+    })
+    .catch(function () {});
+}
+
 refresh();
 window.setInterval(refresh, 5000);
+window.setInterval(lookForAcceptedRace, 3000);
+lookForAcceptedRace();

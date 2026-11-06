@@ -1175,6 +1175,8 @@
   var SERVER_STALE_MS = 90000;
   var MY_SERVER_KEY = "codereef_my_server";
 
+  var MY_SERVER_MATES_KEY = "codereef_server_mates";
+
   function readMyServerId() {
     try {
       return localStorage.getItem(MY_SERVER_KEY) || "";
@@ -1189,9 +1191,35 @@
         localStorage.setItem(MY_SERVER_KEY, id);
       } else {
         localStorage.removeItem(MY_SERVER_KEY);
+        localStorage.removeItem(MY_SERVER_MATES_KEY);
       }
     } catch (err) {
       // ignore
+    }
+  }
+
+  function writeServerMates(members) {
+    var keys = [];
+    var i;
+    for (i = 0; i < (members || []).length; i += 1) {
+      if (members[i] && members[i].key) {
+        keys.push(members[i].key);
+      }
+    }
+    try {
+      localStorage.setItem(MY_SERVER_MATES_KEY, JSON.stringify(keys));
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  function readServerMates() {
+    try {
+      var raw = localStorage.getItem(MY_SERVER_MATES_KEY);
+      var list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    } catch (err) {
+      return [];
     }
   }
 
@@ -1362,7 +1390,8 @@
       };
       return saveServer(row).then(function (saved) {
         writeMyServerId(saved._id);
-        return { ok: true, server: saved, message: "Room open! Invite friends to join." };
+        writeServerMates(saved.members);
+        return { ok: true, server: saved, message: "Server open! Others can join from Join Server." };
       });
     });
   }
@@ -1400,7 +1429,8 @@
         }
         return saveServer(row).then(function (saved) {
           writeMyServerId(saved._id);
-          return { ok: true, server: saved, message: "You joined " + (saved.name || "the room") + "!" };
+          writeServerMates(saved.members);
+          return { ok: true, server: saved, message: "You joined " + (saved.name || "the server") + "!" };
         });
       });
     });
@@ -1466,6 +1496,7 @@
         writeMyServerId("");
         return null;
       }
+      writeServerMates(row.members);
       return row;
     });
   }
@@ -1490,6 +1521,7 @@
       row.members[idx].name = kid.name;
       row.members[idx].lastSeen = Date.now();
       row.members[idx].fish = showcaseFish();
+      writeServerMates(row.members);
       return saveServer(row);
     });
   }
@@ -1497,13 +1529,22 @@
   function shareServerWith(toKey) {
     var kid = sessionKid();
     var id = readMyServerId();
+    var mates;
+    var i;
     if (!kid || !toKey || !id) {
       return Promise.resolve(false);
+    }
+    mates = readServerMates();
+    for (i = 0; i < mates.length; i += 1) {
+      if (mates[i] === toKey) {
+        return Promise.resolve(true);
+      }
     }
     return loadServer(id).then(function (row) {
       if (!row) {
         return false;
       }
+      writeServerMates(row.members);
       return memberOnServer(row, kid.key) !== -1 && memberOnServer(row, toKey) !== -1;
     }, function () {
       return false;
@@ -1520,27 +1561,26 @@
     if (!fish) {
       return Promise.resolve({ ok: false, message: "Pick a fish first." });
     }
-    return Promise.all([findAccount(kid.key), shareServerWith(toKey)]).then(function (parts) {
-      var mine = parts[0];
-      var sameRoom = parts[1];
-      if (!mine) {
-        return { ok: false, message: "We can't reach your account." };
-      }
+    // Do not load the full account here. That bag is huge and used to freeze Start race.
+    return shareServerWith(toKey).then(function (sameRoom) {
       if (!sameRoom) {
-        return { ok: false, message: "Join the same reef room before you race." };
+        return { ok: false, message: "Join the same server before you race." };
       }
       return cloudSend("POST", "/challenges", {
         toKey: toKey,
         toName: toName || toKey,
         fromKey: kid.key,
-        fromName: mine.kidName || kid.name,
+        fromName: kid.name,
         fromFishId: fish.id,
         fromFishName: fish.name,
         fromRarity: fish.rarity,
         status: "pending",
         at: Date.now(),
       }).then(function () {
-        return { ok: true, message: "You asked " + (toName || "them") + " to race!" };
+        return {
+          ok: true,
+          message: "Race ask sent to " + (toName || "them") + ". Waiting for them to accept...",
+        };
       });
     });
   }
@@ -1589,7 +1629,8 @@
 
   function pickIsOpen() {
     var picker = document.getElementById("friend-picker");
-    return !!(picker && !picker.hidden);
+    // Only hide the Accept popup while this kid is already picking a fish to answer.
+    return !!(picker && !picker.hidden && picker.getAttribute("data-mode") === "accept");
   }
 
   function showPopup(challenge) {

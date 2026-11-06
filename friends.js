@@ -365,6 +365,7 @@ function closeFriendPick() {
   pickChallenge = null;
   if (pickerEl) {
     pickerEl.hidden = true;
+    pickerEl.removeAttribute("data-mode");
   }
 }
 
@@ -450,6 +451,7 @@ function openFriendPick(job) {
     return;
   }
   pickerEl.hidden = false;
+  pickerEl.setAttribute("data-mode", pickMode);
   setPickMsg(pickMode === "accept" ? "Pick your fish. Then start the race." : "Pick one fish.");
   renderFriendPick();
   if (pickerEl.scrollIntoView) {
