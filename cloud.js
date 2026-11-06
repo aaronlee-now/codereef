@@ -260,6 +260,15 @@
   }
 
   function newId(prefix) {
+    // Keep server keys short. slot() cuts names at 36 characters.
+    var tail;
+    if (prefix === "srv") {
+      tail = String(Math.floor(Math.random() * 1000));
+      while (tail.length < 3) {
+        tail = "0" + tail;
+      }
+      return "srv" + String(Date.now()).slice(-8) + tail;
+    }
     return String(prefix || "id") + "-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
   }
 
@@ -1172,7 +1181,8 @@
   }
 
   var SERVER_MAX = 6;
-  var SERVER_STALE_MS = 90000;
+  // The shared store often skips a beat. Keep kids in the room much longer.
+  var SERVER_STALE_MS = 10 * 60 * 1000;
   var MY_SERVER_KEY = "codereef_my_server";
 
   var MY_SERVER_MATES_KEY = "codereef_server_mates";
@@ -1303,31 +1313,36 @@
     });
   }
 
-  function saveServer(row) {
+  function saveServer(row, touchIndex) {
     if (!row || !row._id) {
       return Promise.reject(new Error("save failed"));
     }
-    row.updatedAt = Date.now();
-    row.members = pruneServerMembers(row.members);
-    return putJson("server/" + row._id, row).then(function () {
-      return loadServerIndex().then(function (list) {
-        var i;
-        var found = false;
-        var summary = serverSummary(row);
-        for (i = 0; i < list.length; i += 1) {
-          if (list[i] && list[i]._id === row._id) {
-            list[i] = summary;
-            found = true;
-          }
-        }
-        if (!found && summary.count > 0) {
-          list.push(summary);
-        }
-        list = list.filter(function (item) {
-          return item && item.count > 0;
-        });
-        return saveServerIndex(list).then(function () {
+    return enqueue(function () {
+      row.updatedAt = Date.now();
+      row.members = pruneServerMembers(row.members);
+      return putJson("server/" + row._id, row).then(function () {
+        if (touchIndex === false) {
           return row;
+        }
+        return loadServerIndex().then(function (list) {
+          var i;
+          var found = false;
+          var summary = serverSummary(row);
+          for (i = 0; i < list.length; i += 1) {
+            if (list[i] && list[i]._id === row._id) {
+              list[i] = summary;
+              found = true;
+            }
+          }
+          if (!found && summary.count > 0) {
+            list.push(summary);
+          }
+          list = list.filter(function (item) {
+            return item && item.count > 0;
+          });
+          return saveServerIndex(list).then(function () {
+            return row;
+          });
         });
       });
     });
@@ -1371,29 +1386,36 @@
     if (title.length > 24) {
       title = title.slice(0, 24);
     }
-    return leaveServer().then(function () {
-      row = {
-        _id: newId("srv"),
-        name: title,
-        hostKey: kid.key,
-        hostName: kid.name,
-        max: SERVER_MAX,
-        members: [
-          {
-            key: kid.key,
-            name: kid.name,
-            lastSeen: Date.now(),
-            fish: showcaseFish(),
-          },
-        ],
-        updatedAt: Date.now(),
-      };
-      return saveServer(row).then(function (saved) {
-        writeMyServerId(saved._id);
-        writeServerMates(saved.members);
-        return { ok: true, server: saved, message: "Server open! Others can join from Join Server." };
+    return leaveServer()
+      .catch(function () {
+        return { ok: true };
+      })
+      .then(function () {
+        row = {
+          _id: newId("srv"),
+          name: title,
+          hostKey: kid.key,
+          hostName: kid.name,
+          max: SERVER_MAX,
+          members: [
+            {
+              key: kid.key,
+              name: kid.name,
+              lastSeen: Date.now(),
+              fish: showcaseFish(),
+            },
+          ],
+          updatedAt: Date.now(),
+        };
+        return saveServer(row).then(function (saved) {
+          writeMyServerId(saved._id);
+          writeServerMates(saved.members);
+          return { ok: true, server: saved, message: "Server open! Others can join from Join Server." };
+        });
+      })
+      .catch(function () {
+        return { ok: false, message: "Could not open a server. The reef store is sleepy. Try again." };
       });
-    });
   }
 
   function joinServer(id) {
@@ -1404,36 +1426,54 @@
     if (!id) {
       return Promise.resolve({ ok: false, message: "Pick a room first." });
     }
-    return leaveServer(id).then(function () {
-      return loadServer(id).then(function (row) {
-        var idx;
-        if (!row) {
-          return { ok: false, message: "That room is gone. Pick another." };
-        }
-        row.members = pruneServerMembers(row.members);
-        idx = memberOnServer(row, kid.key);
-        if (idx === -1 && row.members.length >= SERVER_MAX) {
-          return { ok: false, message: "That room is full (6 kids)." };
-        }
-        if (idx === -1) {
-          row.members.push({
-            key: kid.key,
-            name: kid.name,
-            lastSeen: Date.now(),
-            fish: showcaseFish(),
+    return leaveServer(id)
+      .catch(function () {
+        return { ok: true };
+      })
+      .then(function () {
+        return getJson("server/" + id).then(function (row) {
+          var idx;
+          if (!row) {
+            return { ok: false, message: "That server is gone. Pick another." };
+          }
+          idx = memberOnServer(row, kid.key);
+          row.members = pruneServerMembers(row.members || []);
+          if (idx !== -1 && memberOnServer(row, kid.key) === -1) {
+            // You were pruned for a late heartbeat. Put yourself back.
+            row.members.push({
+              key: kid.key,
+              name: kid.name,
+              lastSeen: Date.now(),
+              fish: showcaseFish(),
+            });
+            idx = memberOnServer(row, kid.key);
+          }
+          if (idx === -1 && row.members.length >= SERVER_MAX) {
+            return { ok: false, message: "That server is full (6 kids)." };
+          }
+          if (idx === -1) {
+            row.members.push({
+              key: kid.key,
+              name: kid.name,
+              lastSeen: Date.now(),
+              fish: showcaseFish(),
+            });
+          } else {
+            idx = memberOnServer(row, kid.key);
+            row.members[idx].name = kid.name;
+            row.members[idx].lastSeen = Date.now();
+            row.members[idx].fish = showcaseFish();
+          }
+          return saveServer(row).then(function (saved) {
+            writeMyServerId(saved._id);
+            writeServerMates(saved.members);
+            return { ok: true, server: saved, message: "You joined " + (saved.name || "the server") + "!" };
           });
-        } else {
-          row.members[idx].name = kid.name;
-          row.members[idx].lastSeen = Date.now();
-          row.members[idx].fish = showcaseFish();
-        }
-        return saveServer(row).then(function (saved) {
-          writeMyServerId(saved._id);
-          writeServerMates(saved.members);
-          return { ok: true, server: saved, message: "You joined " + (saved.name || "the server") + "!" };
         });
+      })
+      .catch(function () {
+        return { ok: false, message: "Could not join. The reef store is sleepy. Try again." };
       });
-    });
   }
 
   function leaveServer(keepId) {
@@ -1491,24 +1531,10 @@
     if (!id || !kid) {
       return Promise.resolve(null);
     }
-    return loadServer(id).then(function (row) {
-      if (!row || memberOnServer(row, kid.key) === -1) {
-        writeMyServerId("");
-        return null;
-      }
-      writeServerMates(row.members);
-      return row;
-    });
-  }
-
-  function beatServer() {
-    var kid = sessionKid();
-    var id = readMyServerId();
-    if (!kid || !id) {
-      return Promise.resolve(null);
-    }
-    return loadServer(id).then(function (row) {
+    // Read raw members first. Do not kick yourself just because one heartbeat was late.
+    return getJson("server/" + id).then(function (row) {
       var idx;
+      var self;
       if (!row) {
         writeMyServerId("");
         return null;
@@ -1518,11 +1544,52 @@
         writeMyServerId("");
         return null;
       }
-      row.members[idx].name = kid.name;
-      row.members[idx].lastSeen = Date.now();
-      row.members[idx].fish = showcaseFish();
+      self = row.members[idx];
+      self.name = kid.name;
+      self.lastSeen = Date.now();
+      self.fish = showcaseFish();
+      row.members = pruneServerMembers(row.members);
+      if (memberOnServer(row, kid.key) === -1) {
+        row.members.push(self);
+      }
       writeServerMates(row.members);
-      return saveServer(row);
+      return row;
+    }, function () {
+      return null;
+    });
+  }
+
+  function beatServer() {
+    var kid = sessionKid();
+    var id = readMyServerId();
+    if (!kid || !id) {
+      return Promise.resolve(null);
+    }
+    return getJson("server/" + id).then(function (row) {
+      var idx;
+      var self;
+      if (!row) {
+        writeMyServerId("");
+        return null;
+      }
+      idx = memberOnServer(row, kid.key);
+      if (idx === -1) {
+        writeMyServerId("");
+        return null;
+      }
+      self = row.members[idx];
+      self.name = kid.name;
+      self.lastSeen = Date.now();
+      self.fish = showcaseFish();
+      row.members = pruneServerMembers(row.members);
+      if (memberOnServer(row, kid.key) === -1) {
+        row.members.push(self);
+      }
+      writeServerMates(row.members);
+      // Heartbeats skip the index rewrite so the sleepy store is less likely to drop the room.
+      return saveServer(row, false);
+    }, function () {
+      return null;
     });
   }
 

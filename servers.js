@@ -287,15 +287,19 @@ function makeFishPick(fish) {
 
 function enterServer(id) {
   setMsg("Joining server...");
-  return CodeReefCloud.joinServer(id).then(function (result) {
-    setMsg(result.message || "");
-    if (result.ok) {
-      currentServer = result.server;
-      showRoom();
-      renderRoom(result.server);
-    }
-    return result;
-  });
+  return CodeReefCloud.joinServer(id)
+    .then(function (result) {
+      setMsg(result.message || "");
+      if (result.ok) {
+        currentServer = result.server;
+        showRoom();
+        renderRoom(result.server);
+      }
+      return result;
+    })
+    .catch(function () {
+      setMsg("Could not join. Try again.");
+    });
 }
 
 function joinAnyServer() {
@@ -341,15 +345,19 @@ createForm.addEventListener("submit", function (event) {
   event.preventDefault();
   var name = createForm.room_name.value;
   setMsg("Opening server...");
-  CodeReefCloud.createServer(name).then(function (result) {
-    setMsg(result.message || "");
-    createForm.room_name.value = "";
-    if (result.ok) {
-      currentServer = result.server;
-      showRoom();
-      renderRoom(result.server);
-    }
-  });
+  CodeReefCloud.createServer(name)
+    .then(function (result) {
+      setMsg(result.message || "");
+      createForm.room_name.value = "";
+      if (result.ok) {
+        currentServer = result.server;
+        showRoom();
+        renderRoom(result.server);
+      }
+    })
+    .catch(function () {
+      setMsg("Could not open a server. Try again.");
+    });
 });
 
 leaveBtn.addEventListener("click", function () {
