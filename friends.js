@@ -36,7 +36,9 @@ var friendRaceOn = false;
 var friendRaceToken = 0;
 
 function setAsk(text) {
-  askMsg.textContent = text || "";
+  if (askMsg) {
+    askMsg.textContent = text || "";
+  }
 }
 
 function friendName(entry) {
@@ -126,6 +128,9 @@ function renderLists(account) {
   var friends = account && account.friends ? account.friends : [];
   var stamp = JSON.stringify({ incoming: incoming, outgoing: outgoing, friends: friends });
   var i;
+  if (!incomingEl || !outgoingEl || !listEl) {
+    return;
+  }
   if (stamp === listStamp) {
     refreshOnline(friends);
     return;
@@ -277,36 +282,41 @@ function lookForRace() {
   }).catch(function () {});
 }
 
-askForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-  var name = askForm.friend_name.value;
-  CodeReefCloud.sendFriendRequest(name).then(function (result) {
-    setAsk(result.message || (result.ok ? "Asked!" : "Try again."));
-    if (result.ok) {
-      askForm.friend_name.value = "";
-      loadAccount();
-    }
-  }).catch(function () {
-    setAsk("We can't reach the reef. Try again.");
+// Friend list UI only. Join Server uses this file for the race swim.
+if (askForm) {
+  askForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var name = askForm.friend_name.value;
+    CodeReefCloud.sendFriendRequest(name).then(function (result) {
+      setAsk(result.message || (result.ok ? "Asked!" : "Try again."));
+      if (result.ok) {
+        askForm.friend_name.value = "";
+        loadAccount();
+      }
+    }).catch(function () {
+      setAsk("We can't reach the reef. Try again.");
+    });
   });
-});
+}
 
-chatForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-  var text = chatForm.text.value;
-  if (!selectedKey) {
-    return;
-  }
-  CodeReefCloud.sendMessage(selectedKey, text).then(function (result) {
-    if (!result.ok) {
-      setAsk(result.message || "You can message friends.");
+if (chatForm) {
+  chatForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var text = chatForm.text.value;
+    if (!selectedKey) {
       return;
     }
-    chatForm.text.value = "";
-    chatStamp = "";
-    loadChat();
+    CodeReefCloud.sendMessage(selectedKey, text).then(function (result) {
+      if (!result.ok) {
+        setAsk(result.message || "You can message friends.");
+        return;
+      }
+      chatForm.text.value = "";
+      chatStamp = "";
+      loadChat();
+    });
   });
-});
+}
 
 window.addEventListener("codereef-race", function (event) {
   if (event.detail) {
@@ -314,27 +324,31 @@ window.addEventListener("codereef-race", function (event) {
   }
 });
 
-window.addEventListener("codereef-race-accept", function (event) {
-  if (event.detail) {
-    openFriendPick({ mode: "accept", challenge: event.detail });
-  }
-});
-
-if (pickerGoBtn) {
-  pickerGoBtn.addEventListener("click", startPickedRace);
-}
-if (pickerBackBtn) {
-  pickerBackBtn.addEventListener("click", function () {
-    closeFriendPick();
-    setPickMsg("");
+// On Join Server, servers.js owns the accept picker. Avoid double handlers.
+if (askForm) {
+  window.addEventListener("codereef-race-accept", function (event) {
+    if (event.detail) {
+      openFriendPick({ mode: "accept", challenge: event.detail });
+    }
   });
+  if (pickerGoBtn) {
+    pickerGoBtn.addEventListener("click", startPickedRace);
+  }
+  if (pickerBackBtn) {
+    pickerBackBtn.addEventListener("click", function () {
+      closeFriendPick();
+      setPickMsg("");
+    });
+  }
+  loadAccount();
+  window.setInterval(loadAccount, 5000);
+  window.setInterval(loadChat, 4000);
 }
 
-loadAccount();
-lookForRace();
-window.setInterval(loadAccount, 5000);
-window.setInterval(loadChat, 4000);
-window.setInterval(lookForRace, 5000);
+if (raceEl) {
+  lookForRace();
+  window.setInterval(lookForRace, 5000);
+}
 
 function setPickMsg(text) {
   if (pickerMsgEl) {

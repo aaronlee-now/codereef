@@ -32,7 +32,6 @@ var pendingChallenge = null;
 var pickMode = "";
 var pickedFishId = "";
 var raceBusy = false;
-var seenAccepted = {};
 
 function setMsg(text) {
   if (msgEl) {
@@ -407,7 +406,9 @@ pickerGoBtn.addEventListener("click", function () {
         }
         closePicker();
         setMsg("Race starting...");
-        window.location.href = "friends.html?v=servers1";
+        if (result.challenge && typeof showRace === "function") {
+          showRace(result.challenge);
+        }
       })
       .catch(function () {
         raceBusy = false;
@@ -430,41 +431,11 @@ window.addEventListener("codereef-race-accept", function (event) {
   }
 });
 
-window.addEventListener("codereef-race", function () {
-  window.location.href = "friends.html?v=servers1";
-});
-
-function lookForAcceptedRace() {
-  var kid = CodeReefCloud.sessionKid();
-  if (!kid) {
-    return;
+window.addEventListener("codereef-race", function (event) {
+  if (event.detail && typeof showRace === "function") {
+    showRace(event.detail);
   }
-  Promise.all([
-    CodeReefCloud.loadChallenges("from", kid.key),
-    CodeReefCloud.loadChallenges("to", kid.key),
-  ])
-    .then(function (parts) {
-      var rows = parts[0].concat(parts[1]);
-      var i;
-      var row;
-      for (i = 0; i < rows.length; i += 1) {
-        row = rows[i];
-        if (!row || row.status !== "accepted" || !row._id) {
-          continue;
-        }
-        if (seenAccepted[row._id]) {
-          continue;
-        }
-        seenAccepted[row._id] = true;
-        setMsg("Race is ready! Opening the race...");
-        window.location.href = "friends.html?v=servers1";
-        return;
-      }
-    })
-    .catch(function () {});
-}
+});
 
 refresh();
 window.setInterval(refresh, 5000);
-window.setInterval(lookForAcceptedRace, 3000);
-lookForAcceptedRace();

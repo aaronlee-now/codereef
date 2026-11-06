@@ -1687,7 +1687,7 @@
       hidePopup();
       global.dispatchEvent(new CustomEvent("codereef-race", { detail: body }));
       if (!document.getElementById("friend-race")) {
-        global.location.href = "friends.html?v=servers1";
+        global.location.href = "servers.html?v=srv4";
       }
       return { ok: true, challenge: body };
     });
@@ -1776,7 +1776,7 @@
 
   function onLivePage() {
     var path = String(global.location.pathname || "");
-    return path.indexOf("friends.html") !== -1 || path.indexOf("servers.html") !== -1;
+    return path.indexOf("servers.html") !== -1;
   }
 
   function startLive() {

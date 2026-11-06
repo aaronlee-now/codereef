@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="style.css?v=eye1" />
     <link rel="stylesheet" href="shop.css?v=eye1" />
     <link rel="stylesheet" href="friends.css?v=racefix2" />
-    <link rel="stylesheet" href="servers.css?v=srv3" />
+    <link rel="stylesheet" href="servers.css?v=srv4" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="home.html?v=swim1">← Back home</a>
@@ -85,6 +85,14 @@
             </button>
           </div>
         </section>
+
+        <section class="friend-race" id="friend-race" hidden aria-live="polite">
+          <h2 class="friend-heading">Race!</h2>
+          <p class="aquarium-race-msg" id="friend-race-msg" role="status"></p>
+          <div class="aquarium-tank" id="friend-tank" aria-label="Server race">
+            <div class="aquarium-tank__sand" aria-hidden="true"></div>
+          </div>
+        </section>
       </section>
 
       <nav class="shop-links" aria-label="Reef places">
@@ -92,15 +100,15 @@
         <a href="aquarium.html?v=swim1">My aquarium</a>
         <a href="shop.html?v=swim1">Fish shop</a>
         <a href="sell.html?v=sell1">Sell items</a>
-        <a href="servers.html?v=srv3" aria-current="page">Join Server</a>
-        <a href="friends.html?v=servers1">Friends</a>
+        <a href="servers.html?v=srv4" aria-current="page">Join Server</a>
         <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
       </nav>
     </main>
 
     <script src="auth.js?v=eye1"></script>
-    <script src="cloud.js?v=repair5"></script>
+    <script src="cloud.js?v=repair6"></script>
     <script src="reef-wallet.js?v=eye1"></script>
-    <script src="servers.js?v=srv3"></script>
+    <script src="servers.js?v=srv4"></script>
+    <script src="friends.js?v=raceonly1"></script>
   </body>
 </html>
