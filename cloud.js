@@ -665,7 +665,7 @@
   }
 
   // Read the account saved on this computer when the shared store does not answer.
-  function matchLocalUser(typed, password, parentEmail) {
+  function matchLocalUser(typed, password) {
     var local = typeof findUserByKidName === "function" ? findUserByKidName(typed) : null;
     if (!local) {
       return {
@@ -676,25 +676,18 @@
     if (local.password !== password) {
       return { ok: false, message: "Name or password is wrong. Try again." };
     }
-    if (
-      parentEmail &&
-      local.parentEmail &&
-      !sameParentEmail(local.parentEmail, parentEmail)
-    ) {
-      return { ok: false, message: "Use the same parent email from when you signed up." };
-    }
     return {
       ok: true,
       user: {
         kidName: local.kidName,
-        parentEmail: local.parentEmail || parentEmail || "",
+        parentEmail: local.parentEmail || "",
         password: password,
       },
     };
   }
 
-  function loginFromThisComputer(typed, password, parentEmail) {
-    var matched = matchLocalUser(typed, password, parentEmail);
+  function loginFromThisComputer(typed, password) {
+    var matched = matchLocalUser(typed, password);
     if (!matched.ok) {
       return matched;
     }
@@ -791,27 +784,16 @@
     });
   }
 
-  function sameParentEmail(saved, typed) {
-    return String(saved || "").trim().toLowerCase() === String(typed || "").trim().toLowerCase();
-  }
-
-  // Check the name, password, and parent email. Do not sign the kid in yet.
-  function checkLogin(kidName, password, parentEmail) {
+  // Check the name and password. Do not sign the kid in yet.
+  function checkLogin(kidName, password) {
     var typed = String(kidName || "").trim().replace(/\s+/g, " ");
     var kidKey = normalizeName(typed);
-    var email = String(parentEmail || "").trim();
     if (!typed || !password) {
       return Promise.resolve({ ok: false, message: "Name or password is wrong. Try again." });
-    }
-    if (!email) {
-      return Promise.resolve({ ok: false, message: "Type the parent email from sign up." });
     }
     return finishWithin(function () {
       return findAccount(kidKey).then(function (row) {
         function ready(user) {
-          if (!user.parentEmail || !sameParentEmail(user.parentEmail, email)) {
-            return { ok: false, message: "Use the same parent email from when you signed up." };
-          }
           return { ok: true, user: user };
         }
         if (!row || !row.passwordSalt || !row.passwordHash) {
@@ -836,7 +818,7 @@
           });
         });
       }, function () {
-        return matchLocalUser(typed, password, email);
+        return matchLocalUser(typed, password);
       });
     }).then(function (result) {
       if (result && result.ok) {
@@ -845,7 +827,7 @@
       if (result && result.message && result.message !== BUSY) {
         return result;
       }
-      return matchLocalUser(typed, password, email);
+      return matchLocalUser(typed, password);
     });
   }
 
