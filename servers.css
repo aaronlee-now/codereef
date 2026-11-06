@@ -1,3 +1,23 @@
+.server-join-main {
+  width: min(22rem, 100%);
+  margin: 0.4rem auto 0.35rem;
+  display: block;
+  font-size: 1.25rem;
+}
+
+.server-join-note {
+  margin: 0 auto 1rem;
+  max-width: 28rem;
+  text-align: center;
+  color: #9fd6c8;
+  font-weight: 700;
+}
+
+.auth__submit--calm {
+  background: #1f5f6e;
+  border-color: #1f5f6e;
+}
+
 .server-count {
   margin: 0 0 0.6rem;
   font-weight: 800;

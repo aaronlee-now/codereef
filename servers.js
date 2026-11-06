@@ -8,6 +8,7 @@ var msgEl = document.getElementById("server-msg");
 var lobbyEl = document.getElementById("server-lobby");
 var listEl = document.getElementById("server-list");
 var createForm = document.getElementById("server-create");
+var joinAnyBtn = document.getElementById("server-join-any");
 var roomEl = document.getElementById("server-room");
 var roomTitleEl = document.getElementById("server-room-title");
 var roomCountEl = document.getElementById("server-room-count");
@@ -116,17 +117,9 @@ function makeServerCard(row) {
   meta.textContent = (row.count || 0) + " / " + (row.max || 6);
   btn.type = "button";
   btn.className = "friend-btn";
-  btn.textContent = "Join";
+  btn.textContent = "Join Server";
   btn.addEventListener("click", function () {
-    setMsg("Joining...");
-    CodeReefCloud.joinServer(row._id).then(function (result) {
-      setMsg(result.message || "");
-      if (result.ok) {
-        currentServer = result.server;
-        showRoom();
-        renderRoom(result.server);
-      }
-    });
+    enterServer(row._id);
   });
   card.appendChild(name);
   card.appendChild(meta);
@@ -137,7 +130,7 @@ function makeServerCard(row) {
 function renderRoom(server) {
   var members = (server && server.members) || [];
   var i;
-  roomTitleEl.textContent = server.name || "Your room";
+  roomTitleEl.textContent = server.name || "Your server";
   roomCountEl.textContent = members.length + " / 6 kids";
   membersEl.innerHTML = "";
   for (i = 0; i < members.length; i += 1) {
@@ -288,10 +281,62 @@ function makeFishPick(fish) {
   return card;
 }
 
+function enterServer(id) {
+  setMsg("Joining server...");
+  return CodeReefCloud.joinServer(id).then(function (result) {
+    setMsg(result.message || "");
+    if (result.ok) {
+      currentServer = result.server;
+      showRoom();
+      renderRoom(result.server);
+    }
+    return result;
+  });
+}
+
+function joinAnyServer() {
+  setMsg("Looking for a server...");
+  return CodeReefCloud.listServers()
+    .then(function (rows) {
+      var best = null;
+      var i;
+      for (i = 0; i < (rows || []).length; i += 1) {
+        if (!rows[i] || !rows[i]._id) {
+          continue;
+        }
+        if (!best || (rows[i].count || 0) > (best.count || 0)) {
+          best = rows[i];
+        }
+      }
+      if (best) {
+        return enterServer(best._id);
+      }
+      setMsg("No open servers. Opening one for you...");
+      return CodeReefCloud.createServer("").then(function (result) {
+        setMsg(result.message || "Server open. Wait for others to join.");
+        if (result.ok) {
+          currentServer = result.server;
+          showRoom();
+          renderRoom(result.server);
+        }
+        return result;
+      });
+    })
+    .catch(function () {
+      setMsg("The reef store is sleepy. Try again.");
+    });
+}
+
+if (joinAnyBtn) {
+  joinAnyBtn.addEventListener("click", function () {
+    joinAnyServer();
+  });
+}
+
 createForm.addEventListener("submit", function (event) {
   event.preventDefault();
   var name = createForm.room_name.value;
-  setMsg("Opening room...");
+  setMsg("Opening server...");
   CodeReefCloud.createServer(name).then(function (result) {
     setMsg(result.message || "");
     createForm.room_name.value = "";
@@ -307,7 +352,7 @@ leaveBtn.addEventListener("click", function () {
   setMsg("Leaving...");
   CodeReefCloud.leaveServer().then(function () {
     currentServer = null;
-    setMsg("You left the room.");
+    setMsg("You left the server.");
     showLobby();
     refresh();
   });

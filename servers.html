@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="assets/codereef-front-cover.png" />
     <link rel="apple-touch-icon" href="assets/codereef-front-cover.png" />
-    <title>Reef rooms — CodeReef</title>
+    <title>Join Server — CodeReef</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="style.css?v=eye1" />
     <link rel="stylesheet" href="shop.css?v=eye1" />
     <link rel="stylesheet" href="friends.css?v=racefix2" />
-    <link rel="stylesheet" href="servers.css?v=srv1" />
+    <link rel="stylesheet" href="servers.css?v=srv2" />
   </head>
   <body class="page page--auth">
     <a class="back-link" href="home.html?v=swim1">← Back home</a>
@@ -23,21 +23,28 @@
     <main class="shop-page">
       <header class="auth__header">
         <p class="auth__brand">CodeReef</p>
-        <h1 class="auth__title">Reef rooms</h1>
+        <h1 class="auth__title">Join Server</h1>
         <p class="auth__hint">
-          Join a room with other kids (max 6). In a room you can look at their fish and race.
+          Jump into a server with other kids (max 6). No friends list needed — see their fish and race them right here.
         </p>
       </header>
 
       <p class="shop-msg" id="server-msg" role="status"></p>
 
-      <section id="server-lobby" aria-label="Open rooms">
-        <h2 class="friend-heading">Open rooms</h2>
+      <section id="server-lobby" aria-label="Join a server">
+        <button type="button" class="auth__submit server-join-main" id="server-join-any">
+          Join Server
+        </button>
+        <p class="server-join-note">
+          Finds a server with space, or opens a new one if none are open.
+        </p>
+
+        <h2 class="friend-heading">Open servers</h2>
         <div id="server-list"></div>
 
         <form class="friend-ask" id="server-create">
           <label class="field">
-            <span class="field__label">New room name</span>
+            <span class="field__label">Or name your own server</span>
             <input
               class="field__input"
               name="room_name"
@@ -47,21 +54,22 @@
               autocomplete="off"
             />
           </label>
-          <button class="auth__submit" type="submit">Open a room</button>
+          <button class="auth__submit auth__submit--calm" type="submit">Open my server</button>
         </form>
       </section>
 
-      <section id="server-room" hidden aria-label="Your room">
-        <h2 class="friend-heading" id="server-room-title">Your room</h2>
+      <section id="server-room" hidden aria-label="Your server">
+        <h2 class="friend-heading" id="server-room-title">Your server</h2>
         <p class="server-count" id="server-room-count">0 / 6 kids</p>
+        <p class="server-join-note">Tap See fish or Race. You do not need to be friends.</p>
         <div id="server-members"></div>
-        <button type="button" class="friend-btn friend-btn--no" id="server-leave">Leave room</button>
+        <button type="button" class="friend-btn friend-btn--no" id="server-leave">Leave server</button>
 
         <section class="server-peek" id="server-peek" hidden>
           <h2 class="friend-heading" id="server-peek-title">Fish</h2>
           <div class="server-peek__grid" id="server-peek-grid"></div>
           <button type="button" class="friend-btn aquarium-race-btn--calm" id="server-peek-back">
-            Back to room
+            Back to server
           </button>
         </section>
 
@@ -84,7 +92,7 @@
         <a href="aquarium.html?v=swim1">My aquarium</a>
         <a href="shop.html?v=swim1">Fish shop</a>
         <a href="sell.html?v=sell1">Sell items</a>
-        <a href="servers.html?v=srv1" aria-current="page">Reef rooms</a>
+        <a href="servers.html?v=srv2" aria-current="page">Join Server</a>
         <a href="friends.html?v=servers1">Friends</a>
         <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
       </nav>
@@ -93,6 +101,6 @@
     <script src="auth.js?v=eye1"></script>
     <script src="cloud.js?v=repair4"></script>
     <script src="reef-wallet.js?v=eye1"></script>
-    <script src="servers.js?v=srv1"></script>
+    <script src="servers.js?v=srv2"></script>
   </body>
 </html>
