@@ -1,0 +1,88 @@
+.server-count {
+  margin: 0 0 0.6rem;
+  font-weight: 800;
+  color: var(--foam);
+}
+
+.server-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.45rem 0;
+  padding: 0.7rem 0.85rem;
+  border-radius: 1rem;
+  background: rgba(6, 36, 48, 0.45);
+}
+
+.server-card__name {
+  font-weight: 800;
+  color: #f4fffc;
+  flex: 1 1 8rem;
+}
+
+.server-card__meta {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #9fd6c8;
+}
+
+.server-member {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.4rem 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.9rem;
+  background: rgba(6, 36, 48, 0.4);
+}
+
+.server-member__name {
+  font-weight: 800;
+  color: #f4fffc;
+  flex: 1 1 7rem;
+}
+
+.server-member__you {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #7be0c5;
+}
+
+.server-peek {
+  margin-top: 1rem;
+}
+
+.server-peek__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.55rem;
+  margin: 0.5rem 0 0.8rem;
+}
+
+.server-peek__card {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  padding: 0.45rem;
+  border-radius: 0.8rem;
+  background: rgba(8, 48, 62, 0.55);
+  color: #f4fffc;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.server-peek__card img {
+  width: 4.2rem;
+  height: 4.2rem;
+  object-fit: contain;
+}
+
+.cover__btn--servers {
+  min-width: 12rem;
+  background: #1f7a8c;
+  border: 2px solid #1f7a8c;
+  color: #f4fffc;
+}

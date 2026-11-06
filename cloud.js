@@ -1165,18 +1165,349 @@
 
   function chosenFish(picked) {
     var fish = picked && picked.id ? picked : null;
-    var energy;
     if (!fish) {
       fish = bestEnergeticFish();
     }
-    if (!fish) {
-      return null;
+    return fish || null;
+  }
+
+  var SERVER_MAX = 6;
+  var SERVER_STALE_MS = 90000;
+  var MY_SERVER_KEY = "codereef_my_server";
+
+  function readMyServerId() {
+    try {
+      return localStorage.getItem(MY_SERVER_KEY) || "";
+    } catch (err) {
+      return "";
     }
-    energy = typeof energyOf === "function" ? energyOf(getWallet(), fish.id) : 1;
-    if (energy <= 0) {
-      return null;
+  }
+
+  function writeMyServerId(id) {
+    try {
+      if (id) {
+        localStorage.setItem(MY_SERVER_KEY, id);
+      } else {
+        localStorage.removeItem(MY_SERVER_KEY);
+      }
+    } catch (err) {
+      // ignore
     }
-    return fish;
+  }
+
+  function showcaseFish() {
+    var wallet = typeof getWallet === "function" ? getWallet() : { fishCounts: {} };
+    var counts = wallet.fishCounts || {};
+    var list = [];
+    var i;
+    var fish;
+    if (typeof FISH_FOR_SALE === "undefined") {
+      return list;
+    }
+    for (i = 0; i < FISH_FOR_SALE.length; i += 1) {
+      fish = FISH_FOR_SALE[i];
+      if ((counts[fish.id] || 0) > 0) {
+        list.push({
+          id: fish.id,
+          name: fish.name,
+          image: fish.image || "",
+          rarity: fish.rarity || 0,
+        });
+      }
+      if (list.length >= 8) {
+        break;
+      }
+    }
+    return list;
+  }
+
+  function pruneServerMembers(members) {
+    var now = Date.now();
+    var out = [];
+    var i;
+    var row;
+    for (i = 0; i < (members || []).length; i += 1) {
+      row = members[i];
+      if (row && row.key && now - (row.lastSeen || 0) < SERVER_STALE_MS) {
+        out.push(row);
+      }
+    }
+    return out;
+  }
+
+  function serverSummary(row) {
+    var members = pruneServerMembers(row && row.members);
+    return {
+      _id: row._id,
+      name: row.name || "Reef room",
+      hostKey: row.hostKey || "",
+      hostName: row.hostName || "",
+      count: members.length,
+      max: SERVER_MAX,
+      updatedAt: row.updatedAt || 0,
+    };
+  }
+
+  function loadServerIndex() {
+    return getJson("servers/index").then(function (rows) {
+      return asRows(rows);
+    }, function () {
+      return [];
+    });
+  }
+
+  function saveServerIndex(list) {
+    return putJson("servers/index", list || []);
+  }
+
+  function loadServer(id) {
+    if (!id) {
+      return Promise.resolve(null);
+    }
+    return getJson("server/" + id).then(function (row) {
+      if (!row) {
+        return null;
+      }
+      row.members = pruneServerMembers(row.members);
+      return row;
+    }, function () {
+      return null;
+    });
+  }
+
+  function saveServer(row) {
+    if (!row || !row._id) {
+      return Promise.reject(new Error("save failed"));
+    }
+    row.updatedAt = Date.now();
+    row.members = pruneServerMembers(row.members);
+    return putJson("server/" + row._id, row).then(function () {
+      return loadServerIndex().then(function (list) {
+        var i;
+        var found = false;
+        var summary = serverSummary(row);
+        for (i = 0; i < list.length; i += 1) {
+          if (list[i] && list[i]._id === row._id) {
+            list[i] = summary;
+            found = true;
+          }
+        }
+        if (!found && summary.count > 0) {
+          list.push(summary);
+        }
+        list = list.filter(function (item) {
+          return item && item.count > 0;
+        });
+        return saveServerIndex(list).then(function () {
+          return row;
+        });
+      });
+    });
+  }
+
+  function memberOnServer(row, kidKey) {
+    var i;
+    if (!row || !row.members) {
+      return -1;
+    }
+    for (i = 0; i < row.members.length; i += 1) {
+      if (row.members[i] && row.members[i].key === kidKey) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function listServers() {
+    return loadServerIndex().then(function (list) {
+      return list
+        .filter(function (item) {
+          return item && item.count > 0 && item.count < SERVER_MAX;
+        })
+        .sort(function (a, b) {
+          return (b.updatedAt || 0) - (a.updatedAt || 0);
+        });
+    });
+  }
+
+  function createServer(name) {
+    var kid = sessionKid();
+    var title = String(name || "").trim().replace(/\s+/g, " ");
+    var row;
+    if (!kid) {
+      return Promise.resolve({ ok: false, message: "Log in first." });
+    }
+    if (!title) {
+      title = (kid.name || "Reef") + "'s room";
+    }
+    if (title.length > 24) {
+      title = title.slice(0, 24);
+    }
+    return leaveServer().then(function () {
+      row = {
+        _id: newId("srv"),
+        name: title,
+        hostKey: kid.key,
+        hostName: kid.name,
+        max: SERVER_MAX,
+        members: [
+          {
+            key: kid.key,
+            name: kid.name,
+            lastSeen: Date.now(),
+            fish: showcaseFish(),
+          },
+        ],
+        updatedAt: Date.now(),
+      };
+      return saveServer(row).then(function (saved) {
+        writeMyServerId(saved._id);
+        return { ok: true, server: saved, message: "Room open! Invite friends to join." };
+      });
+    });
+  }
+
+  function joinServer(id) {
+    var kid = sessionKid();
+    if (!kid) {
+      return Promise.resolve({ ok: false, message: "Log in first." });
+    }
+    if (!id) {
+      return Promise.resolve({ ok: false, message: "Pick a room first." });
+    }
+    return leaveServer(id).then(function () {
+      return loadServer(id).then(function (row) {
+        var idx;
+        if (!row) {
+          return { ok: false, message: "That room is gone. Pick another." };
+        }
+        row.members = pruneServerMembers(row.members);
+        idx = memberOnServer(row, kid.key);
+        if (idx === -1 && row.members.length >= SERVER_MAX) {
+          return { ok: false, message: "That room is full (6 kids)." };
+        }
+        if (idx === -1) {
+          row.members.push({
+            key: kid.key,
+            name: kid.name,
+            lastSeen: Date.now(),
+            fish: showcaseFish(),
+          });
+        } else {
+          row.members[idx].name = kid.name;
+          row.members[idx].lastSeen = Date.now();
+          row.members[idx].fish = showcaseFish();
+        }
+        return saveServer(row).then(function (saved) {
+          writeMyServerId(saved._id);
+          return { ok: true, server: saved, message: "You joined " + (saved.name || "the room") + "!" };
+        });
+      });
+    });
+  }
+
+  function leaveServer(keepId) {
+    var kid = sessionKid();
+    var current = readMyServerId();
+    if (!kid || !current) {
+      writeMyServerId("");
+      return Promise.resolve({ ok: true });
+    }
+    if (keepId && current === keepId) {
+      return Promise.resolve({ ok: true });
+    }
+    return loadServer(current).then(function (row) {
+      var next;
+      var i;
+      writeMyServerId("");
+      if (!row) {
+        return { ok: true };
+      }
+      next = [];
+      for (i = 0; i < (row.members || []).length; i += 1) {
+        if (row.members[i] && row.members[i].key !== kid.key) {
+          next.push(row.members[i]);
+        }
+      }
+      row.members = next;
+      if (!next.length) {
+        return putJson("server/" + row._id, null).catch(function () {}).then(function () {
+          return loadServerIndex().then(function (list) {
+            list = list.filter(function (item) {
+              return item && item._id !== row._id;
+            });
+            return saveServerIndex(list).then(function () {
+              return { ok: true };
+            });
+          });
+        });
+      }
+      if (row.hostKey === kid.key) {
+        row.hostKey = next[0].key;
+        row.hostName = next[0].name;
+      }
+      return saveServer(row).then(function () {
+        return { ok: true };
+      });
+    }, function () {
+      writeMyServerId("");
+      return { ok: true };
+    });
+  }
+
+  function loadMyServer() {
+    var id = readMyServerId();
+    var kid = sessionKid();
+    if (!id || !kid) {
+      return Promise.resolve(null);
+    }
+    return loadServer(id).then(function (row) {
+      if (!row || memberOnServer(row, kid.key) === -1) {
+        writeMyServerId("");
+        return null;
+      }
+      return row;
+    });
+  }
+
+  function beatServer() {
+    var kid = sessionKid();
+    var id = readMyServerId();
+    if (!kid || !id) {
+      return Promise.resolve(null);
+    }
+    return loadServer(id).then(function (row) {
+      var idx;
+      if (!row) {
+        writeMyServerId("");
+        return null;
+      }
+      idx = memberOnServer(row, kid.key);
+      if (idx === -1) {
+        writeMyServerId("");
+        return null;
+      }
+      row.members[idx].name = kid.name;
+      row.members[idx].lastSeen = Date.now();
+      row.members[idx].fish = showcaseFish();
+      return saveServer(row);
+    });
+  }
+
+  function shareServerWith(toKey) {
+    var kid = sessionKid();
+    var id = readMyServerId();
+    if (!kid || !toKey || !id) {
+      return Promise.resolve(false);
+    }
+    return loadServer(id).then(function (row) {
+      if (!row) {
+        return false;
+      }
+      return memberOnServer(row, kid.key) !== -1 && memberOnServer(row, toKey) !== -1;
+    }, function () {
+      return false;
+    });
   }
 
   function sendChallenge(toKey, toName, picked) {
@@ -1187,13 +1518,16 @@
     }
     fish = chosenFish(picked);
     if (!fish) {
-      return Promise.resolve({ ok: false, message: "This fish is hungry. Sprinkle food first." });
+      return Promise.resolve({ ok: false, message: "Pick a fish first." });
     }
-    return Promise.all([findAccount(kid.key), friendBook(kid.key)]).then(function (parts) {
+    return Promise.all([findAccount(kid.key), shareServerWith(toKey)]).then(function (parts) {
       var mine = parts[0];
-      var book = parts[1];
-      if (!mine || !hasKey(book.friends, toKey)) {
-        return { ok: false, message: "You can race friends." };
+      var sameRoom = parts[1];
+      if (!mine) {
+        return { ok: false, message: "We can't reach your account." };
+      }
+      if (!sameRoom) {
+        return { ok: false, message: "Join the same reef room before you race." };
       }
       return cloudSend("POST", "/challenges", {
         toKey: toKey,
@@ -1206,7 +1540,7 @@
         status: "pending",
         at: Date.now(),
       }).then(function () {
-        return { ok: true, message: "You asked " + (toName || "your friend") + " to race!" };
+        return { ok: true, message: "You asked " + (toName || "them") + " to race!" };
       });
     });
   }
@@ -1300,7 +1634,7 @@
     }
     fish = chosenFish(picked);
     if (!fish) {
-      return Promise.resolve({ ok: false, message: "This fish is hungry. Sprinkle food first." });
+      return Promise.resolve({ ok: false, message: "Pick a fish first." });
     }
     body.status = "accepted";
     body.toFishId = fish.id;
@@ -1312,7 +1646,7 @@
       hidePopup();
       global.dispatchEvent(new CustomEvent("codereef-race", { detail: body }));
       if (!document.getElementById("friend-race")) {
-        global.location.href = "friends.html?v=racefix1";
+        global.location.href = "friends.html?v=servers1";
       }
       return { ok: true, challenge: body };
     });
@@ -1399,15 +1733,16 @@
     return typeof lastSeen === "number" && Date.now() - lastSeen < 20000;
   }
 
-  function onFriendsPage() {
-    return String(global.location.pathname || "").indexOf("friends.html") !== -1;
+  function onLivePage() {
+    var path = String(global.location.pathname || "");
+    return path.indexOf("friends.html") !== -1 || path.indexOf("servers.html") !== -1;
   }
 
   function startLive() {
     var kid = sessionKid();
-    // Presence and race checks run only on the friends page, so a busy
+    // Presence and race checks run only on live pages, so a busy
     // aquarium does not use up the shared store's small request limit.
-    if (!kid || heartTimer || !onFriendsPage()) {
+    if (!kid || heartTimer || !onLivePage()) {
       return;
     }
     try {
@@ -1416,8 +1751,12 @@
       presenceId = "";
     }
     beat();
+    beatServer();
     pollChallenges();
-    heartTimer = global.setInterval(beat, 12000);
+    heartTimer = global.setInterval(function () {
+      beat();
+      beatServer();
+    }, 12000);
     raceTimer = global.setInterval(pollChallenges, 5000);
   }
 
@@ -1427,13 +1766,17 @@
     global.clearInterval(raceTimer);
     heartTimer = 0;
     raceTimer = 0;
-    return pushBagNow().then(function () {
-      if (!kid) {
-        return;
-      }
-      // Logging out from any page means offline. The friends page is not required.
-      return cloudSend("PUT", "/presence/" + kid.key, { kidKey: kid.key, lastSeen: 0 });
-    });
+    return leaveServer()
+      .catch(function () {})
+      .then(function () {
+        return pushBagNow();
+      })
+      .then(function () {
+        if (!kid) {
+          return;
+        }
+        return cloudSend("PUT", "/presence/" + kid.key, { kidKey: kid.key, lastSeen: 0 });
+      });
   }
 
   function loadChallenges(which, key) {
@@ -1470,9 +1813,16 @@
     loadChallenges: loadChallenges,
     pairKey: pairKey,
     sessionKid: sessionKid,
+    listServers: listServers,
+    createServer: createServer,
+    joinServer: joinServer,
+    leaveServer: leaveServer,
+    loadMyServer: loadMyServer,
+    beatServer: beatServer,
+    SERVER_MAX: SERVER_MAX,
   };
 
-  if (sessionKid() && onFriendsPage()) {
+  if (sessionKid() && onLivePage()) {
     startLive();
   }
 })(window);

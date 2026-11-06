@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="assets/codereef-front-cover.png" />
+    <link rel="apple-touch-icon" href="assets/codereef-front-cover.png" />
+    <title>Reef rooms — CodeReef</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=eye1" />
+    <link rel="stylesheet" href="shop.css?v=eye1" />
+    <link rel="stylesheet" href="friends.css?v=racefix2" />
+    <link rel="stylesheet" href="servers.css?v=srv1" />
+  </head>
+  <body class="page page--auth">
+    <a class="back-link" href="home.html?v=swim1">← Back home</a>
+
+    <main class="shop-page">
+      <header class="auth__header">
+        <p class="auth__brand">CodeReef</p>
+        <h1 class="auth__title">Reef rooms</h1>
+        <p class="auth__hint">
+          Join a room with other kids (max 6). In a room you can look at their fish and race.
+        </p>
+      </header>
+
+      <p class="shop-msg" id="server-msg" role="status"></p>
+
+      <section id="server-lobby" aria-label="Open rooms">
+        <h2 class="friend-heading">Open rooms</h2>
+        <div id="server-list"></div>
+
+        <form class="friend-ask" id="server-create">
+          <label class="field">
+            <span class="field__label">New room name</span>
+            <input
+              class="field__input"
+              name="room_name"
+              type="text"
+              maxlength="24"
+              placeholder="Coral Cup"
+              autocomplete="off"
+            />
+          </label>
+          <button class="auth__submit" type="submit">Open a room</button>
+        </form>
+      </section>
+
+      <section id="server-room" hidden aria-label="Your room">
+        <h2 class="friend-heading" id="server-room-title">Your room</h2>
+        <p class="server-count" id="server-room-count">0 / 6 kids</p>
+        <div id="server-members"></div>
+        <button type="button" class="friend-btn friend-btn--no" id="server-leave">Leave room</button>
+
+        <section class="server-peek" id="server-peek" hidden>
+          <h2 class="friend-heading" id="server-peek-title">Fish</h2>
+          <div class="server-peek__grid" id="server-peek-grid"></div>
+          <button type="button" class="friend-btn aquarium-race-btn--calm" id="server-peek-back">
+            Back to room
+          </button>
+        </section>
+
+        <section class="aquarium-picker" id="friend-picker" hidden>
+          <h2 class="aquarium-picker__title">Pick your fish</h2>
+          <p class="aquarium-picker__count" id="friend-picker-count">Pick one fish</p>
+          <div class="aquarium-picker__grid" id="friend-picker-grid"></div>
+          <p class="aquarium-race-msg" id="friend-picker-msg" role="status"></p>
+          <div class="aquarium-picker__actions">
+            <button type="button" class="aquarium-race-btn" id="friend-picker-go">Start race</button>
+            <button type="button" class="aquarium-race-btn aquarium-race-btn--calm" id="friend-picker-back">
+              Back
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <nav class="shop-links" aria-label="Reef places">
+        <a href="explore.html?v=swim1">Start exploring</a>
+        <a href="aquarium.html?v=swim1">My aquarium</a>
+        <a href="shop.html?v=swim1">Fish shop</a>
+        <a href="sell.html?v=sell1">Sell items</a>
+        <a href="servers.html?v=srv1" aria-current="page">Reef rooms</a>
+        <a href="friends.html?v=servers1">Friends</a>
+        <a class="shop-links__settings" href="settings.html?v=settings1">Settings</a>
+      </nav>
+    </main>
+
+    <script src="auth.js?v=eye1"></script>
+    <script src="cloud.js?v=repair4"></script>
+    <script src="reef-wallet.js?v=eye1"></script>
+    <script src="servers.js?v=srv1"></script>
+  </body>
+</html>
