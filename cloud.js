@@ -1182,10 +1182,10 @@
 
   var SERVER_MAX = 6;
   // The shared store often skips a beat. Keep kids in the room much longer.
-  var SERVER_STALE_MS = 10 * 60 * 1000;
+  var SERVER_STALE_MS = 30 * 60 * 1000;
   var MY_SERVER_KEY = "codereef_my_server";
-
   var MY_SERVER_MATES_KEY = "codereef_server_mates";
+  var MY_SERVER_SNAP_KEY = "codereef_server_snap";
 
   function readMyServerId() {
     try {
@@ -1202,6 +1202,7 @@
       } else {
         localStorage.removeItem(MY_SERVER_KEY);
         localStorage.removeItem(MY_SERVER_MATES_KEY);
+        localStorage.removeItem(MY_SERVER_SNAP_KEY);
       }
     } catch (err) {
       // ignore
@@ -1231,6 +1232,58 @@
     } catch (err) {
       return [];
     }
+  }
+
+  function writeServerSnap(row) {
+    if (!row || !row._id) {
+      return;
+    }
+    try {
+      localStorage.setItem(MY_SERVER_SNAP_KEY, JSON.stringify(row));
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  function readServerSnap() {
+    try {
+      var raw = localStorage.getItem(MY_SERVER_SNAP_KEY);
+      var row = raw ? JSON.parse(raw) : null;
+      if (!row || !row._id) {
+        return null;
+      }
+      return row;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function mergeMembers(a, b) {
+    var map = {};
+    var out = [];
+    var lists = [a || [], b || []];
+    var i;
+    var j;
+    var row;
+    var key;
+    for (i = 0; i < lists.length; i += 1) {
+      for (j = 0; j < lists[i].length; j += 1) {
+        row = lists[i][j];
+        if (!row || !row.key) {
+          continue;
+        }
+        key = row.key;
+        if (!map[key] || (row.lastSeen || 0) >= (map[key].lastSeen || 0)) {
+          map[key] = row;
+        }
+      }
+    }
+    for (key in map) {
+      if (Object.prototype.hasOwnProperty.call(map, key)) {
+        out.push(map[key]);
+      }
+    }
+    return out;
   }
 
   function showcaseFish() {
@@ -1318,33 +1371,52 @@
       return Promise.reject(new Error("save failed"));
     }
     return enqueue(function () {
-      row.updatedAt = Date.now();
-      row.members = pruneServerMembers(row.members);
-      return putJson("server/" + row._id, row).then(function () {
-        if (touchIndex === false) {
-          return row;
-        }
-        return loadServerIndex().then(function (list) {
-          var i;
-          var found = false;
-          var summary = serverSummary(row);
-          for (i = 0; i < list.length; i += 1) {
-            if (list[i] && list[i]._id === row._id) {
-              list[i] = summary;
-              found = true;
+      // Merge with the newest remote copy so two kids do not wipe each other out.
+      return getJson("server/" + row._id)
+        .catch(function () {
+          return null;
+        })
+        .then(function (latest) {
+          if (latest && latest.members) {
+            row.members = mergeMembers(row.members, latest.members);
+            if (latest.name && !row.name) {
+              row.name = latest.name;
+            }
+            if (latest.hostKey && !row.hostKey) {
+              row.hostKey = latest.hostKey;
+              row.hostName = latest.hostName;
             }
           }
-          if (!found && summary.count > 0) {
-            list.push(summary);
-          }
-          list = list.filter(function (item) {
-            return item && item.count > 0;
-          });
-          return saveServerIndex(list).then(function () {
-            return row;
+          row.updatedAt = Date.now();
+          row.members = pruneServerMembers(row.members);
+          writeServerSnap(row);
+          writeServerMates(row.members);
+          return putJson("server/" + row._id, row).then(function () {
+            if (touchIndex === false) {
+              return row;
+            }
+            return loadServerIndex().then(function (list) {
+              var i;
+              var found = false;
+              var summary = serverSummary(row);
+              for (i = 0; i < list.length; i += 1) {
+                if (list[i] && list[i]._id === row._id) {
+                  list[i] = summary;
+                  found = true;
+                }
+              }
+              if (!found && summary.count > 0) {
+                list.push(summary);
+              }
+              list = list.filter(function (item) {
+                return item && item.count > 0;
+              });
+              return saveServerIndex(list).then(function () {
+                return row;
+              });
+            });
           });
         });
-      });
     });
   }
 
@@ -1410,6 +1482,7 @@
         return saveServer(row).then(function (saved) {
           writeMyServerId(saved._id);
           writeServerMates(saved.members);
+          writeServerSnap(saved);
           return { ok: true, server: saved, message: "Server open! Others can join from Join Server." };
         });
       })
@@ -1467,6 +1540,7 @@
           return saveServer(row).then(function (saved) {
             writeMyServerId(saved._id);
             writeServerMates(saved.members);
+            writeServerSnap(saved);
             return { ok: true, server: saved, message: "You joined " + (saved.name || "the server") + "!" };
           });
         });
@@ -1525,37 +1599,63 @@
     });
   }
 
+  function selfMember(kid) {
+    return {
+      key: kid.key,
+      name: kid.name,
+      lastSeen: Date.now(),
+      fish: showcaseFish(),
+    };
+  }
+
+  function keepLocalServer(kid) {
+    var snap = readServerSnap();
+    var id = readMyServerId();
+    if (!snap || !id) {
+      return null;
+    }
+    if (snap._id !== id) {
+      snap._id = id;
+    }
+    if (memberOnServer(snap, kid.key) === -1) {
+      snap.members = mergeMembers(snap.members, [selfMember(kid)]);
+    }
+    writeServerMates(snap.members);
+    return snap;
+  }
+
   function loadMyServer() {
     var id = readMyServerId();
     var kid = sessionKid();
     if (!id || !kid) {
       return Promise.resolve(null);
     }
-    // Read raw members first. Do not kick yourself just because one heartbeat was late.
+    // Never kick on a sleepy store read. Keep the local snapshot and stay in the room.
     return getJson("server/" + id).then(function (row) {
       var idx;
       var self;
       if (!row) {
-        writeMyServerId("");
-        return null;
+        return keepLocalServer(kid);
       }
       idx = memberOnServer(row, kid.key);
+      self = selfMember(kid);
       if (idx === -1) {
-        writeMyServerId("");
-        return null;
+        row.members = mergeMembers(row.members, [self]);
+      } else {
+        self = row.members[idx];
+        self.name = kid.name;
+        self.lastSeen = Date.now();
+        self.fish = showcaseFish();
       }
-      self = row.members[idx];
-      self.name = kid.name;
-      self.lastSeen = Date.now();
-      self.fish = showcaseFish();
       row.members = pruneServerMembers(row.members);
       if (memberOnServer(row, kid.key) === -1) {
-        row.members.push(self);
+        row.members.push(selfMember(kid));
       }
+      writeServerSnap(row);
       writeServerMates(row.members);
       return row;
     }, function () {
-      return null;
+      return keepLocalServer(kid);
     });
   }
 
@@ -1569,27 +1669,30 @@
       var idx;
       var self;
       if (!row) {
-        writeMyServerId("");
-        return null;
+        row = keepLocalServer(kid);
+        if (!row) {
+          return null;
+        }
       }
       idx = memberOnServer(row, kid.key);
+      self = selfMember(kid);
       if (idx === -1) {
-        writeMyServerId("");
-        return null;
+        row.members = mergeMembers(row.members, [self]);
+      } else {
+        row.members[idx].name = kid.name;
+        row.members[idx].lastSeen = Date.now();
+        // Do not rewrite fish every beat. That makes the save big and flaky.
       }
-      self = row.members[idx];
-      self.name = kid.name;
-      self.lastSeen = Date.now();
-      self.fish = showcaseFish();
       row.members = pruneServerMembers(row.members);
       if (memberOnServer(row, kid.key) === -1) {
         row.members.push(self);
       }
+      writeServerSnap(row);
       writeServerMates(row.members);
       // Heartbeats skip the index rewrite so the sleepy store is less likely to drop the room.
       return saveServer(row, false);
     }, function () {
-      return null;
+      return keepLocalServer(kid);
     });
   }
 

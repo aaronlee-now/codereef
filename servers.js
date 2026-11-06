@@ -82,16 +82,32 @@ function setPickMsg(text) {
 function refresh() {
   return CodeReefCloud.loadMyServer()
     .then(function (server) {
-      currentServer = server;
       if (server) {
+        currentServer = server;
         showRoom();
         renderRoom(server);
+        if (msgEl && /Reconnecting/.test(msgEl.textContent || "")) {
+          setMsg("");
+        }
+        return;
+      }
+      // A sleepy store must not kick you to the lobby if you are still joined.
+      if (currentServer && currentServer._id) {
+        showRoom();
+        renderRoom(currentServer);
+        setMsg("Reconnecting to your server...");
         return;
       }
       showLobby();
       return CodeReefCloud.listServers().then(renderList);
     })
     .catch(function () {
+      if (currentServer && currentServer._id) {
+        showRoom();
+        renderRoom(currentServer);
+        setMsg("Reconnecting to your server...");
+        return;
+      }
       setMsg("The reef store is sleepy. Try again.");
     });
 }
@@ -446,4 +462,4 @@ window.addEventListener("codereef-race", function (event) {
 });
 
 refresh();
-window.setInterval(refresh, 5000);
+window.setInterval(refresh, 12000);
